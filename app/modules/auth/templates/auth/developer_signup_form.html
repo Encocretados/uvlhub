@@ -1,19 +1,19 @@
 {% extends "base_template.html" %}
 
-{% block title %}Sign up{% endblock %}
+{% block title %}Sign up as Developer{% endblock %}
 
 {% block content %}
 
-    <h1 class="h2 mb-3"><b>Sign</b> Up</h1>
+    <h1 class="h2 mb-3"><b>Sign</b> Up as Developer</h1>
 
     <div class="row">
         <div class="col-5">
-
             <form action="" method="post" novalidate>
                 {{ form.hidden_tag() }}
 
-                <div class="row">
+                <!-- Otros campos (nombre, apellido, etc.) -->
 
+                <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.name.label(class="form-label") }} *
@@ -23,7 +23,6 @@
                             {% endfor %}
                         </div>
                     </div>
-
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.surname.label(class="form-label") }} *
@@ -33,91 +32,57 @@
                             {% endfor %}
                         </div>
                     </div>
-
                 </div>
 
+                <!-- Campo de Email Corporativo -->
                 <div class="row">
-
-
-                </div>
-
-                <div class="row">
-
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control",placeholder="Enter email") }}
+                            {{ form.email(class="form-control", placeholder="Enter corporate email") }}
                             {% for error in form.email.errors %}
                                 <span style="color: red;">{{ error }}</span>
                             {% endfor %}
                         </div>
                     </div>
+                </div>
 
+                <!-- Campo de selección de Team -->
+                <div class="row">
+                    <div class="col-md-6 col-lg-6 col-xs-12">
+                        <div class="mb-3">
+                            {{ form.team.label(class="form-label") }} *
+                            {{ form.team(class="form-control") }}
+                            {% for error in form.team.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
 
 
+                <!-- Campo de Password -->
                 <div class="row">
-
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.password.label(class="form-label") }}
-                            {{ form.password(class="form-control",placeholder="Enter password") }}
+                            {{ form.password(class="form-control", placeholder="Enter password") }}
                             {% for error in form.password.errors %}
                                 <span style="color: red;">{{ error }}</span>
                             {% endfor %}
                         </div>
                     </div>
-
                 </div>
 
+                <!-- Botón de envío -->
                 <div class="row">
-
                     <div class="col-lg-6 col-12">
                         {{ form.submit(class="btn btn-primary") }}
                     </div>
-
-                </div>
-
-                <div class="row">
-
-                    <div class="col-lg-6 col-12">
-
-                        {% if error %}
-
-                            <div class="mt-3">
-                                <p style="color: red;"><strong>Error:</strong> {{ error }}
-                            </div>
-
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-                <div class="row">
-
-                    <div class="mt-3">
-                        <div class="col-lg-6 col-12">
-                            Want to register as a developer? <a href="{{ url_for('auth.show_developer_signup_form') }}">Click here</a>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <div class="col-lg-6 col-12">
-                            Already an account? <a href="{{ url_for('auth.login') }}">Login</a>
-                        </div>
-                    </div>
-
-
                 </div>
 
             </form>
-
         </div>
     </div>
 
-{% endblock %}
-
-{% block scripts %}
-    <script src="{{ url_for('auth.scripts') }}"></script>
 {% endblock %}

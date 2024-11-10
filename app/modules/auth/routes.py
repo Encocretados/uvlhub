@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
 
 from app.modules.auth import auth_bp
-from app.modules.auth.forms import SignupForm, LoginForm
+from app.modules.auth.forms import DeveloperSingUpForm, SignupForm, LoginForm
 from app.modules.auth.services import AuthenticationService
 from app.modules.profile.services import UserProfileService
 
@@ -47,6 +47,30 @@ def login():
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
 
     return render_template('auth/login_form.html', form=form)
+
+
+@auth_bp.route("/signup/developer", methods=["GET", "POST"])
+def show_developer_signup_form():
+    if current_user.is_authenticated:
+        return redirect(url_for('public.index'))
+
+    form = DeveloperSingUpForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        if not authentication_service.is_email_available(email):
+            return render_template("auth/developer_signup_form.html", form=form, error=f'Email {email} in use')
+
+        try:
+            # Creamos un usuario con un perfil de desarrollador
+            user = authentication_service.create_with_profile(**form.data, is_developer=True)
+        except Exception as exc:
+            return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
+
+        # Log user
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+
+    return render_template("auth/developer_signup_form.html", form=form)
 
 
 @auth_bp.route('/logout')
