@@ -87,7 +87,7 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
-    
+
     def generate_token(self, user_id: int):
         return generate_access_token(user_id)
 

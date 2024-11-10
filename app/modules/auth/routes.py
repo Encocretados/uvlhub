@@ -77,7 +77,7 @@ def login():
 
 
 @auth_bp.route('/logout')
-def logout():   
+def logout():
     logout_user()
     response = redirect(url_for('public.index'))
     response.set_cookie('access_token', '', expires=0)
