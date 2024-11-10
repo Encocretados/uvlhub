@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField, SubmitField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 
 
 class SignupForm(FlaskForm):
@@ -24,6 +24,13 @@ class DeveloperSingUpForm(FlaskForm):
         ('University of Malaga', 'University of Malaga'),
         ('University of Ulm', 'University of Ulm')
     ], validators=[DataRequired()])
+    
+    # Campo para el usuario de GitHub
+    github = StringField('GitHub Username', validators=[
+        Optional(),
+        Length(max=50),
+        Regexp(r'^[a-zA-Z0-9_-]+$', message="Enter a valid GitHub username")
+    ])
     
     submit = SubmitField('Sign up as Developer')
 

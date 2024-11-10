@@ -11,7 +11,7 @@
             <form action="" method="post" novalidate>
                 {{ form.hidden_tag() }}
 
-                <!-- Otros campos (nombre, apellido, etc.) -->
+                
 
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <!-- Campo de Email Corporativo -->
+                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -47,7 +47,20 @@
                     </div>
                 </div>
 
-                <!-- Campo de selección de Team -->
+            
+                <div class="row">
+                    <div class="col-md-6 col-lg-6 col-xs-12">
+                        <div class="mb-3">
+                            {{ form.github.label(class="form-label") }}
+                            {{ form.github(class="form-control", placeholder="Enter GitHub username") }}
+                            {% for error in form.github.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -60,8 +73,7 @@
                     </div>
                 </div>
 
-
-                <!-- Campo de Password -->
+                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -74,7 +86,7 @@
                     </div>
                 </div>
 
-                <!-- Botón de envío -->
+                
                 <div class="row">
                     <div class="col-lg-6 col-12">
                         {{ form.submit(class="btn btn-primary") }}
