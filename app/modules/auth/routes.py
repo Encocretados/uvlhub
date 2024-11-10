@@ -61,12 +61,11 @@ def show_developer_signup_form():
             return render_template("auth/developer_signup_form.html", form=form, error=f'Email {email} in use')
 
         try:
-            # Creamos un usuario con un perfil de desarrollador
+            
             user = authentication_service.create_with_profile(**form.data, is_developer=True)
         except Exception as exc:
             return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
 
-        # Log user
         login_user(user, remember=True)
         return redirect(url_for('public.index'))
 
