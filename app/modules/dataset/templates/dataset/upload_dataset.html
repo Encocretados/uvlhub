@@ -220,11 +220,10 @@
                 <label for="feature_model_select" class="form-label">Select Feature Model</label>
                 <select id="feature_model_select" name="feature_model" class="form-control">
                     {% for feature_model in feature_models %}
-                        <option value="{{ feature_model.id }}">{{ feature_model.name }}</option>
+                        <option value="{{ feature_model.id }}">{{ feature_model.fm_meta_data.title }}</option>
                     {% endfor %}
                 </select>
             </div>
-<!--
             <div id="uploaded_models_form" style="padding-left: 2rem">
 
                 <form action="{{ url_for('dataset.upload') }}" class="dropzone" id="myDropzone">
@@ -455,7 +454,7 @@
                 </script>
 
             </div>
-            -->
+            
         </div>
 
     </div>
