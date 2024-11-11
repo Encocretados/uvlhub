@@ -42,9 +42,11 @@ def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         if authentication_service.login(form.email.data, form.password.data):
-            #user = authentication_service.login(form.email.data, form.password.data)
-            #if user:
-                #session['is_developer'] = user.is_developer
+            if current_user.is_developer:
+                session['is_developer'] = True
+            else:
+                session['is_developer'] = False
+                
             return redirect(url_for('public.index'))
 
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
@@ -69,7 +71,7 @@ def show_developer_signup_form():
             return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
 
         login_user(user, remember=True)
-        #session['is_developer'] = True  # Guardar `is_developer` en la sesión
+        session['is_developer'] = True  
         return redirect(url_for('public.index'))
 
     return render_template("auth/developer_signup_form.html", form=form)
@@ -78,5 +80,5 @@ def show_developer_signup_form():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
-    #session.pop('is_developer', None)
+    session.pop('is_developer', None)
     return redirect(url_for('public.index'))
