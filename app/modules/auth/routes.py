@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, session, url_for, request
 from flask_login import current_user, login_user, logout_user
 
 from app.modules.auth import auth_bp
@@ -61,12 +61,12 @@ def show_developer_signup_form():
             return render_template("auth/developer_signup_form.html", form=form, error=f'Email {email} in use')
 
         try:
-            
-            user = authentication_service.create_with_profile(**form.data, is_developer=True)
+            user = authentication_service.create_with_profile(**form.data)
         except Exception as exc:
             return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
 
         login_user(user, remember=True)
+        session['is_developer'] = True  # Guardar `is_developer` en la sesión
         return redirect(url_for('public.index'))
 
     return render_template("auth/developer_signup_form.html", form=form)
@@ -75,4 +75,5 @@ def show_developer_signup_form():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
+    session.pop('is_developer', None)
     return redirect(url_for('public.index'))
