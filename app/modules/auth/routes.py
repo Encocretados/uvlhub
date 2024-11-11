@@ -23,7 +23,7 @@ def show_signup_form():
             return render_template("auth/signup_form.html", form=form, error=f'Email {email} in use')
 
         try:
-            user = authentication_service.create_with_profile(**form.data)
+            user = authentication_service.create_with_profile(**form.data, is_developer=False)
         except Exception as exc:
             return render_template("auth/signup_form.html", form=form, error=f'Error creating user: {exc}')
 
@@ -42,6 +42,9 @@ def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         if authentication_service.login(form.email.data, form.password.data):
+            user = authentication_service.login(form.email.data, form.password.data)
+            if user:
+                session['is_developer'] = user.is_developer
             return redirect(url_for('public.index'))
 
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
@@ -61,7 +64,7 @@ def show_developer_signup_form():
             return render_template("auth/developer_signup_form.html", form=form, error=f'Email {email} in use')
 
         try:
-            user = authentication_service.create_with_profile(**form.data)
+            user = authentication_service.create_with_profile(**form.data, is_developer=True)
         except Exception as exc:
             return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
 
