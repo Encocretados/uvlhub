@@ -91,6 +91,9 @@ class DataSetService(BaseService):
 
     def total_dataset_views(self) -> int:
         return self.dsviewrecord_repostory.total_dataset_views()
+    
+    def get_feature_models(self):
+        return self.feature_model_repository.get_all()
 
     def create_from_form(self, form, current_user) -> DataSet:
         main_author = {
@@ -104,35 +107,44 @@ class DataSetService(BaseService):
             for author_data in [main_author] + form.get_authors():
                 author = self.author_repository.create(commit=False, ds_meta_data_id=dsmetadata.id, **author_data)
                 dsmetadata.authors.append(author)
-
+    
             dataset = self.create(commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id)
-
-            for feature_model in form.feature_models:
-                uvl_filename = feature_model.uvl_filename.data
-                fmmetadata = self.fmmetadata_repository.create(commit=False, **feature_model.get_fmmetadata())
-                for author_data in feature_model.get_authors():
-                    author = self.author_repository.create(commit=False, fm_meta_data_id=fmmetadata.id, **author_data)
-                    fmmetadata.authors.append(author)
-
-                fm = self.feature_model_repository.create(
-                    commit=False, data_set_id=dataset.id, fm_meta_data_id=fmmetadata.id
-                )
-
-                # associated files in feature model
-                file_path = os.path.join(current_user.temp_folder(), uvl_filename)
-                checksum, size = calculate_checksum_and_size(file_path)
-
-                file = self.hubfilerepository.create(
-                    commit=False, name=uvl_filename, checksum=checksum, size=size, feature_model_id=fm.id
-                )
-                fm.files.append(file)
+    
+            selected_feature_model_id = form.feature_model.data
+            if selected_feature_model_id:
+                feature_model = self.feature_model_repository.get(selected_feature_model_id)
+                fmmetadata = feature_model.fmmetadata
+                dataset.feature_models.append(feature_model)
+            else:
+                for feature_model in form.feature_models:
+                    uvl_filename = feature_model.uvl_filename.data
+                    fmmetadata = self.fmmetadata_repository.create(commit=False, **feature_model.get_fmmetadata())
+                    for author_data in feature_model.get_authors():
+                        author = self.author_repository.create(commit=False, 
+                                                               fm_meta_data_id=fmmetadata.id, **author_data)
+                        fmmetadata.authors.append(author)
+    
+                    fm = self.feature_model_repository.create(
+                        commit=False, data_set_id=dataset.id, fm_meta_data_id=fmmetadata.id
+                    )
+    
+                    # associated files in feature model
+                    file_path = os.path.join(current_user.temp_folder(), uvl_filename)
+                    checksum, size = calculate_checksum_and_size(file_path)
+    
+                    file = self.hubfilerepository.create(
+                        commit=False, name=uvl_filename, checksum=checksum, size=size, feature_model_id=fm.id
+                    )
+                    fm.files.append(file)
+                    dataset.feature_models.append(fm)
+    
             self.repository.session.commit()
         except Exception as exc:
             logger.info(f"Exception creating dataset from form...: {exc}")
             self.repository.session.rollback()
             raise exc
-        return dataset
-
+        return dataset   
+    
     def update_dsmetadata(self, id, **kwargs):
         return self.dsmetadata_repository.update(id, **kwargs)
 

@@ -12,6 +12,9 @@ class FeatureModelRepository(BaseRepository):
         max_id = self.model.query.with_entities(func.max(self.model.id)).scalar()
         return max_id if max_id is not None else 0
 
+    def get_all(self):
+        return self.model.query.all()
+
 
 class FMMetaDataRepository(BaseRepository):
     def __init__(self):

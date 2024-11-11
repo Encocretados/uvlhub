@@ -49,8 +49,9 @@ ds_view_record_service = DSViewRecordService()
 @login_required
 def create_dataset():
     form = DataSetForm()
-    if request.method == "POST":
+    feature_models = dataset_service.get_feature_models()  # Obtener los feature models existentes
 
+    if request.method == "POST":
         dataset = None
 
         if not form.validate_on_submit():
@@ -105,7 +106,7 @@ def create_dataset():
         msg = "Everything works!"
         return jsonify({"message": msg}), 200
 
-    return render_template("dataset/upload_dataset.html", form=form)
+    return render_template("dataset/upload_dataset.html", form=form, feature_models=feature_models)
 
 
 @dataset_bp.route("/dataset/list", methods=["GET", "POST"])
