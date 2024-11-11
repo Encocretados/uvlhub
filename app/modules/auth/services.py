@@ -25,12 +25,14 @@ class AuthenticationService(BaseService):
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
 
-    def create_with_profile(self, is_developer, **kwargs):
+    # Modificación en la creación de un usuario en el servicio de autenticación
+    def create_with_profile(self, **kwargs):
         try:
             email = kwargs.pop("email", None)
             password = kwargs.pop("password", None)
             name = kwargs.pop("name", None)
             surname = kwargs.pop("surname", None)
+            is_developer = kwargs.pop("is_developer", False)
 
             if not email:
                 raise ValueError("Email is required.")
@@ -44,7 +46,7 @@ class AuthenticationService(BaseService):
             user_data = {
                 "email": email,
                 "password": password,
-                "is_developer": is_developer
+                "is_developer": is_developer  # Aquí se pasa el valor de is_developer
             }
 
             profile_data = {
