@@ -11,13 +11,14 @@
             <form action="" method="post" novalidate>
                 {{ form.hidden_tag() }}
 
-                
+                <!-- Campo oculto para indicar que el usuario es un desarrollador -->
+                <input type="hidden" name="is_developer" value=1>
 
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.name.label(class="form-label") }} *
-                            {{ form.name(class="form-control",placeholder="Enter name") }}
+                            {{ form.name(class="form-control", placeholder="Enter name") }}
                             {% for error in form.name.errors %}
                                 <span style="color: red;">{{ error }}</span>
                             {% endfor %}
@@ -26,7 +27,7 @@
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
                             {{ form.surname.label(class="form-label") }} *
-                            {{ form.surname(class="form-control",placeholder="Enter surname") }}
+                            {{ form.surname(class="form-control", placeholder="Enter surname") }}
                             {% for error in form.surname.errors %}
                                 <span style="color: red;">{{ error }}</span>
                             {% endfor %}
@@ -34,7 +35,6 @@
                     </div>
                 </div>
 
-                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -47,7 +47,6 @@
                     </div>
                 </div>
 
-            
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -60,7 +59,6 @@
                     </div>
                 </div>
 
-                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -73,7 +71,6 @@
                     </div>
                 </div>
 
-                
                 <div class="row">
                     <div class="col-md-6 col-lg-6 col-xs-12">
                         <div class="mb-3">
@@ -86,7 +83,6 @@
                     </div>
                 </div>
 
-                
                 <div class="row">
                     <div class="col-lg-6 col-12">
                         {{ form.submit(class="btn btn-primary") }}
