@@ -25,7 +25,7 @@ class AuthenticationService(BaseService):
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
 
-    def create_with_profile(self, **kwargs):
+    def create_with_profile(self, is_developer, **kwargs):
         try:
             email = kwargs.pop("email", None)
             password = kwargs.pop("password", None)
@@ -43,7 +43,8 @@ class AuthenticationService(BaseService):
 
             user_data = {
                 "email": email,
-                "password": password
+                "password": password,
+                "is_developer": is_developer
             }
 
             profile_data = {
