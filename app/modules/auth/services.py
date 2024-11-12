@@ -95,7 +95,7 @@ class AuthenticationService(BaseService):
 
     def generate_token(self, user_id: int):
         return generate_access_token(user_id)
-       
+
     def verify_access_token(token: str):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
