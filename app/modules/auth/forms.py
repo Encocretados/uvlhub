@@ -17,21 +17,18 @@ class DeveloperSingUpForm(FlaskForm):
     surname = StringField('Surname', validators=[DataRequired()])
     email = StringField('Corporate Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    
     # Campo desplegable para seleccionar el equipo
     team = SelectField('Team', choices=[
         ('University of Seville', 'University of Seville'),
         ('University of Malaga', 'University of Malaga'),
         ('University of Ulm', 'University of Ulm')
     ], validators=[DataRequired()])
-    
     # Campo para el usuario de GitHub
     github = StringField('GitHub Username', validators=[
         Optional(),
         Length(max=50),
         Regexp(r'^[a-zA-Z0-9_-]+$', message="Enter a valid GitHub username")
     ])
-    
     submit = SubmitField('Sign up as Developer')
 
 
