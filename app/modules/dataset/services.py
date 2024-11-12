@@ -85,6 +85,9 @@ class DataSetService(BaseService):
     
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
+    
+    def get_popular_datasets(self):
+        return self.repository.get_popular_datasets()
 
     def count_dsmetadata(self) -> int:
         return self.dsmetadata_repository.count()

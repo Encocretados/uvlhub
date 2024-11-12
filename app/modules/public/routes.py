@@ -26,6 +26,7 @@ def index():
     # Statistics: total views
     total_dataset_views = dataset_service.total_dataset_views()
     total_feature_model_views = feature_model_service.total_feature_model_views()
+    total_popular_datasets = dataset_service.get_popular_datasets()
 
     # Statistics: total size of all datasets
     total_datasets = dataset_service.get_all_datasets()
@@ -45,5 +46,6 @@ def index():
         total_feature_model_views=total_feature_model_views,
         datasets_dict=datasets_dict,
 
-        total_dataset_size=total_size
+        total_dataset_size=total_size,
+        total_popular_datasets=total_popular_datasets 
     )
