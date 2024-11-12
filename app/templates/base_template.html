@@ -168,6 +168,12 @@ chico sundermann">
             <div class="navbar-collapse collapse">
                 <ul class="navbar-nav navbar-align">
                     <li class="nav-item dropdown">
+                        <button id="download-all-button">Download All</button>
+                        <script>
+                            document.getElementById('download-all-button').addEventListener('click', function() {
+                                window.location.href = '/datasets/download-all';
+                            });
+                        </script>
 
                         {% if current_user.is_anonymous %}
                             <a class="nav-link  d-none d-sm-inline-block" href="{{ url_for('auth.login') }}">Login</a>
