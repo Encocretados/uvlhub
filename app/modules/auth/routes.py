@@ -46,7 +46,6 @@ def login():
                 session['is_developer'] = True
             else:
                 session['is_developer'] = False
-                
             return redirect(url_for('public.index'))
 
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
@@ -71,7 +70,7 @@ def show_developer_signup_form():
             return render_template("auth/developer_signup_form.html", form=form, error=f'Error creating user: {exc}')
 
         login_user(user, remember=True)
-        session['is_developer'] = True  
+        session['is_developer'] = True
         return redirect(url_for('public.index'))
 
     return render_template("auth/developer_signup_form.html", form=form)
