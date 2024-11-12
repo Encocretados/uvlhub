@@ -4,7 +4,7 @@ from flask import render_template
 
 from app.modules.featuremodel.services import FeatureModelService
 from app.modules.public import public_bp
-from app.modules.dataset.services import DataSetService
+from app.modules.dataset.services import DataSetService, SizeService
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +27,13 @@ def index():
     total_dataset_views = dataset_service.total_dataset_views()
     total_feature_model_views = feature_model_service.total_feature_model_views()
 
+    # Statistics: total size of all datasets
+    total_datasets = dataset_service.get_all_datasets()
+    total_size = sum(dataset.get_file_total_size() for dataset in total_datasets)
+    total_size = SizeService().get_human_readable_size(total_size)
+    
+    datasets_dict = [dataset.to_dict() for dataset in total_datasets]
+
     return render_template(
         "public/index.html",
         datasets=dataset_service.latest_synchronized(),
@@ -35,5 +42,8 @@ def index():
         total_dataset_downloads=total_dataset_downloads,
         total_feature_model_downloads=total_feature_model_downloads,
         total_dataset_views=total_dataset_views,
-        total_feature_model_views=total_feature_model_views
+        total_feature_model_views=total_feature_model_views,
+        datasets_dict=datasets_dict,
+
+        total_dataset_size=total_size
     )

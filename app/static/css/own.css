@@ -55,9 +55,8 @@
 }
 
 .card-dark {
-    background-color: #2B3947 !important;
-    color: #ffffff;
-}
+    background: #2B3947 radial-gradient(circle at center left, #2B3947, #ffffff80);
+    color: #ffffff;}
 
 .card-header-dark {
     background: inherit;
@@ -184,4 +183,13 @@
     color: white;
     padding: 5px;
     border-radius: 3px;
+}
+
+.gradient-title {
+    font-size: 3em;
+    background: -webkit-linear-gradient(left, #2B3947, orange);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
 }
