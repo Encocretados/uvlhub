@@ -14,7 +14,8 @@ from app.modules.profile.services import UserProfileService
 def edit_profile():
     auth_service = AuthenticationService()
     profile = auth_service.get_authenticated_user_profile
-    if not profile:
+    token = request.cookies.get("access_token")
+    if not profile and not token:
         return redirect(url_for("public.index"))
 
     form = UserProfileForm()
