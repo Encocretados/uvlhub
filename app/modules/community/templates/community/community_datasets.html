@@ -1,0 +1,27 @@
+{% extends "base_template.html" %}
+
+{% block title %}Datasets de {{ community.name }}{% endblock %}
+
+{% block content %}
+    <h1 class="h2 mb-3">Datasets de {{ community.name }}</h1>
+
+    <div class="row">
+        {% if datasets %}
+            {% for dataset in datasets %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dataset.ds_meta_data.title }}</h5>
+                            <p class="card-text">{{ dataset.ds_meta_data.description or 'No description available.' }}</p>
+                            <a href="{{ url_for('dataset.view_dataset', dataset_id=dataset.id) }}" class="btn btn-outline-primary btn-sm">
+                                Ver dataset
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay datasets disponibles para esta comunidad.</p>
+        {% endif %}
+    </div>
+{% endblock %}
