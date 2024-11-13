@@ -1,6 +1,5 @@
 import os
 import shutil
-from app.modules.auth.models import User
 from app.modules.community.models import Community
 from app.modules.featuremodel.models import FMMetaData, FeatureModel
 from app.modules.hubfile.models import Hubfile

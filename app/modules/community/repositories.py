@@ -1,7 +1,6 @@
 from app.modules.community.models import Community
 from app.modules.auth.models import User
 from core.repositories.BaseRepository import BaseRepository
-from sqlalchemy.orm import aliased
 
 class CommunityRepository(BaseRepository):
     def __init__(self):

@@ -1,6 +1,6 @@
 import logging
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash
 from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
 from flask_login import login_required, current_user
@@ -22,7 +22,7 @@ def list_community():
     return render_template("community/list_communities.html", communities=communities, form=form)
 
 @community_bp.route("/community/create", methods=['GET', 'POST'])
-@login_required 
+@login_required
 def create_community():
     form = CommunityForm()
     if form.validate_on_submit():
@@ -49,7 +49,6 @@ def get_community(community_id):
     if not is_member:
         flash("You are not a member of this community", "error")
         return redirect(url_for("community.index"))
-    
     return render_template("community/show_community.html", community=community)
 
 @community_bp.route("/community/<int:community_id>/datasets", methods=["GET"])

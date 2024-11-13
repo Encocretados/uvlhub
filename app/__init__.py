@@ -36,9 +36,6 @@ def create_app(config_name='development'):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from app.modules.auth.models import User
-    from app.modules.community.models import Community
-    
     # Register modules
     module_manager = ModuleManager(app)
     module_manager.register_modules()

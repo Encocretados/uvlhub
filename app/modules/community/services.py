@@ -10,8 +10,10 @@ class CommunityService(BaseService):
 
     def get_all_by_user(self, user):
         return self.repository.get_all_by_user(user)
-    
-    def create(self, name, description, user):
+
+    def create(self, data, user):
+        name = data.get("name")
+        description = data.get("description")
         # Crear la comunidad
         community = Community(name=name, description=description)
         
