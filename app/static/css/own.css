@@ -186,9 +186,7 @@
 }
 
 .gradient-title {
-    font-size: 3em;
     background: linear-gradient(to right, #2B3947, orange);
     background-clip: text;
-    -webkit-background-clip: text; 
     color: transparent;
 }
