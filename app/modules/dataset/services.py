@@ -82,10 +82,8 @@ class DataSetService(BaseService):
 
     def count_authors(self) -> int:
         return self.author_repository.count()
-    
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
-    
     def get_popular_datasets(self):
         return self.repository.get_popular_datasets()
 
