@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 import logging
+from app.modules.community.models import Community
 from flask_login import current_user
 from typing import Optional
+from app import community_members
 
 from sqlalchemy import desc, func
 
@@ -71,7 +73,10 @@ class DataSetRepository(BaseRepository):
     def get_synchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.isnot(None))
+            .join(Community, Community.id == DataSet.community_id)  # Join with the Community table
+            .join(community_members, community_members.c.community_id == Community.id)  # Join with community_members
+            .filter(community_members.c.user_id == current_user_id)  # Filter by user_id in community_members
+            .filter(DSMetaData.dataset_doi.isnot(None))
             .order_by(self.model.created_at.desc())
             .all()
         )
@@ -79,15 +84,22 @@ class DataSetRepository(BaseRepository):
     def get_unsynchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.is_(None))
+            .join(Community, Community.id == DataSet.community_id)  # Join with the Community table
+            .join(community_members, community_members.c.community_id == Community.id)  # Join with community_members
+            .filter(community_members.c.user_id == current_user_id)  # Filter by user_id in community_members
+            .filter(DSMetaData.dataset_doi.is_(None))
             .order_by(self.model.created_at.desc())
             .all()
         )
 
     def get_unsynchronized_dataset(self, current_user_id: int, dataset_id: int) -> DataSet:
         return (
-            self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DataSet.id == dataset_id, DSMetaData.dataset_doi.is_(None))
+            self.model.query.join(DSMetaData)  # Join with DSMetaData
+            .join(Community, Community.id == DataSet.community_id)  # Join with the Community table
+            .join(community_members, community_members.c.community_id == Community.id)  # Join with community_members
+            .filter(community_members.c.user_id == current_user_id)  # Ensure the user is a member of the community
+            .filter(DataSet.id == dataset_id)  # Filter by dataset_id
+            .filter(DSMetaData.dataset_doi.is_(None))  # Ensure the dataset does not have a DOI
             .first()
         )
 

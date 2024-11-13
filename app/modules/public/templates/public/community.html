@@ -1,0 +1,26 @@
+{% extends "base_template.html" %}
+
+{% block title %}Communities{% endblock %}
+
+{% block content %}
+    <h1 class="h2 mb-3"><b>Communities</b></h1>
+
+    <div class="row">
+        {% if communities %}
+            {% for community in communities %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ community.name }}</h5>
+                            <p class="card-text">{{ community.description or 'No description available.' }}</p>
+                            <!-- Removed the "View Community" link for now -->
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No communities available.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}
