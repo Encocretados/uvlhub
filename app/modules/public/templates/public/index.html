@@ -87,25 +87,32 @@
 
 
     <div id="dashboard">
-
-
         <div class="row">
 
             <div class="col-md-6" id="most_popular_datasets">
-                <h1 class="h2 mb-3"><b>Most Popular Datasets</b></h1>
+                <h1 class="h2 mb-3">
+                    <b>Most Popular Datasets</b> by downloads
+                </h1>
                 {% if total_popular_datasets %}
                 <div id="popular-datasets-chart">
-                    {% for dataset in total_popular_datasets %}
+                    {% for dataset in total_popular_datasets[:3] %}
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">{{ dataset.name }}</h5>
-                            <p class="card-text">{{ dataset.description }}</p>
+                            <h5 class="card-title">
+                                <a href="{{ dataset.get_uvlhub_doi() }}">
+                                    {{ dataset.ds_meta_data.title }}
+                                </a>
+                            </h5>
+                            <p class="h4" class="stats-color">
+                                <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{ dataset.total_dataset_downloads |
+                                    default(0) }} downloads
+                            </p> 
                         </div>
                     </div>
                     {% endfor %}
-                    {% else %}
+                {% else %}
                     <p>No popular datasets found.</p>
-                    {% endif %}
+                {% endif %}
                 </div>
             </div>
 
