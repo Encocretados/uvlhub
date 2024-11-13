@@ -10,8 +10,8 @@
         <div class="col-12">
 
             <h1 class="card-body card-body-slim" style="text-align: center;">
-                <strong>Welcome to UVLHub.io!</strong> <img src="../../../static/img/icons/icon-250x250.png" alt="Icon"
-                    style="vertical-align: middle; width: 50px; height: 50px;">
+                <strong>Welcome to UVLHub.io!</strong> 
+                <img src="../../../static/img/icons/icon-250x250.png" alt="Icon" style="vertical-align: middle; width: 50px; height: 50px;">
                 <br></br>
             </h1>
 
@@ -27,7 +27,6 @@
                     users to upload, cite, and explore feature models in a standardized format, fostering collaborative
                     research and advancing studies in software product lines.
                 </div>
-
 
                 <h2 class="card-title card-title-light">
                     Can I contribute?
@@ -45,18 +44,14 @@
 
         {% if current_user.is_anonymous %}
         <div class="card card-welcome">
-
             <h2 class="card-title card-title-light">
                 Let's get started!
             </h2>
 
-
             <div class="card-body card-body-slim">
-
                 What are you waiting for to upload your fantastic feature models in UVL format?
 
                 <div class="row mt-2">
-
                     <div class="col-12">
                         <a href="/signup" class="btn btn-dark" style="background-color: #0662A6; border-color: #0662A6">
                             <i data-feather="user-plus" class="center-button-icon"></i>
@@ -65,39 +60,28 @@
                     </div>
 
                     <div class="col-12 mt-2">
-                        <a href="/signup/developer"
-                           class="btn btn-outline-dark"
-                           style="background-color: #28a745; border-color: #28a745; color: white;">
+                        <a href="/signup/developer" class="btn btn-outline-dark" style="background-color: #28a745; border-color: #28a745; color: white;">
                             <i data-feather="user-plus" class="center-button-icon"></i>
                             Sign up as developer
                         </a>
                     </div>
 
                     <div class="col-12 mt-2">
-                        <a href="/login" class="btn btn-outline-dark" style=" border-color: #0662A6">
+                        <a href="/login" class="btn btn-outline-dark" style="border-color: #0662A6">
                             <i data-feather="log-in" class="center-button-icon"></i>
                             I am already registered!
                         </a>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
         {% endif %}
-
-
     </div>
-
-
 
     <br></br>
 
-
     <div id="dashboard">
         <div class="row">
-
             <div class="col-md-6" id="most_popular_datasets">
                 <h1 class="h2 mb-3">
                     <b>Most Popular Datasets</b> by downloads
@@ -112,22 +96,20 @@
                                     {{ dataset.ds_meta_data.title }}
                                 </a>
                             </h5>
-                            <p class="h4" class="stats-color">
-                                <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{ dataset.total_dataset_downloads |
-                                    default(0) }} downloads
+                            <p class="h4 stats-color">
+                                <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{ dataset.total_dataset_downloads | default(0) }} downloads
                             </p> 
                         </div>
                     </div>
                     {% endfor %}
+                </div>
                 {% else %}
                     <p>No popular datasets found.</p>
                 {% endif %}
-                </div>
             </div>
 
             <div class="col-md-6" id="latest_datasets">
                 <h1 class="h2 mb-3">
-
                     <b>Latest</b> datasets
                 </h1>
                 <div class="container">
@@ -144,14 +126,13 @@
                                     <p class="card-text">
                                         <strong>Autor:</strong>
                                         {% if dataset.ds_meta_data.authors %}
-                                        {{ dataset.ds_meta_data.authors[0].name }}
+                                            {{ dataset.ds_meta_data.authors[0].name }}
                                         {% else %}
-                                        Desconocido
+                                            Desconocido
                                         {% endif %}
                                     </p>
                                     <p class="card-text">
-                                        <strong>Número de descargas:</strong> {{ dataset.total_dataset_downloads |
-                                        default(0) }}
+                                        <strong>Número de descargas:</strong> {{ dataset.total_dataset_downloads | default(0) }}
                                     </p>
                                     <a href="/dataset/download/{{ dataset.id }}" class="btn btn-outline-primary btn-sm">
                                         <i data-feather="download" class="center-button-icon"></i>
@@ -170,74 +151,50 @@
                     <i data-feather="search" class="center-button-icon"></i>
                     Explore more datasets
                 </a>
-
             </div>
-
         </div>
 
         <div class="row">
-
             <div class="col-md-6" id="hub_statistics">
                 <h1 class="h2 mb-3">
                     <b>Hub</b> statistics
                 </h1>
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="h2 mb-3">
-
-                            <h4 class="h4 mb-3" class="stats-color">
-                                <i data-feather="database" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                datasets_counter }} datasets
-                            </h4>
-
-                            <h4 class="h4 mb-3" class="stats-color">
-                                <i data-feather="file" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                feature_models_counter }} feature models
-                            </h4>
-
-                            <h4 class="h4 mb-3" class="stats-color">
-                                <i data-feather="eye" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                total_dataset_views }} datasets viewed
-                            </h4>
-
-                            <h4 class="h4 mb-3" class="stats-color">
-                                <i data-feather="eye" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                total_feature_model_views }} feature models viewed
-                            </h4>
-
-                            <h4 class="h4 mb-3" class="stats-color">
-                                <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                total_dataset_downloads }} datasets downloaded
-                            </h4>
-
-                            <h4 class="h4" class="stats-color">
-                                <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{
-                                total_feature_model_downloads }} feature models downloaded
-                            </h4>
-
-                        </h1>
-
+                        <h4 class="h4 mb-3 stats-color">
+                            <i data-feather="database" class="align-middle mr-2 stats-color"></i>&nbsp;{{ datasets_counter }} datasets
+                        </h4>
+                        <h4 class="h4 mb-3 stats-color">
+                            <i data-feather="file" class="align-middle mr-2 stats-color"></i>&nbsp;{{ feature_models_counter }} feature models
+                        </h4>
+                        <h4 class="h4 mb-3 stats-color">
+                            <i data-feather="eye" class="align-middle mr-2 stats-color"></i>&nbsp;{{ total_dataset_views }} datasets viewed
+                        </h4>
+                        <h4 class="h4 mb-3 stats-color">
+                            <i data-feather="eye" class="align-middle mr-2 stats-color"></i>&nbsp;{{ total_feature_model_views }} feature models viewed
+                        </h4>
+                        <h4 class="h4 mb-3 stats-color">
+                            <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{ total_dataset_downloads }} datasets downloaded
+                        </h4>
+                        <h4 class="h4 stats-color">
+                            <i data-feather="download" class="align-middle mr-2 stats-color"></i>&nbsp;{{ total_feature_model_downloads }} feature models downloaded
+                        </h4>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6" id="trendy_tags">
+                
             </div>
-
         </div>
-
-
     </div>
 </div>
-
 
 {% endblock %}
 
 {% block scripts %}
 <script src="{{ url_for('public.scripts') }}"></script>
-
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const names = datasets_dicts.map(d => d.names);
