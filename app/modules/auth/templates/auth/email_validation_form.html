@@ -16,13 +16,8 @@
 
                         <div class="col-md-6 col-lg-6 col-xs-12">
                             <div class="mb-3">
-<<<<<<< HEAD
                                 Enter the {{ form.key.label(class="form-label") }} sent to {{email}}!
                                 {{ form.key(class="form-control",placeholder="Example: 000000") }}
-=======
-                                {{ form.key.label(class="form-label") }}
-                                {{ form.key(class="form-control",placeholder="Enter the key sent to your email. Example: 000000") }}
->>>>>>> bef2d32 (feat(sign-up-validation):)
                                 {% for error in form.key.errors %}
                                 <span style="color: red;">{{ error }}</span>
                                 {% endfor %}

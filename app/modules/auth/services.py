@@ -90,11 +90,10 @@ class AuthenticationService(BaseService):
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
 
     def send_email(self, target_email, random_key):
-        sender_email = "uvlhub.reply@gmail.com"    # TODO Create the gmail account
-        receiver_email = target_email                           # TODO Find a way to get the user email
-        password = "fdqqdofcvxvcjgit "                                           # TODO Add gmail account password
-<<<<<<< HEAD
-        subject = "[UVLHUB] Your key is {random_key}!"
+        sender_email = "uvlhub.reply@gmail.com"
+        receiver_email = target_email
+        password = "fdqqdofcvxvcjgit "
+        subject = f"[UVLHUB] Your key is {random_key}!"
         body = f"""
                 <html>
                 <head>
@@ -123,10 +122,6 @@ class AuthenticationService(BaseService):
                 </body>
                 </html>
                 """
-=======
-        subject = "[UVLHUB] Your key is "+str(random_key)+"!"
-        body = "Hello,\n\nThis is an automated email sent from UVLHUB!\nYour authentication key is "+str(random_key)+"."
->>>>>>> 4771b97 (feat(sign-up-validation):)
         message = MIMEMultipart()
         message["From"] = target_email
         message["To"] = receiver_email

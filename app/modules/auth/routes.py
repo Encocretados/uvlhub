@@ -65,16 +65,13 @@ def email_validation():
         return redirect(url_for('auth.login'))
 
     form = EmailValidationForm()
-    if request.method == 'GET':
-        random_key = random.randint(100000, 999999)
-        session['key'] = random_key
-        authentication_service.send_email(email, random_key)
-    if request.method == 'POST' and form.validate_on_submit():
+
+    if request.method == 'POST':
         if int(form.key.data.strip()) == int(session.get('key')):
             authentication_service.login(email, password)
             response = make_response(redirect(url_for('public.index')))
             response.delete_cookie('email')
-            response.delete_cookie('password')
+            response.delete_cookie('papssword')
             return response
 
         return render_template(
@@ -84,6 +81,10 @@ def email_validation():
             error='The key does not match'
         )
 
+    if request.method == 'GET':
+        random_key = random.randint(100000, 999999)
+        session['key'] = random_key
+        authentication_service.send_email(email, random_key)
     return render_template('auth/email_validation_form.html', form=form, email=email)
 
 
