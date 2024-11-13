@@ -111,7 +111,6 @@ class AuthenticationService(BaseService):
                 <body>
                     <p>Hello,</p>
                     <p>Thank you for using <span class="bold">UVLHUB</span>!</p>
-                    <p>We are excited to help you secure your account.</p>
                     <p>To complete your authentication process, please use the following <span class="bold">
                     authentication key</span>:</p>
                     <p class="bold">{random_key}</p>
