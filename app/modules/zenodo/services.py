@@ -23,15 +23,7 @@ class ZenodoService(BaseService):
 
     def get_zenodo_url(self):
 
-        FLASK_ENV = os.getenv("FLASK_ENV", "development")
-        ZENODO_API_URL = ""
-
-        if FLASK_ENV == "development":
-            ZENODO_API_URL = os.getenv("ZENODO_API_URL", "https://sandbox.zenodo.org/api/deposit/depositions")
-        elif FLASK_ENV == "production":
-            ZENODO_API_URL = os.getenv("ZENODO_API_URL", "https://zenodo.org/api/deposit/depositions")
-        else:
-            ZENODO_API_URL = os.getenv("ZENODO_API_URL", "https://sandbox.zenodo.org/api/deposit/depositions")
+        ZENODO_API_URL = "http://localhost/fakenodo/api"
 
         return ZENODO_API_URL
 
@@ -99,7 +91,7 @@ class ZenodoService(BaseService):
         # Step 2: Upload an empty file to the deposition
         data = {"name": "test_file.txt"}
         files = {"file": open(file_path, "rb")}
-        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/files"
+        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/deposition"
         response = requests.post(publish_url, params=self.params, data=data, files=files)
         files["file"].close()  # Close the file after uploading
 
@@ -198,7 +190,7 @@ class ZenodoService(BaseService):
         file_path = os.path.join(uploads_folder_name(), f"user_{str(user_id)}", f"dataset_{dataset.id}/", uvl_filename)
         files = {"file": open(file_path, "rb")}
 
-        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/files"
+        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/fildepositiones"
         response = requests.post(publish_url, params=self.params, data=data, files=files)
         if response.status_code != 201:
             error_message = f"Failed to upload files. Error details: {response.json()}"
@@ -215,7 +207,7 @@ class ZenodoService(BaseService):
         Returns:
             dict: The response in JSON format with the details of the published deposition.
         """
-        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/actions/publish"
+        publish_url = f"{self.ZENODO_API_URL}/{deposition_id}/resources/submit"
         response = requests.post(publish_url, params=self.params, headers=self.headers)
         if response.status_code != 202:
             raise Exception("Failed to publish deposition")
