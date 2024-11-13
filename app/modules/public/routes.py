@@ -45,5 +45,5 @@ def index():
         total_feature_model_views=total_feature_model_views,
         datasets_dict=datasets_dict,
         total_dataset_size=total_size,
-        total_popular_datasets=total_popular_datasets 
+        total_popular_datasets=total_popular_datasets
     )
