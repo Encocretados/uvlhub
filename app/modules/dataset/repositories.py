@@ -76,6 +76,9 @@ class DataSetRepository(BaseRepository):
             .all()
         )
 
+    def get_all_datasets(self):
+        return self.model.query.all()
+
     def get_unsynchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
@@ -97,6 +100,17 @@ class DataSetRepository(BaseRepository):
             .filter(DSMetaData.dataset_doi.isnot(None))
             .count()
         )
+
+    def get_popular_datasets(self):
+        popular_datasets = (
+            self.model.query.join(DSViewRecord)
+            .group_by(DataSet.id)
+            .order_by(func.count(DSViewRecord.id).desc())
+            .limit(4)
+            .all()
+        )
+        logger.info(f"Popular datasets: {popular_datasets}")
+        return popular_datasets
 
     def count_unsynchronized_datasets(self):
         return (

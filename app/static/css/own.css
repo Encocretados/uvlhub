@@ -55,9 +55,8 @@
 }
 
 .card-dark {
-    background-color: #2B3947 !important;
-    color: #ffffff;
-}
+    background: #2B3947 radial-gradient(circle at center left, #2B3947, #ffffff80);
+    color: #fff;}
 
 .card-header-dark {
     background: inherit;
@@ -66,12 +65,12 @@
 
 .card-welcome{
     background: #F68017 radial-gradient(circle at center left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5));
-    color: #ffffff;
+    color: #fff;
 }
 
 .card-note{
     background: #1ab7ea radial-gradient(circle at center right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5));
-    color: #ffffff;
+    color: #fff;
 }
 
 .card-header-welcome {
@@ -184,4 +183,10 @@
     color: white;
     padding: 5px;
     border-radius: 3px;
+}
+
+.gradient-title {
+    background: linear-gradient(to right, #2B3947, orange);
+    background-clip: text;
+    color: transparent;
 }
