@@ -55,7 +55,7 @@ def login():
 
 
 @auth_bp.route('/email_validation', methods=['GET', 'POST'])
-def email_validation():
+def email_validation(values=[]):
     if current_user.is_authenticated:
         return redirect(url_for('public.index'))
 
