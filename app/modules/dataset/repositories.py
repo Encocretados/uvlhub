@@ -75,7 +75,7 @@ class DataSetRepository(BaseRepository):
             .order_by(self.model.created_at.desc())
             .all()
         )
-    
+
     def get_all_datasets(self):
         return self.model.query.all()
 
@@ -100,7 +100,7 @@ class DataSetRepository(BaseRepository):
             .filter(DSMetaData.dataset_doi.isnot(None))
             .count()
         )
-        
+
     def get_popular_datasets(self):
         popular_datasets = (
             self.model.query.join(DSViewRecord)
