@@ -10,7 +10,7 @@ from app.modules.dataset.services import DataSetService
 logger = logging.getLogger(__name__)
 
 
-@public_bp.route("/index")
+@public_bp.route("/")
 def index():
     logger.info("Access index")
     dataset_service = DataSetService()

@@ -3,7 +3,6 @@ from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
 from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
-from app import community_members
 
 from app import db
 from app.modules.profile import profile_bp
@@ -37,16 +36,12 @@ def my_profile():
     per_page = 5
 
     user_datasets_pagination = db.session.query(DataSet) \
-        .join(Community, DataSet.community_id == Community.id) \
-        .join(community_members, community_members.c.community_id == Community.id) \
-        .filter(community_members.c.user_id == current_user.id) \
+        .filter(DataSet.user_id == current_user.id) \
         .order_by(DataSet.created_at.desc()) \
         .paginate(page=page, per_page=per_page, error_out=False)
 
     total_datasets_count = db.session.query(DataSet) \
-        .join(Community, DataSet.community_id == Community.id) \
-        .join(community_members, community_members.c.community_id == Community.id) \
-        .filter(community_members.c.user_id== current_user.id) \
+        .filter(DataSet.user_id == current_user.id) \
         .count()
 
     print(user_datasets_pagination.items)

@@ -64,7 +64,7 @@
                         </span>
                     </div>
                     <div class="col-md-8 col-12">
-                        <a href="#">{{ dataset.community.name }}</a>
+                        <a href="#">{{ dataset.user.profile.surname }}, {{dataset.user.profile.name}}</a>
                     </div>
 
                 </div>
@@ -110,32 +110,33 @@
 
                 {% if dataset.ds_meta_data.dataset_doi %}
                 <div class="row mb-2">
-                    
-                        <div class="col-md-4 col-12">
-                            <span class=" text-secondary">
-                                Zenodo record
-                            </span>
-                        </div>
 
-                        {% if FLASK_ENV == 'production' %}
-                            <div class="col-md-8 col-12">
-                                <a href="https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">
-                                    https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
-                                </a>
-                            </div>
-                        {% elif FLASK_ENV == 'development' %}
-                            <div class="col-md-8 col-12">
-                                <a href="https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">
-                                    https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
-                                </a>
-                            </div>
-                        {% else %}
-                            <div class="col-md-8 col-12">
-                                <a href="https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">
-                                    https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
-                                </a>
-                            </div>
-                        {% endif %}
+                    <div class="col-md-4 col-12">
+                        <span class=" text-secondary">
+                            Zenodo record
+                        </span>
+                    </div>
+
+                    {% if FLASK_ENV == 'production' %}
+                    <div class="col-md-8 col-12">
+                        <a href="https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">
+                            https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
+                        </a>
+                    </div>
+                    {% elif FLASK_ENV == 'development' %}
+                    <div class="col-md-8 col-12">
+                        <a href="https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}"
+                            target="_blank">
+                            https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="col-md-8 col-12">
+                        <a href="https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">
+                            https://sandbox.zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}
+                        </a>
+                    </div>
+                    {% endif %}
 
                 </div>
                 {% endif %}
@@ -154,7 +155,7 @@
 
                 </div>
 
-                
+
 
             </div>
 
@@ -174,11 +175,32 @@
                         {{ dataset.get_uvlhub_doi() }}
                     </span>
                 </button>
-                
+
                 <div id="dataset_doi_uvlhub" style="display: none">
                     {{ dataset.get_uvlhub_doi() }}
                 </div>
-                
+
+                {% if dataset.user.id == current_user.id %}
+                <div class="d-flex justify-content-end" style="position: relative;">
+                    <button id="toggleVisibilityBtn" class="btn btn-outline-secondary btn-sm"
+                        style="border-radius: 5px;">
+                        Change visibility
+                    </button>
+
+                    <!-- Botón flotante oculto -->
+                    <button id="visibilityOptionBtn" class="btn btn-secondary btn-sm"
+                        style="position: absolute; bottom: -35px; right: 0; display: none; border-radius: 5px;"
+                        onclick="toggleVisibility()">
+                        {% if dataset.publico %}
+                        Change to private
+                        {% else %}
+                        Change to public
+                        {% endif %}
+                    </button>
+                </div>
+                {% endif %}
+
+
             </div>
             {% endif %}
 
@@ -189,20 +211,22 @@
             <div class="card-body">
 
                 <h3> Related publication </h3>
-                
+
                 David Romero-Organvidez, José A. Galindo, Chico Sundermann, Jose-Miguel Horcas, David Benavides,
                 <i>UVLHub: A feature model data repository using UVL and open science principles</i>,
                 Journal of Systems and Software,
                 2024,
                 112150,
                 ISSN 0164-1212,
-                <a href="https://doi.org/10.1016/j.jss.2024.112150" target="_blank">https://doi.org/10.1016/j.jss.2024.112150</a>
+                <a href="https://doi.org/10.1016/j.jss.2024.112150"
+                    target="_blank">https://doi.org/10.1016/j.jss.2024.112150</a>
 
             </div>
 
             <div class="card-body mt-0 pt-0">
 
-                <button onclick="copyText('bibtex_cite')" class="btn btn-light btn-sm" style="border-radius: 5px; margin-right: 10px">
+                <button onclick="copyText('bibtex_cite')" class="btn btn-light btn-sm"
+                    style="border-radius: 5px; margin-right: 10px">
                     <i data-feather="clipboard" class="center-button-icon"></i>
                     Copy in BibTex
                 </button>
@@ -238,100 +262,109 @@
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between align-items-center">
                         <h4 style="margin-bottom: 0px">UVL models</h4>
-                        <h4 style="margin-bottom: 0px;"><span class="badge bg-dark">{{ dataset.get_files_count() }}</span></h4>
+                        <h4 style="margin-bottom: 0px;"><span class="badge bg-dark">{{ dataset.get_files_count()
+                                }}</span></h4>
                     </div>
                 </div>
-                
+
 
             </div>
-            
+
 
             {% for feature_model in dataset.feature_models %}
-                {% for file in feature_model.files %}
-                    <div class="list-group-item">
-                        
+            {% for file in feature_model.files %}
+            <div class="list-group-item">
+
+                <div class="row">
+                    <div class="col-12">
+
                         <div class="row">
-                            <div class="col-12">
-
-                                <div class="row">
-                                    <div class="col-8">
-                                        <i data-feather="file"></i> {{ file.name }}
-                                        <br>
-                                        <small class="text-muted">({{ file.get_formatted_size() }})</small>
-                                    </div>
-                                    <div class="col-2">
-                                        <div id="check_{{ file.id }}">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                
+                            <div class="col-8">
+                                <i data-feather="file"></i> {{ file.name }}
+                                <br>
+                                <small class="text-muted">({{ file.get_formatted_size() }})</small>
                             </div>
-                            <div class="col-12 text-end" >
+                            <div class="col-2">
+                                <div id="check_{{ file.id }}">
+                                </div>
+                            </div>
+                        </div>
 
-                                <button onclick="viewFile('{{ file.id }}')" class="btn btn-outline-secondary btn-sm" style="border-radius: 5px;">
-                                    <i data-feather="eye"></i> View
-                                </button>
 
-                                <div class="btn-group" role="group">
-                                    <button id="btnGroupDrop{{ file.id }}" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style=" border-radius: 5px;">
-                                        <i data-feather="check"></i> Check
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop{{ file.id }}">
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0);" onclick="checkUVL('{{ file.id }}')">Syntax check</a>
-                                        </li>
-                                        <!--
+                    </div>
+                    <div class="col-12 text-end">
+
+                        <button onclick="viewFile('{{ file.id }}')" class="btn btn-outline-secondary btn-sm"
+                            style="border-radius: 5px;">
+                            <i data-feather="eye"></i> View
+                        </button>
+
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop{{ file.id }}" type="button"
+                                class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false" style=" border-radius: 5px;">
+                                <i data-feather="check"></i> Check
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop{{ file.id }}">
+                                <li>
+                                    <a class="dropdown-item" href="javascript:void(0);"
+                                        onclick="checkUVL('{{ file.id }}')">Syntax check</a>
+                                </li>
+                                <!--
                                         <li>
                                             <a class="dropdown-item" href="{{ url_for('flamapy.valid', file_id=file.id) }}">SAT validity check</a>
                                         </li>
                                         -->
-                                    </ul>
-                                </div>
-                                
-                                <div class="btn-group" role="group">
-                                    <button id="btnGroupDropExport{{ file.id }}" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style=" border-radius: 5px;">
-                                        <i data-feather="download"></i> Export
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDropExport{{ file.id }}">
-                                        <li>
-                                            <a class="dropdown-item" href="{{ url_for('hubfile.download_file', file_id=file.id) }}">
-                                                UVL
-                                            </a>
-                                            <a class="dropdown-item" href="{{ url_for('flamapy.to_glencoe', file_id=file.id) }}">
-                                                Glencoe
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ url_for('flamapy.to_cnf', file_id=file.id) }}">
-                                                DIMACS
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ url_for('flamapy.to_splot', file_id=file.id) }}">
-                                                SPLOT
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                                
-
-                            </div>
+                            </ul>
                         </div>
+
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDropExport{{ file.id }}" type="button"
+                                class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false" style=" border-radius: 5px;">
+                                <i data-feather="download"></i> Export
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="btnGroupDropExport{{ file.id }}">
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="{{ url_for('hubfile.download_file', file_id=file.id) }}">
+                                        UVL
+                                    </a>
+                                    <a class="dropdown-item"
+                                        href="{{ url_for('flamapy.to_glencoe', file_id=file.id) }}">
+                                        Glencoe
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('flamapy.to_cnf', file_id=file.id) }}">
+                                        DIMACS
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('flamapy.to_splot', file_id=file.id) }}">
+                                        SPLOT
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+
                     </div>
-                {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
             {% endfor %}
         </div>
-        
-        
-    
+
+
+
         <a href="/dataset/download/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px;">
             <i data-feather="download" class="center-button-icon"></i>
             Download all ({{ dataset.get_file_total_size_for_human() }})
         </a>
     </div>
-    
+
 </div>
 
 <!-- Modal-->
@@ -353,7 +386,8 @@
                 </div>
             </div>
             <div class="modal-body" style="overflow-y: auto; height: calc(100vh - 50px);">
-                <pre id="fileContent" style="height: 100%; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; background-color: #f5f5f5; padding: 20px; border-radius: 5px; border: 1px solid #ccc;"></pre>
+                <pre id="fileContent"
+                    style="height: 100%; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; background-color: #f5f5f5; padding: 20px; border-radius: 5px; border: 1px solid #ccc;"></pre>
 
             </div>
         </div>
@@ -393,44 +427,44 @@
     }
 
     function checkUVL(file_id) {
-    const outputDiv = document.getElementById('check_' + file_id);
-    outputDiv.innerHTML = ''; // Clear previous output
+        const outputDiv = document.getElementById('check_' + file_id);
+        outputDiv.innerHTML = ''; // Clear previous output
 
-    fetch(`/flamapy/check_uvl/${file_id}`)
-        .then(response => {
-            return response.json().then(data => ({
-                status: response.status,
-                data
-            }));
-        })
-        .then(({ status, data }) => {
-            if (status === 400) {
-                // Display errors
-                if (data.errors) {
-                    outputDiv.innerHTML = '<span class="badge badge-danger">Errors:</span>';
-                    data.errors.forEach(error => {
-                        const errorElement = document.createElement('span');
-                        errorElement.className = 'badge badge-danger';
-                        errorElement.textContent = error;
-                        outputDiv.appendChild(errorElement);
-                        outputDiv.appendChild(document.createElement('br')); // Line break for better readability
-                    });
+        fetch(`/flamapy/check_uvl/${file_id}`)
+            .then(response => {
+                return response.json().then(data => ({
+                    status: response.status,
+                    data
+                }));
+            })
+            .then(({ status, data }) => {
+                if (status === 400) {
+                    // Display errors
+                    if (data.errors) {
+                        outputDiv.innerHTML = '<span class="badge badge-danger">Errors:</span>';
+                        data.errors.forEach(error => {
+                            const errorElement = document.createElement('span');
+                            errorElement.className = 'badge badge-danger';
+                            errorElement.textContent = error;
+                            outputDiv.appendChild(errorElement);
+                            outputDiv.appendChild(document.createElement('br')); // Line break for better readability
+                        });
+                    } else {
+                        outputDiv.innerHTML = `<span class="badge badge-danger">Error: ${data.error}</span>`;
+                    }
+                } else if (status === 200) {
+                    // Display success message
+                    outputDiv.innerHTML = '<span class="badge badge-success">Valid Model</span>';
                 } else {
-                    outputDiv.innerHTML = `<span class="badge badge-danger">Error: ${data.error}</span>`;
+                    // Handle unexpected status
+                    outputDiv.innerHTML = `<span class="badge badge-warning">Unexpected response status: ${status}</span>`;
                 }
-            } else if (status === 200) {
-                // Display success message
-                outputDiv.innerHTML = '<span class="badge badge-success">Valid Model</span>';
-            } else {
-                // Handle unexpected status
-                outputDiv.innerHTML = `<span class="badge badge-warning">Unexpected response status: ${status}</span>`;
-            }
-        })
-        .catch(error => {
-            // Handle fetch errors
-            outputDiv.innerHTML = `<span class="badge badge-danger">An unexpected error occurred: ${error.message}</span>`;
-        });
-}
+            })
+            .catch(error => {
+                // Handle fetch errors
+                outputDiv.innerHTML = `<span class="badge badge-danger">An unexpected error occurred: ${error.message}</span>`;
+            });
+    }
 
 
     /*
@@ -493,5 +527,36 @@
         });
     }
 </script>
+
+<script>
+    // Mostrar u ocultar el botón flotante
+    document.getElementById('toggleVisibilityBtn').addEventListener('click', function () {
+        const visibilityOptionBtn = document.getElementById('visibilityOptionBtn');
+        visibilityOptionBtn.style.display = visibilityOptionBtn.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Cambiar la visibilidad del dataset
+    function toggleVisibility() {
+        const visibilityOptionBtn = document.getElementById('visibilityOptionBtn');
+        const isPublic = visibilityOptionBtn.textContent.includes('Change to private');
+
+        // Lógica de cambio (AJAX o llamada a backend)
+        fetch(`/dataset/toggle_visibility/{{ dataset.id }}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ publico: !isPublic })
+        }).then(response => {
+            if (response.ok) {
+                // Cambia el texto del botón dependiendo del nuevo estado
+                visibilityOptionBtn.textContent = isPublic ? 'Change to public' : 'Change to private';
+                // Oculta el botón flotante
+                visibilityOptionBtn.style.display = 'none';
+            } else {
+                console.error('Error changing visibility');
+            }
+        }).catch(error => console.error('Fetch error:', error));
+    }
+</script>
+
 
 {% endblock %}

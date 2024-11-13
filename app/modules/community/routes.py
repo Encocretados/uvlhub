@@ -1,6 +1,7 @@
 import logging
 
 from flask import render_template, redirect, url_for, flash
+from app.modules.auth.models import User
 from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
 from flask_login import login_required, current_user
@@ -62,8 +63,12 @@ def get_community(community_id):
 def show_community_datasets(community_id):
     # Obtener la comunidad
     community = Community.query.get_or_404(community_id)
-
-    # Obtener los datasets asociados a la comunidad
-    datasets = DataSet.query.filter_by(community_id=community_id).all()
-
+    
+    # Obtener todos los datasets de los usuarios de esta comunidad
+    datasets = (
+        DataSet.query.join(User)
+        .join(community_members)
+        .filter(community_members.c.community_id == community_id)
+        .all()
+    )
     return render_template("community/community_datasets.html", community=community, datasets=datasets)

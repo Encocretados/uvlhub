@@ -19,9 +19,11 @@ from flask import (
 )
 from flask_login import login_required, current_user
 
+from app import db
 from app.modules.dataset.forms import DataSetForm
 from app.modules.dataset.models import (
-    DSDownloadRecord
+    DSDownloadRecord,
+    DataSet
 )
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.services import (
@@ -180,7 +182,7 @@ def delete():
 def download_dataset(dataset_id):
     dataset = dataset_service.get_or_404(dataset_id)
 
-    file_path = f"uploads/comunity_{dataset.community.id}/dataset_{dataset.id}/"
+    file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
 
     temp_dir = tempfile.mkdtemp()
     zip_path = os.path.join(temp_dir, f"dataset_{dataset_id}.zip")
@@ -286,4 +288,20 @@ def view_dataset(dataset_id):
 
     # Renderiza la plantilla con la información del dataset
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+@dataset_bp.route('/dataset/toggle_visibility/<int:dataset_id>', methods=['POST'])
+def toggle_visibility(dataset_id):
+    dataset = DataSet.query.get(dataset_id)
+    if dataset:
+        # Obtén el nuevo valor de visibilidad desde el cuerpo de la solicitud
+        data = request.get_json()
+        new_visibility = data.get('publico')
+
+        # Actualiza la visibilidad
+        dataset.publico = new_visibility
+        db.session.commit()
+
+        return jsonify({'message': 'Visibility changed successfully'}), 200
+    else:
+        return jsonify({'message': 'Dataset not found'}), 404
 
