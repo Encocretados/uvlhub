@@ -11,16 +11,14 @@ class CommunityService(BaseService):
     def get_all_by_user(self, user):
         return self.repository.get_all_by_user(user)
 
-    def create(self, data):
+    def create_community(self, data):
         name = data.get("name")
         description = data.get("description")
         user = data.get("user")
         # Crear la comunidad
         community = Community(name=name, description=description)
-        
         # Asociar el usuario creador con la comunidad
         community.members.append(user)
-        
         # Guardar en la base de datos
         db.session.add(community)
         try:

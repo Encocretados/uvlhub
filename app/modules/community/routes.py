@@ -32,7 +32,7 @@ def create_community():
             "user": current_user
         }
 
-        result = community_service.create(data=data)
+        result = community_service.create_community(data=data)
         return community_service.handle_service_response(
             result=result,
             errors=form.errors,
