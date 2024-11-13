@@ -1,10 +1,24 @@
 import pytest
-
+import unittest
+from app import create_app
+from flask import url_for
 from app import db
 from app.modules.conftest import login, logout
 from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
 
+class UserProfileTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app=create_app()
+        self.app.testing=True
+        self.client=self.app.test_client()
+
+    def test_view_profile(self):
+        response=self.client.get('/profile/view')
+        self.assertEqual(response.status_code,200)
+        self.assertIn(b'User Profile',response.data)
+        
+    def tearDown(self): pass
 
 @pytest.fixture(scope="module")
 def test_client(test_client):
