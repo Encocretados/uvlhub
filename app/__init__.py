@@ -68,12 +68,8 @@ def create_app(config_name='development'):
             'DOMAIN': os.getenv('DOMAIN', 'localhost'),
             'APP_VERSION': get_app_version()
         }
-    
     with app.app_context():
         # Create tables
         db.create_all()
-
     return app
-
-
 app = create_app()

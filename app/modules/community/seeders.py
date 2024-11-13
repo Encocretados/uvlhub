@@ -19,5 +19,5 @@ class CommunitySeeder(BaseSeeder):
         if users:
             for community in seeded_communities:
                 community.members.extend(users)
-                self.db.session.commit()   
+                self.db.session.commit()
             self.db.session.commit()

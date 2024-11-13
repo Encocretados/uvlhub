@@ -26,7 +26,13 @@ def list_community():
 def create_community():
     form = CommunityForm()
     if form.validate_on_submit():
-        result = community_service.create(name=form.name.data, description=form.description.data, user=current_user)
+        data = {
+            "name": form.name.data,
+            "description": form.description.data,
+            "user": current_user
+        }
+
+        result = community_service.create(data=data)
         return community_service.handle_service_response(
             result=result,
             errors=form.errors,
