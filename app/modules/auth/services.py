@@ -8,6 +8,9 @@ from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 class AuthenticationService(BaseService):
@@ -19,6 +22,12 @@ class AuthenticationService(BaseService):
         user = self.repository.get_by_email(email)
         if user is not None and user.check_password(password):
             login_user(user, remember=remember)
+            return True
+        return False
+
+    def correct_credentials(self, email, password, remember=False):
+        user = self.repository.get_by_email(email)
+        if user is not None and user.check_password(password):
             return True
         return False
 
@@ -79,3 +88,52 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    def send_email(self, target_email, random_key):
+        sender_email = "uvlhub.reply@gmail.com"
+        receiver_email = target_email
+        password = "fdqqdofcvxvcjgit "
+        subject = f"[UVLHUB] Your key is {random_key}!"
+        body = f"""
+                <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                        }}
+                        .bold {{
+                            font-weight: bold;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <p>Hello,</p>
+                    <p>Thank you for using <span class="bold">UVLHUB</span>!</p>
+                    <p>To complete your authentication process, please use the following <span class="bold">
+                    authentication key</span>:</p>
+                    <p class="bold">{random_key}</p>
+                    <p>Please enter this key in the authentication form to proceed. If you did not request this key or
+                    believe this is an error, please contact our support team immediately.</p>
+                    <p>For your security, this key is valid for a limited time only.</p>
+                    <p>Best regards,</p>
+                    <p><span class="bold">The UVLHUB Team</span></p>
+                    <p><a href="mailto:support@uvlhub.com">Contact us</a> if you need assistance.</p>
+                </body>
+                </html>
+                """
+        message = MIMEMultipart()
+        message["From"] = target_email
+        message["To"] = receiver_email
+        message["Subject"] = subject
+        message.attach(MIMEText(body, "html"))
+        smtp_server = "smtp.gmail.com"
+        smtp_port = 587  # TLS port
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, message.as_string())
+                print("Email sent successfully to "+str(target_email)+"!")
+        except Exception as e:
+            print(f"Error: {e}")
