@@ -20,7 +20,7 @@ def create_fakenodo():
 def deposition_files_fakenodo(deposition_id):
     response = {
         "status": "success",
-        "message": f"The deposition {deposition_id} was successfully created"
+        "message": f"The deposition {deposition_id} was successfully created",
     }
     return make_response(jsonify(response), 201)
 
@@ -29,7 +29,7 @@ def deposition_files_fakenodo(deposition_id):
 def delete_deposition_fakenodo(deposition_id):
     response = {
         "status": "success",
-        "message": f"The deposition {deposition_id} was successfully deleted"
+        "message": f"The deposition {deposition_id} was successfully deleted",
     }
     return make_response(jsonify(response), 200)
 
@@ -38,7 +38,7 @@ def delete_deposition_fakenodo(deposition_id):
 def publish_deposition_fakenodo(deposition_id):
     response = {
         "status": "success",
-        "message": f"Deposition with ID {deposition_id} successfully published in the API of Fakenodo"
+        "message": f"Deposition with ID {deposition_id} successfully published in the API of Fakenodo",
     }
     return make_response(jsonify(response), 202)
 
@@ -48,6 +48,6 @@ def get_deposition_fakenodo(deposition_id):
     response = {
         "status": "success",
         "message": f"The deposition with ID {deposition_id} successfully retrieved from the API of Fakenodo",
-        "doi": "10.5072/fakenodo.123456"
+        "doi": "10.5072/fakenodo.123456",
     }
     return make_response(jsonify(response), 200)

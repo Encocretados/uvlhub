@@ -1,7 +1,6 @@
 import pytest
 from flask import Flask
-from app.modules.fakenodo import fakenodo_bp  
-
+from app.modules.fakenodo import fakenodo_bp
 
 @pytest.fixture
 def app():
@@ -49,7 +48,7 @@ def test_delete_deposition_fakenodo(client):
     assert response.status_code == 200
     assert response.get_json() == {
         "status": "success",
-        "message": f"The deposition {deposition_id} was succesfully deleted"
+        "message": f"The deposition {deposition_id} was successfully deleted"
     }
 
 
@@ -59,7 +58,7 @@ def test_publish_deposition_fakenodo(client):
     assert response.status_code == 202
     assert response.get_json() == {
         "status": "success",
-        "message": f"Deposition with ID {deposition_id} succesfully published in the API of Fakenodo"
+        "message": f"Deposition with ID {deposition_id} successfully published in the API of Fakenodo"
     }
 
 
@@ -69,6 +68,6 @@ def test_get_deposition_fakenodo(client):
     assert response.status_code == 200
     assert response.get_json() == {
         "status": "success",
-        "message": f"The deposition with ID {deposition_id} successfully gotten in the API of Fakenodo",
+        "message": f"The deposition with ID {deposition_id} successfully retrieved from the API of Fakenodo",
         "doi": "10.5072/fakenodo.123456"
     }
