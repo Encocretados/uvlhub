@@ -9,6 +9,7 @@ from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
+from flask import request
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
@@ -95,6 +96,9 @@ class AuthenticationService(BaseService):
 
     def generate_token(self, user_id: int):
         return generate_access_token(user_id)
+
+    def get_token_from_cookie():
+        return request.cookies.get('access_token')
 
     def verify_access_token(token: str):
         try:
