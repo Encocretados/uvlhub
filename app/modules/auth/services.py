@@ -14,10 +14,12 @@ from flask import request
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
 
+
 def generate_access_token(user_id: int):
     expiration = datetime.now() + timedelta(seconds=ACCESS_TOKEN_EXPIRES)
     token = jwt.encode({"user_id": user_id, "exp": expiration}, SECRET_KEY, algorithm="HS256")
     return token
+
 
 class AuthenticationService(BaseService):
     def __init__(self):
@@ -29,17 +31,19 @@ class AuthenticationService(BaseService):
         if user is not None and user.check_password(password):
             login_user(user, remember=remember)
             return user
-        return None
+        return user
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
 
+    # Modificación en la creación de un usuario en el servicio de autenticación
     def create_with_profile(self, **kwargs):
         try:
             email = kwargs.pop("email", None)
             password = kwargs.pop("password", None)
             name = kwargs.pop("name", None)
             surname = kwargs.pop("surname", None)
+            is_developer = kwargs.pop("is_developer", False)
 
             if not email:
                 raise ValueError("Email is required.")
@@ -52,7 +56,8 @@ class AuthenticationService(BaseService):
 
             user_data = {
                 "email": email,
-                "password": password
+                "password": password,
+                "is_developer": is_developer  # Aquí se pasa el valor de is_developer
             }
 
             profile_data = {
@@ -103,4 +108,3 @@ class AuthenticationService(BaseService):
             return None
         except jwt.InvalidTokenError:
             return None
-        

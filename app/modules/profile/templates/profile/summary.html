@@ -5,7 +5,13 @@
 
 {% block content %}
 
-<h1 class="h3 mb-3">User profile</h1>
+<h1 class="h3 mb-3">
+    {% if is_developer %}
+        Developer Profile
+    {% else %}
+        User Profile
+    {% endif %}
+</h1>
 
 <div class="row">
 
@@ -21,6 +27,7 @@
                 <p class="card-text h5"><i class="fa fa-building"></i> <strong>Affiliation:</strong> {{user_profile.affiliation}}</p>
                 <p class="card-text h5"><i class="fa fa-id-card"></i> <strong>Orcid:</strong> {{user_profile.orcid}}</p>
                 <p class="card-text h5"><i class="fa fa-envelope"></i> <strong>Email:</strong> {{user.email}}</p>
+                <p class="card-text h5"><i class="fa fa-envelope"></i> <strong>Developer?:</strong> {{is_developer}}</p>
                 <p class="card-text h5"><i class="fa fa-database"></i> <strong>Uploaded datasets:</strong> {{ total_datasets }} datasets</p>
             </div>
             
