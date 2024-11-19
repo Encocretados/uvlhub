@@ -118,9 +118,8 @@ def test_service_create_with_profile_fail_no_password(clean_database):
 
     assert UserRepository().count() == 0
     assert UserProfileRepository().count() == 0
-   
-    
-# FUNCIONA   
+
+
 def test_developer_singup_success(test_client):
     # Prueba el correcto registro de un developer
     response = test_client.post(
@@ -135,12 +134,11 @@ def test_developer_singup_success(test_client):
         ),
         follow_redirects=True
     )
-    
+
     assert response.status_code == 200
     assert response.request.path == url_for("public.index"), "Signup was unsuccessful"
-  
-    
-# FUNCIONA
+
+
 def test_developer_signup_duplicate_email(test_client):
     # Prueba el fallo de registro con email duplicado
     test_client.post(
@@ -170,9 +168,8 @@ def test_developer_signup_duplicate_email(test_client):
     )
 
     assert response.status_code == 200
-    
-    
-# FUNCIONA
+
+
 def test_developer_login_success(test_client):
     # Prueba el login exitoso de un developer
     response = test_client.post(
@@ -185,5 +182,3 @@ def test_developer_login_success(test_client):
     )
 
     assert response.status_code == 200
-    
-
