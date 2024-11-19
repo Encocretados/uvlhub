@@ -36,7 +36,6 @@ def test_login_unsuccessful_bad_email(test_client):
     )
 
     assert response.request.path == url_for("auth.login"), "Login was unsuccessful"
-
     test_client.get("/logout", follow_redirects=True)
 
 
