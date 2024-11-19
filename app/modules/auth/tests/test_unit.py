@@ -1,3 +1,4 @@
+
 import pytest
 from flask import url_for
 
@@ -35,13 +36,12 @@ def test_login_unsuccessful_bad_email(test_client):
     )
 
     assert response.request.path == url_for("auth.login"), "Login was unsuccessful"
-
     test_client.get("/logout", follow_redirects=True)
 
 
 def test_login_unsuccessful_bad_password(test_client):
     response = test_client.post(
-        "/login", data=dict(email="test@example.com", password="basspassword"), follow_redirects=True
+        "/login", data=dict(email="user1@example.com", password="basspassword"), follow_redirects=True
     )
 
     assert response.request.path == url_for("auth.login"), "Login was unsuccessful"
@@ -117,3 +117,67 @@ def test_service_create_with_profile_fail_no_password(clean_database):
 
     assert UserRepository().count() == 0
     assert UserProfileRepository().count() == 0
+
+
+def test_developer_singup_success(test_client):
+    # Prueba el correcto registro de un developer
+    response = test_client.post(
+        "/signup/developer",
+        data=dict(
+            name="DeveloperName",
+            surname="DeveloperSurname",
+            email="developer@example.com",
+            password="securepassword123",
+            team="University of Seville",
+            github="devgithubuser"
+        ),
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert response.request.path == url_for("public.index"), "Signup was unsuccessful"
+
+
+def test_developer_signup_duplicate_email(test_client):
+    # Prueba el fallo de registro con email duplicado
+    test_client.post(
+        "/signup/developer",
+        data=dict(
+            name="Dev",
+            surname="Test",
+            email="duplicate@example.com",
+            password="password123",
+            team="University of Malaga",
+            github="duplicategithub"
+        ),
+        follow_redirects=True
+    )
+
+    response = test_client.post(
+        "/signup/developer",
+        data=dict(
+            name="DevNew",
+            surname="TestNew",
+            email="duplicate@example.com",
+            password="newpassword123",
+            team="University of Malaga",
+            github="newgithub"
+        ),
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+
+
+def test_developer_login_success(test_client):
+    # Prueba el login exitoso de un developer
+    response = test_client.post(
+        "/login",
+        data=dict(
+            email="developer@example.com",
+            password="securepassword123"
+        ),
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
