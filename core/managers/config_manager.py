@@ -41,6 +41,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    SECRET_KEY = "test_secret_key"
     SQLALCHEMY_DATABASE_URI = (
         f"mysql+pymysql://{os.getenv('MARIADB_USER', 'default_user')}:"
         f"{os.getenv('MARIADB_PASSWORD', 'default_password')}@"
