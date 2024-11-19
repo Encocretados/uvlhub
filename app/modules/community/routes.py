@@ -1,6 +1,6 @@
 import logging
 
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from app.modules.auth.models import User
 from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
@@ -53,10 +53,7 @@ def get_community(community_id):
         .filter_by(user_id=current_user.id, community_id=community.id) \
         .first() is not None
 
-    if not is_member:
-        flash("You are not a member of this community", "error")
-        return redirect(url_for("community.index"))
-    return render_template("community/show_community.html", community=community)
+    return render_template("community/show_community.html", community=community, is_member=is_member)
 
 @community_bp.route("/community/<int:community_id>/datasets", methods=["GET"])
 @login_required
@@ -69,6 +66,39 @@ def show_community_datasets(community_id):
         DataSet.query.join(User)
         .join(community_members)
         .filter(community_members.c.community_id == community_id)
+        .filter(DataSet.publico == True)
         .all()
     )
     return render_template("community/community_datasets.html", community=community, datasets=datasets)
+
+@community_bp.route('/community/<int:community_id>/join', methods=['POST'])
+@login_required
+def join_community(community_id):
+    community = Community.query.get_or_404(community_id)
+
+    # Si ya está autenticado, unirlo a la comunidad
+    if current_user not in community.members:
+        community.members.append(current_user)  # Agregar usuario como miembro
+        db.session.commit()
+        flash("You have successfully joined the community!", "success")
+    else:
+        flash("You are already a member of this community.", "info")
+    
+    return redirect(url_for('community.get_community', community_id=community_id))
+
+@community_bp.route('/community/<int:community_id>/leave', methods=['POST'])
+@login_required
+def leave_community(community_id):
+    community = Community.query.get_or_404(community_id)
+
+    # Verificar si el usuario es miembro de la comunidad
+    if current_user in community.members:
+        community.members.remove(current_user)  # Eliminar al usuario de la lista de miembros
+        db.session.commit()  # Guardar los cambios en la base de datos
+        flash("You have successfully left the community.", "success")
+    else:
+        flash("You are not a member of this community.", "info")
+
+    # Redirigir al usuario a la página de la comunidad
+    return redirect(url_for('community.get_community', community_id=community_id))
+

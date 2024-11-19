@@ -8,15 +8,19 @@
     <div class="row">
         {% if communities %}
             {% for community in communities %}
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ community.name }}</h5>
-                            <p class="card-text">{{ community.description or 'No description available.' }}</p>
-                            <!-- Removed the "View Community" link for now -->
-                        </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <!-- Nombre de la comunidad como enlace a show_community -->
+                        <h5 class="card-title">
+                            <a href="{{ url_for('community.get_community', community_id=community.id) }}">
+                                {{ community.name }}
+                            </a>
+                        </h5>
+                        <p class="card-text">{{ community.description or 'No description available.' }}</p>
                     </div>
                 </div>
+            </div>
             {% endfor %}
         {% else %}
             <p>No communities available.</p>
@@ -24,3 +28,4 @@
     </div>
 
 {% endblock %}
+
