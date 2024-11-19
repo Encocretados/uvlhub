@@ -45,7 +45,7 @@ def test_developer_profile_page_get(test_client):
     """
     # Registrar y autenticar a un usuario desarrollador
     developer_email = "dev101@us.es"
-    developer_password = "1234"
+    developer_password = "hardPassword"
     
     # Crear usuario desarrollador en la base de datos
     with test_client.application.app_context():
