@@ -62,11 +62,36 @@ def test_protected_api_route_no_token(test_client):
     assert response.json["message"] == "Token missing"
 
 
-def test_protected_api_route_valid_token(test_client,test_user):
+def test_protected_api_route_with_valid_token(test_client, test_user):
     """
-    Test básico para una ruta protegida que solo pasa si la cookie es valida.
+    Verifica que el acceso a la ruta protegida sea exitoso con un token válido.
     """
-    token = generate_access_token(test_user.id )
-    response = test_client.get('/protected-api', headers={'Authorization': f'Bearer {token}'})
+    # Generar un token válido para el usuario de prueba
+    token = generate_access_token(test_user.id)
+    
+    # Simular una solicitud a la ruta protegida con el token en la cookie
+    test_client.set_cookie('access_token', token)
+    
+    response = test_client.get('/protected-api')
+    
+    # Verificar que el acceso fue exitoso
     assert response.status_code == 200
-    assert response.json["message"] == "Valid token"
+    assert response.json["message"] == "Token valid"
+
+
+def test_protected_api_route_with_invalid_token(test_client):
+    """
+    Verifica que el acceso a la ruta protegida falle con un token inválido.
+    """
+    # Simular un token inválido
+    invalid_token = "invalid.token"
+    
+    # Establecer la cookie en el cliente de test
+    test_client.set_cookie('access_token', invalid_token)
+    
+    # Hacer una solicitud GET con la cookie en los headers
+    response = test_client.get('/protected-api')
+    
+    # Verificar que el acceso fue denegado (código de estado 401)
+    assert response.status_code == 401
+    assert response.json["message"] == "Invalid token"

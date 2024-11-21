@@ -92,7 +92,7 @@ class AuthenticationService(BaseService):
     def generate_token(self, user_id: int):
         return generate_access_token(user_id)
 
-    def get_token_from_cookie():
+    def get_token_from_cookie(self):
         return request.cookies.get('access_token')
 
     def verify_access_token(token: str):
