@@ -1,0 +1,76 @@
+name: Merge Migrations
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  migrate-database:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: uvlhub_root_password
+          MYSQL_DATABASE: uvlhubdb
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Attempt DB upgrade
+        id: db-upgrade
+        env:
+          FLASK_ENV: testing
+          MARIADB_HOSTNAME: 127.0.0.1
+          MARIADB_PORT: 3306
+          MARIADB_DATABASE: uvlhubdb
+          MARIADB_USER: root
+          MARIADB_PASSWORD: uvlhub_root_password
+          MYSQL_ROOT_PASSWORD: uvlhub_root_password
+
+        run: |
+          set -e
+          source venv/bin/activate
+          flask db upgrade 2>&1 | tee db_upgrade_output.txt || true
+          if grep -q 'Multiple head revisions are present' db_upgrade_output.txt; then
+            echo "Multiple head revisions found. Merging heads..."
+            flask db merge heads -m "[bot]merging heads"
+            flask db upgrade
+            flask db migrate -m "[bot]migration after merging heads"
+            flask db upgrade
+            echo "Merged heads and upgraded DB."
+          else
+            echo "DB upgrade successful or another error occurred."
+            exit 1
+          fi
+        continue-on-error: true
+        
+
+      - name: Commit and push changes
+        if: success() && steps.db-upgrade.outcome == 'success'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add migrations/
+          git commit -m "Merge migration heads"
+          git push origin develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

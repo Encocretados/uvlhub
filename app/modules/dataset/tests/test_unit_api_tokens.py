@@ -62,6 +62,7 @@ def test_protected_api_route_no_token(test_client):
     assert response.json["message"] == "Token missing"
 
 
+
 def test_protected_api_route_with_valid_token(test_client, test_user):
     """
     Verifica que el acceso a la ruta protegida sea exitoso con un token válido.
@@ -95,3 +96,4 @@ def test_protected_api_route_with_invalid_token(test_client):
     # Verificar que el acceso fue denegado (código de estado 401)
     assert response.status_code == 401
     assert response.json["message"] == "Invalid token"
+
