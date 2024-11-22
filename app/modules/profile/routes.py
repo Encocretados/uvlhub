@@ -8,14 +8,19 @@ from app import db
 from app.modules.profile import profile_bp
 from app.modules.profile.forms import UserProfileForm
 from app.modules.profile.services import UserProfileService
+from app.modules.profile.repositories import get_user_profile
 
-profile_bp=Blueprint('profile',_name_)
+
+
+profile_bp = Blueprint('profile', __name__)
+
 @profile_bp.route('/profile/view')
 def view_profile():
-    user_profile =get_user_profile()
+    user_profile = get_user_profile()   
     if user_profile:
-        return render_template('profile/view_profile.html,profile=user_profile')
+        return render_template('profile/view_profile.html', profile=user_profile)
     return "Profile not found", 404
+ 
 
 @profile_bp.route("/profile/edit", methods=["GET", "POST"])
 @login_required
