@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Usuario</title>
 </head>
 <body>
-    <h1>{{profile.name}}'s Profile</h1>
-    <p><strong>Username:</strong>{{profile.username}}</p>
+    <h1>Perfil de {{ profile.name }} {{ profile.surname }}</h1>
+    <p><strong>ORCID:</strong> {{ profile.orcid }}</p>
+    <p><strong>Afilación:</strong> {{ profile.affiliation }}</p>
+    <p><strong>Correo:</strong> {{ profile.user.email }}</p>  <!-- Correo del usuario (desde la relación) -->
+    <p><strong>Registrado el:</strong> {{ profile.user.created_at.strftime('%d/%m/%Y') }}</p>  <!-- Fecha de registro -->
 </body>
 </html>
