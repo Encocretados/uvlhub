@@ -3,10 +3,14 @@ from app.modules.explore import explore_bp
 from app.modules.explore.forms import ExploreForm
 from app.modules.explore.services import ExploreService
 from flask import Flask
+import os
+from dotenv import load_dotenv
+from flask import Flask
 
+load_dotenv()  # Cargar las variables de entorno desde el archivo .env
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "b2c9e8f4a6d7c3e1f8b4a2d9e7c6f5a3"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 
 @explore_bp.route('/explore', methods=['GET', 'POST'])
@@ -20,7 +24,6 @@ def index():
         criteria = request.get_json()
         datasets = ExploreService().filter(**criteria)
         return jsonify([dataset.to_dict() for dataset in datasets])
-    
 
 def apply_advanced_filter():
     filters = request.json

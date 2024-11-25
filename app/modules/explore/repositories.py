@@ -60,7 +60,6 @@ class ExploreRepository(BaseRepository):
             datasets = datasets.order_by(self.model.created_at.desc())
 
         return datasets.all()
-    
 
     def get_all_datasets(self):
         # Recupera todos los datasets desde la base de datos
