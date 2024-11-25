@@ -3,7 +3,10 @@ from flask import render_template, request, jsonify
 from app.modules.explore import explore_bp
 from app.modules.explore.forms import ExploreForm
 from app.modules.explore.services import ExploreService
+from flask import Flask
 
+app = Flask(__name__)
+app.config["SECRET_KEY"] = "your_secret_key"
 
 @explore_bp.route('/explore', methods=['GET', 'POST'])
 def index():
