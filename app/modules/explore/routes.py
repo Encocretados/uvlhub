@@ -16,3 +16,16 @@ def index():
         criteria = request.get_json()
         datasets = ExploreService().filter(**criteria)
         return jsonify([dataset.to_dict() for dataset in datasets])
+
+def apply_advanced_filter():
+    filters = request.json
+    results = ExploreService.advanced_filter(**filters)
+    return jsonify(results)
+
+@explore_bp.route('/explore', methods=['POST'])
+def clear_filters():
+    results = ExploreService.clear_filters()
+    return jsonify(results)
+
+if __name__ == '__main__':
+    explore_bp.run(debug=True)
