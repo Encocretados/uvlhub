@@ -10,6 +10,7 @@ class ExploreRepository(BaseRepository):
     def __init__(self):
         super().__init__(DataSet)
 
+
     def filter(self, query="", sorting="newest", publication_type="any", tags=[], **kwargs):
         # Normalize and remove unwanted characters
         normalized_query = unidecode.unidecode(query).lower()
@@ -60,9 +61,11 @@ class ExploreRepository(BaseRepository):
 
         return datasets.all()
     
+
     def get_all_datasets(self):
-        # Implement logic to retrieve all datasets
-        pass
+        # Recupera todos los datasets desde la base de datos
+        return self.model.query.all()
+
 
     def advanced_filter(self, filters):
         datasets = self.get_all_datasets()
