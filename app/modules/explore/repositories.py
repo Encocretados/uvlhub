@@ -68,7 +68,6 @@ class ExploreRepository(BaseRepository):
 
     def advanced_filter(self, filters):
         datasets = self.get_all_datasets()
-        
         if filters.get("date_range"):
             start_date, end_date = filters["date_range"]
             datasets = [d for d in datasets if start_date <= d.date <= end_date]

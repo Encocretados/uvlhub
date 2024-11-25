@@ -4,8 +4,7 @@ from app.modules.explore.forms import ExploreForm
 from app.modules.explore.services import ExploreService
 from flask import Flask
 import os
-from dotenv import load_dotenv
-from flask import Flask
+from dotenv import load_dotenv  
 
 load_dotenv()  # Cargar las variables de entorno desde el archivo .env
 

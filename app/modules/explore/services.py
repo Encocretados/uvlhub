@@ -19,6 +19,5 @@ class ExploreService(BaseService):
         }
         return self.repository.advanced_filter(filters)
     
-    
     def clear_filters(self):
         return self.repository.get_all_datasets()
