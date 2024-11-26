@@ -9,8 +9,22 @@ from app.modules.hubfile.repositories import (
 )
 from core.services.BaseService import BaseService
 
-
 class HubfileService(BaseService):
+    def route_query(self, query):
+        """
+        Dirige la consulta al módulo correspondiente según palabras clave.
+        """
+        if "dataset" in query:
+            from dataset.services import DataSetService
+            return DataSetService().validate_and_prepare_data(query)
+        elif "explorar" in query:
+            from explore.services import ExploreService
+            return ExploreService().generate_analysis(query)
+        elif "predecir" in query:
+            from flamapy.services import FlamapyService
+            return FlamapyService().analyze_with_ai(query)
+        return "No entendí la consulta."
+    
     def __init__(self):
         super().__init__(HubfileRepository())
         self.hubfile_view_record_repository = HubfileViewRecordRepository()

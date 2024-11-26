@@ -45,6 +45,21 @@ doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
 
 
+
+# routes.py
+from flask import Blueprint, request, jsonify
+from .services import DataSetService
+
+dataset_bp = Blueprint('dataset', __name__)
+service = DataSetService()
+
+@dataset_bp.route('/ai/dataset', methods=['POST'])
+def dataset_assistant():
+    query = request.json.get('query', '')
+    response = service.validate_and_prepare_data(query)
+    return jsonify({'response': response})
+
+
 @dataset_bp.route("/dataset/upload", methods=["GET", "POST"])
 @login_required
 def create_dataset():

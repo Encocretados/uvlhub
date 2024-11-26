@@ -9,6 +9,18 @@ from app.modules.hubfile.services import HubfileDownloadRecordService, HubfileSe
 
 from app import db
 
+from flask import Blueprint, request, jsonify
+from .services import HubfileService
+
+hubfile_bp = Blueprint('hubfile', __name__)
+service = HubfileService()
+
+@hubfile_bp.route('/ai/assistant', methods=['POST'])
+def ai_assistant():
+    query = request.json.get('query', '')
+    response = service.route_query(query)
+    return jsonify({'response': response})
+
 
 @hubfile_bp.route("/file/download/<int:file_id>", methods=["GET"])
 def download_file(file_id):

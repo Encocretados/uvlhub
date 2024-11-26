@@ -14,6 +14,17 @@ from antlr4.error.ErrorListener import ErrorListener
 
 logger = logging.getLogger(__name__)
 
+from flask import Blueprint, request, jsonify
+from .services import FlamapyService
+
+service = FlamapyService()
+
+@flamapy_bp.route('/ai/flamapy', methods=['POST'])
+def flamapy_assistant():
+    query = request.json.get('query', '')
+    response = service.analyze_with_ai(query)
+    return jsonify({'response': response})
+
 
 @flamapy_bp.route('/flamapy/check_uvl/<int:file_id>', methods=['GET'])
 def check_uvl(file_id):

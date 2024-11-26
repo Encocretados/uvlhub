@@ -24,7 +24,7 @@ from app.modules.hubfile.repositories import (
     HubfileViewRecordRepository
 )
 from core.services.BaseService import BaseService
-
+from flask import Blueprint, request, jsonify
 logger = logging.getLogger(__name__)
 
 
@@ -140,7 +140,15 @@ class DataSetService(BaseService):
         domain = os.getenv('DOMAIN', 'localhost')
         return f'http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}'
 
-
+    def validate_and_prepare_data(self, query):
+        """
+        Valida y transforma los datos según las consultas de la IA.
+        """
+        # Aquí, realiza validaciones específicas para datos enviados por el asistente.
+        if "datos" in query:
+            return "Conjunto de datos listo para explorar."
+        return "No se encontraron datos específicos en la consulta."
+    
 class AuthorService(BaseService):
     def __init__(self):
         super().__init__(AuthorRepository())
