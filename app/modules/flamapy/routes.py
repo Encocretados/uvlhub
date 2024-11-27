@@ -17,12 +17,11 @@ logger = logging.getLogger(__name__)
 from flask import Blueprint, request, jsonify
 from .services import FlamapyService
 
-service = FlamapyService()
 
 @flamapy_bp.route('/ai/flamapy', methods=['POST'])
 def flamapy_assistant():
     query = request.json.get('query', '')
-    response = service.analyze_with_ai(query)
+    response = FlamapyService().analyze_with_ai(query)
     return jsonify({'response': response})
 
 

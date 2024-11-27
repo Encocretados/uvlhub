@@ -1,4 +1,4 @@
-# routes.py
+# ai_routes.py
 from flask import Blueprint, request, jsonify
 from .services import AIService
 

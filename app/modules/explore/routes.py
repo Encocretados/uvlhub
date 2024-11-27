@@ -7,13 +7,12 @@ from app.modules.explore.services import ExploreService
 from flask import Blueprint, request, jsonify
 from .services import ExploreService
 
-explore_bp = Blueprint('explore', __name__)
-service = ExploreService()
+
 
 @explore_bp.route('/ai/explore', methods=['POST'])
 def explore_assistant():
     query = request.json.get('query', '')
-    response = service.generate_analysis(query)
+    response = ExploreService().generate_analysis(query)
     return jsonify({'response': response})
 
 

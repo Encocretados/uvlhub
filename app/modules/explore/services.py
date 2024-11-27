@@ -2,9 +2,6 @@ from app.modules.explore.repositories import ExploreRepository
 from core.services.BaseService import BaseService
 
 
-
-
-
 class ExploreService(BaseService):
     def generate_analysis(self, query):
         """

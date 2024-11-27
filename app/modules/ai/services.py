@@ -1,4 +1,4 @@
-# services.py
+# ai_services.py
 from transformers import pipeline
 
 class AIService:

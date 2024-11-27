@@ -50,13 +50,10 @@ ds_view_record_service = DSViewRecordService()
 from flask import Blueprint, request, jsonify
 from .services import DataSetService
 
-dataset_bp = Blueprint('dataset', __name__)
-service = DataSetService()
-
 @dataset_bp.route('/ai/dataset', methods=['POST'])
 def dataset_assistant():
     query = request.json.get('query', '')
-    response = service.validate_and_prepare_data(query)
+    response = dataset_service.validate_and_prepare_data(query)
     return jsonify({'response': response})
 
 
