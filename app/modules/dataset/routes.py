@@ -327,3 +327,52 @@ def synchronize_datasets():
     except Exception as e:
         print("Error:", e)  # Log para mostrar el error específico
         return jsonify({"message": str(e)}), 400 
+
+@dataset_bp.route("/dataset/download_all", methods=["GET"])
+def download_all_datasets():
+    datasets = dataset_service.get_all()
+
+    temp_dir = tempfile.mkdtemp()
+    zip_path = os.path.join(temp_dir, "all_datasets.zip")
+
+    with ZipFile(zip_path, "w") as zipf:
+        for dataset in datasets:
+            file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
+            if os.path.exists(file_path):
+                for subdir, dirs, files in os.walk(file_path):
+                    for file in files:
+                        full_path = os.path.join(subdir, file)
+                        relative_path = os.path.relpath(full_path, file_path)
+                        zipf.write(full_path, arcname=os.path.join(str(dataset.id), relative_path))
+
+    user_cookie = request.cookies.get("download_cookie")
+    if not user_cookie:
+        user_cookie = str(uuid.uuid4())  
+
+    resp = make_response(
+        send_from_directory(
+            temp_dir,
+            "all_datasets.zip",
+            as_attachment=True,
+            mimetype="application/zip",
+        )
+    )
+    resp.set_cookie("download_cookie", user_cookie)
+
+    for dataset in datasets:
+        existing_record = DSDownloadRecord.query.filter_by(
+            dataset_id=dataset.id,
+            download_cookie=user_cookie
+        ).first()
+
+        if not existing_record:
+            DSDownloadRecordService().create(
+                user_id=None,  
+                dataset_id=dataset.id,
+                download_date=datetime.now(timezone.utc),
+                download_cookie=user_cookie,
+            )
+
+    shutil.rmtree(temp_dir)
+
+    return resp

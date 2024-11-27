@@ -160,6 +160,9 @@ class DataSetService(BaseService):
         # Genera un DOI para el dataset
         return f"10.1234/dataset/{dataset.id}"
 
+    def get_all(self):
+        return self.repository.get_all()
+
 
 class AuthorService(BaseService):
     def __init__(self):
