@@ -6,7 +6,7 @@ class AIService:
         """
         Inicializa el modelo de IA.
         """
-        self.model = pipeline("text-generation", model="openai-community/gpt2")
+        self.model = pipeline("text-generation", model="openai-community/gpt2", top_k=50, top_p=0.95)
 
     def process_query(self, query):
         """
