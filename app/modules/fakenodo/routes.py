@@ -1,53 +1,51 @@
-from flask import jsonify, make_response
-from app.modules.fakenodo import fakenodo_bp
+from flask import jsonify, send_file, request
+from . import fakenodo_bp
+import tempfile
+import os
 
-base_url = "/fakenodo/api"
-
-
-@fakenodo_bp.route(base_url, methods=["GET"])
-def test_connection_fakenodo():
-    response = {"status": "success", "message": "The API of Fakenodo connected successfully"}
-    return jsonify(response)
+datasets = {}
 
 
-@fakenodo_bp.route(base_url, methods=["POST"])
-def create_fakenodo():
-    response = {"status": "success", "message": "The deposition of Fakenodo was created"}
-    return make_response(jsonify(response), 201)
+# Upload all files from dataset
+@fakenodo_bp.route('/fakenodo/upload', methods=['POST'])
+def upload_dataset():
+    global dataset_counter
+    file = request.files['file']
+    if file:
+        dataset_id = dataset_counter
+        dataset_counter += 1
+        temp_dir = tempfile.mkdtemp()
+        file_path = os.path.join(temp_dir, file.filename)
+        file.save(file_path)
+        datasets[dataset_id] = {
+            'id': dataset_id,
+            'filename': file.filename,
+            'file_path': file_path
+        }
+        return jsonify({'id': dataset_id, 'filename': file.filename}), 201
+    return jsonify({'error': 'No file uploaded'}), 400
 
 
-@fakenodo_bp.route(base_url + "/<deposition_id>/deposition", methods=["POST"])
-def deposition_files_fakenodo(deposition_id):
-    response = {
-        "status": "success",
-        "message": f"The deposition {deposition_id} was successfully created",
-    }
-    return make_response(jsonify(response), 201)
+# Get dataset info
+@fakenodo_bp.route('/fakenodo/info/<dataset_id>', methods=['GET'])
+def get_Dataset(dataset_id):
+    dataset = datasets.get(dataset_id)
+    if dataset:
+        return send_file(dataset['file_path'], as_attachment=True, attachment_filename=dataset['filename'])
+    return jsonify({'error': 'Dataset not found'}), 404
 
 
-@fakenodo_bp.route(base_url + "/<deposition_id>", methods=["DELETE"])
-def delete_deposition_fakenodo(deposition_id):
-    response = {
-        "status": "success",
-        "message": f"The deposition {deposition_id} was successfully deleted",
-    }
-    return make_response(jsonify(response), 200)
+# Get All
+@fakenodo_bp.route('/fakenodo/datasets', methods=['GET'])
+def list_datasets():
+    return jsonify(list(datasets.values()))
 
 
-@fakenodo_bp.route(base_url + "/<deposition_id>/resources/submit", methods=["POST"])
-def publish_deposition_fakenodo(deposition_id):
-    response = {
-        "status": "success",
-        "message": f"Deposition with ID {deposition_id} successfully published in the API of Fakenodo",
-    }
-    return make_response(jsonify(response), 202)
-
-
-@fakenodo_bp.route(base_url + "/<deposition_id>", methods=["GET"])
-def get_deposition_fakenodo(deposition_id):
-    response = {
-        "status": "success",
-        "message": f"The deposition with ID {deposition_id} successfully retrieved from the API of Fakenodo",
-        "doi": "10.5072/fakenodo.123456",
-    }
-    return make_response(jsonify(response), 200)
+# Delete a deposition
+@fakenodo_bp.route('/fakenodo/dataset/<int:dataset_id>', methods=['DELETE'])
+def delete_dataset(dataset_id):
+    dataset = datasets.pop(dataset_id, None)
+    if dataset:
+        os.remove(dataset['file_path'])
+        return jsonify({'message': 'Dataset deleted'}), 200
+    return jsonify({'error': 'Dataset not found'}), 404
