@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from app.modules.fakenodo.repositories import DepositionRepo
 from app.modules.fakenodo.models import Deposition
-from app.modules.dataset.models import DataSet
+from app.modules.dataset.models import DataSet, DSMetaData
 from app.modules.featuremodel.models import FeatureModel
 
 from core.configuration.configuration import uploads_folder_name
@@ -21,7 +21,7 @@ class FakenodoService(BaseService):
     def __init__(self):
         self.deposition_repository = DepositionRepo()
 
-    def create_new_deposition(self, dataset: DataSet) -> dict:
+    def create_new_deposition(self, ds_meta_data: DSMetaData) -> dict:
         """
         Create a new deposition in Fakenodo
 
@@ -33,34 +33,34 @@ class FakenodoService(BaseService):
         """
 
         logger.info("Dataset sending to Fakenodo")
-        logger.info(f"Publication type: {dataset.ds_meta_data.publication_type.value}")
+        logger.info(f"Publication type: {ds_meta_data.publication_type.value}")
 
         metadataJSON = {
-            "title": dataset.ds_meta_data.title,
-            "upload_type": "dataset" if dataset.ds_meta_data.publication_type.value == "none" else "publication",
+            "title": ds_meta_data.title,
+            "upload_type": "dataset" if ds_meta_data.publication_type.value == "none" else "publication",
             "publication_type": (
-                dataset.ds_meta_data.publication_type.value
-                if dataset.ds_meta_data.publication_type.value != "none"
+                ds_meta_data.publication_type.value
+                if ds_meta_data.publication_type.value != "none"
                 else None
             ),
-            "description": dataset.ds_meta_data.description,
+            "description": ds_meta_data.description,
             "creators": [
                 {
                     "name": author.name,
                     **({"affiliation": author.affiliation} if author.affiliation else {}),
                     **({"orcid": author.orcid} if author.orcid else {}),
                 }
-                for author in dataset.ds_meta_data.authors
+                for author in ds_meta_data.authors
             ],
             "keywords": (
-                ["uvlhub"] if not dataset.ds_meta_data.tags else dataset.ds_meta_data.tags.split(", ") + ["uvlhub"]
+                ["uvlhub"] if not ds_meta_data.tags else ds_meta_data.tags.split(", ") + ["uvlhub"]
             ),
             "access_right": "open",
             "license": "CC-BY-4.0",
         }
 
         try:
-            deposition = self.deposition_repository.create_new_deposition(metadata=metadataJSON)
+            deposition = self.deposition_repository.create_new_deposition(dep_metadata=metadataJSON)
 
             return {
                 "id": deposition.id,
