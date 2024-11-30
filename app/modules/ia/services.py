@@ -1,12 +1,19 @@
-import os
-import jwt
-from flask_login import login_user
-from flask_login import current_user
-from datetime import datetime, timedelta
-from app.modules.auth.models import User
-from app.modules.auth.repositories import UserRepository
-from app.modules.profile.models import UserProfile
-from app.modules.profile.repositories import UserProfileRepository
-from core.configuration.configuration import uploads_folder_name
-from core.services.BaseService import BaseService
-from flask import request
+
+import torch
+from transformers import pipeline
+
+# Verificar si CUDA (GPU) está disponible y usarla si es posible
+device = 0 if torch.cuda.is_available() else -1  # 0 para GPU, -1 para CPU
+
+# Inicializar el pipeline de generación de texto con el modelo de IA
+modelo_ia = pipeline("text-generation", model="EleutherAI/gpt-neo-1.3B", device=device)
+
+def obtener_respuesta_ia(mensaje):
+    """
+    Procesa el mensaje del usuario y devuelve una respuesta generada por IA.
+    """
+    # Generar la respuesta del modelo
+    resultado = modelo_ia(mensaje, max_length=150, num_return_sequences=1)
+    
+    # Devolver el texto generado por el modelo
+    return resultado[0]['generated_text']
