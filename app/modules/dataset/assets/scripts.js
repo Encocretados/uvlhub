@@ -129,6 +129,7 @@ var currentId = 0;
         }
 
         window.onload = function () {
+            USE_FAKENODO = true;
 
             if (USE_FAKENODO === false) {
                 test_zenodo_connection();
