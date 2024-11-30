@@ -11,7 +11,6 @@ from flask import *
 import os
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
-print(os.getenv('SECRET_KEY'))
 ACCESS_TOKEN_EXPIRES = 3600  # 1 hora
 
 def test_generate_access_token(test_client, test_user):

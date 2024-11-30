@@ -4,14 +4,14 @@ import tempfile
 import os
 
 datasets = {}
-
+dataset_counter = 0
 
 # Upload all files from dataset
 @fakenodo_bp.route('/fakenodo/upload', methods=['POST'])
 def upload_dataset():
-    global dataset_counter
     file = request.files['file']
     if file:
+        global dataset_counter
         dataset_id = dataset_counter
         dataset_counter += 1
         temp_dir = tempfile.mkdtemp()
@@ -31,7 +31,7 @@ def upload_dataset():
 def get_Dataset(dataset_id):
     dataset = datasets.get(dataset_id)
     if dataset:
-        return send_file(dataset['file_path'], as_attachment=True, attachment_filename=dataset['filename'])
+        return send_file(dataset['file_path'], as_attachment=True, download_name=dataset['filename'])
     return jsonify({'error': 'Dataset not found'}), 404
 
 

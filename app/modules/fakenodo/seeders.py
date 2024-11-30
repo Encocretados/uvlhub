@@ -4,7 +4,6 @@ from app.modules.fakenodo.models import Deposition
 
 def seed_depositions():
     """Seeds the Deposition table with sample data."""
-    
     if Deposition.query.count() == 0:
         print("Seeding the Deposition table...")
 

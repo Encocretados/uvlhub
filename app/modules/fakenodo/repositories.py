@@ -6,5 +6,5 @@ class DepositionRepo(BaseRepository):
     def __init__(self):
         super().__init__(Deposition)
 
-    def create_new_deposition(self, metadata):
-        return self.create(metadata=metadata)
+    def create_new_deposition(self, dep_metadata):
+        return self.create(dep_metadata=dep_metadata)

@@ -130,7 +130,7 @@ var currentId = 0;
 
         window.onload = function () {
 
-            if (use_fakenodo === false) {
+            if (USE_FAKENODO === false) {
                 test_zenodo_connection();
             } else {
                 document.getElementById("use_fakenodo").style.display = "block";
