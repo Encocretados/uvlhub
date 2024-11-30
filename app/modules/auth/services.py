@@ -12,6 +12,7 @@ from core.services.BaseService import BaseService
 from flask import request
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+print(os.getenv('SECRET_KEY'))
 ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
 
 
