@@ -20,6 +20,7 @@ dnspython==2.6.1
 docker==7.1.0
 email_validator==2.2.0
 Faker==26.0.0
+filelock==3.16.1
 flake8==7.1.0
 flamapy==2.0.0.dev1
 flamapy-bdd==2.0.0.dev1
@@ -33,6 +34,7 @@ Flask-Migrate==4.0.7
 Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
+fsspec==2024.10.0
 gevent==24.2.1
 geventhttpclient==2.3.1
 graphviz==0.20.3
@@ -41,6 +43,7 @@ gunicorn==22.0.0
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
+huggingface-hub==0.26.3
 hyperframe==6.0.1
 idna==3.7
 iniconfig==2.0.0
@@ -53,6 +56,7 @@ MarkupSafe==2.1.5
 mccabe==0.7.0
 msgpack==1.0.8
 networkx==3.3
+numpy==2.1.3
 outcome==1.3.0.post0
 packaging==24.1
 pluggy==1.5.0
@@ -62,6 +66,7 @@ pyasn1==0.6.0
 pycodestyle==2.12.0
 pycparser==2.22
 pyflakes==3.2.0
+PyJWT==2.9.0
 PyMySQL==1.1.1
 pyOpenSSL==24.1.0
 pyparsing==3.1.2
@@ -72,8 +77,12 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python-sat==1.8.dev13
 pytz==2024.1
+PyYAML==6.0.2
 pyzmq==26.0.3
+regex==2024.11.6
 requests==2.32.3
+-e git+https://github.com/Encocretados/uvlhub.git@b108b0cbb4826e34fd509930167503cb5744fba7#egg=rosemary
+safetensors==0.4.5
 selenium==4.22.0
 selenium-wire==5.1.0
 setuptools==70.3.0
@@ -83,13 +92,16 @@ sortedcontainers==2.4.0
 soupsieve==2.5
 SQLAlchemy==2.0.31
 SQLAlchemy-Utils==0.41.2
+tokenizers==0.20.3
+tqdm==4.67.1
+transformers==4.46.3
 trio==0.26.0
 trio-websocket==0.11.1
 typing_extensions==4.12.2
 Unidecode==1.3.8
 urllib3==2.2.2
 uvlparser==2.0.1
-webdriver-manager==4.0.1
+webdriver-manager==4.0.2
 websocket-client==1.8.0
 Werkzeug==3.0.3
 wheel==0.43.0
@@ -98,4 +110,3 @@ WTForms==3.1.2
 zope.event==5.0
 zope.interface==6.4.post2
 zstandard==0.22.0
-pyjwt==2.9.0

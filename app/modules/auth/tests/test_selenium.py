@@ -5,6 +5,10 @@ import time
 
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import initialize_driver, close_driver
+import os
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
 
 
 def test_login_and_check_element():
@@ -46,6 +50,10 @@ def test_login_and_check_element():
         # Close the browser
         close_driver(driver)
 
+        
+
+
 
 # Call the test function
 test_login_and_check_element()
+
