@@ -1,0 +1,42 @@
+name: Semantic Versioning and Release
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.8.1'
+          
+      - name: Create temporary package.json
+        run: |
+          echo '{
+            "private": true,
+            "devDependencies": {}
+          }' > package.json
+          
+      - name: Install semantic-release and plugins
+        run: |
+          npm install --save-dev semantic-release @semantic-release/git @semantic-release/changelog
+          
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Clean up temporary files
+        if: always()
+        run: rm package.json package-lock.json
