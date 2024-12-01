@@ -11,7 +11,15 @@
                 <form method="post" action="{{ url_for('ia.ia_page') }}">
                     <div class="mb-3">
                         <label for="userQuery" class="form-label">Ask your question:</label>
-                        <input type="text" class="form-control" id="userQuery" name="user_query" placeholder="Enter your question here" required>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="userQuery" 
+                            name="user_query" 
+                            placeholder="Enter your question here" 
+                            required 
+                            aria-label="User question input"
+                        >
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -26,7 +34,7 @@
                     <h5 class="card-title">AI Response</h5>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ response }}</p>
+                    <p class="card-text" aria-live="polite">{{ response }}</p>
                 </div>
             </div>
         </div>
