@@ -7,21 +7,20 @@
     <h1 class="h2 mb-3"><b>Upload</b> dataset</h1>
 
     <div class="row">
-        <div class="col-12 mb-3">
-            <div class="alert alert-warning" role="alert" id="test_zenodo_connection_error" style="display: none">
-                <div class="alert-message">
-
-                    <h4 class="alert-heading"><i class="align-middle" data-feather="alert-triangle"></i> Limited
-                        connection to the Zenodo API</h4>
-                    <p class="p-0 m-0">
-                        There seems to be some kind of problem with the Zenodo API and synchronization of your dataset
-                        files may not be possible. We will save your files locally to eventually synchronize them with
-                        Zenodo. Sorry for the inconvenience, Zenodo is an external service and we can't do
-                        anything about it.
-                    </p>
+        </div>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="alert alert-warning" role="alert" id="use_fakenodo" style="display: none">
+                    <div class="alert-message">
+    
+                        <h4 class="alert-heading"><i class="align-middle" data-feather="alert-triangle"></i> 
+                            Fakenodo Module is active</h4>
+                        <p class="p-0 m-0">
+                            The uploaded files will not be stored in Zenodo, but in the local server.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
 
     </div>
 

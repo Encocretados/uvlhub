@@ -8,8 +8,9 @@ from app import ConfigManager as config
 from unittest.mock import patch
 from app.modules import auth 
 from flask import *
+import os
 
-SECRET_KEY = "test_secret_key"
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 ACCESS_TOKEN_EXPIRES = 3600  # 1 hora
 
 def test_generate_access_token(test_client, test_user):
