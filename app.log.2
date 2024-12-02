@@ -1,112 +1,101 @@
-2024-11-19 09:09:30,251 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+2024-12-02 18:08:31,806 - app - ERROR - Exception on / [GET]
 Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:09:46,595 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask_restful/__init__.py", line 298, in error_router
+    return original_handler(e)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/app/modules/public/routes.py", line 30, in index
+    return render_template(
+           ^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/jinja2/environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/jinja2/environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/paula-luna-navarro/uvlhub/app/modules/public/templates/public/index.html", line 1, in top-level template code
+    {% extends "base_template.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/app/templates/base_template.html", line 75, in top-level template code
+    <a class="sidebar-link" href="{{ url_for('ia_bp.ia') }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1084, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1073, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/werkzeug/routing/map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'ia_bp.ia'. Did you mean 'auth.login' instead?
+2024-12-02 18:08:31,809 - app - ERROR - Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2024-12-02 18:08:41,400 - app - ERROR - Exception on / [GET]
 Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:14:19,839 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask_restful/__init__.py", line 298, in error_router
+    return original_handler(e)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/app/modules/public/routes.py", line 30, in index
+    return render_template(
+           ^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/jinja2/environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/jinja2/environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/paula-luna-navarro/uvlhub/app/modules/public/templates/public/index.html", line 1, in top-level template code
+    {% extends "base_template.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/app/templates/base_template.html", line 75, in top-level template code
+    <a class="sidebar-link" href="{{ url_for('ia_bp.ia') }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1084, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1073, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/werkzeug/routing/map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'ia_bp.ia'. Did you mean 'auth.login' instead?
+2024-12-02 18:08:41,404 - app - ERROR - Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2024-12-02 19:12:56,336 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Fakenodo 'DataSet' object has no attribute 'publication_type'
 Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:14:36,041 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:22:16,291 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:22:32,017 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:36:18,000 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:36:34,099 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:41:11,386 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:41:27,461 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:43:58,758 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:44:15,442 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:47:24,802 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:47:41,239 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
+  File "/home/paula-luna-navarro/uvlhub/app/modules/dataset/routes.py", line 73, in create_dataset
+    fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/app/modules/fakenodo/services.py", line 36, in create_new_deposition
+    logger.info(f"Publication type: {ds_meta_data.publication_type.value}")
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DataSet' object has no attribute 'publication_type'
