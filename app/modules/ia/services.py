@@ -5,7 +5,7 @@ from core.services.BaseService import BaseService
 
 DIALOGFLOW_PROJECT_ID = 'uvlhubia-umhn'
 DIALOGFLOW_LANGUAGE_CODE = 'es'  # O el idioma que prefieras
-GOOGLE_APPLICATION_CREDENTIALS = 'uvlhubia.json'
+GOOGLE_APPLICATION_CREDENTIALS = 'uvlhubia-umhn-a.json'
 class IaService(BaseService):
     def __init__(self):
         super().__init__(None)  # No es necesario un repositorio específico aquí
