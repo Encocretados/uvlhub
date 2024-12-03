@@ -301,3 +301,29 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+
+@dataset_bp.route('/dataset/synchronize_datasets', methods=['POST'])
+@login_required
+def synchronize_datasets():
+    try:
+        # Obtener los datos enviados desde el frontend
+        data = request.get_json()
+        print("Datos recibidos:", data)  # Log para verificar los datos recibidos
+
+        # Verificar que datasetId esté presente
+        dataset_id = int(data.get("datasetId"))
+        
+        if not dataset_id:
+            print("Error: No se recibió el datasetId.")  # Si el datasetId es None o no está presente
+            return jsonify({"message": "El datasetId es requerido."}), 400
+
+        print("datasetId recibido:", dataset_id)  # Log para verificar que se recibe el datasetId correctamente
+        
+        # Llamar al servicio para sincronizar los datasets con el datasetId
+        dataset_service.synchronize_unsynchronized_datasets(current_user.id, dataset_id)
+        
+        return jsonify({"success": True, "message": "Datasets sincronizados correctamente."}), 200
+    except Exception as e:
+        print("Error:", e)  # Log para mostrar el error específico
+        return jsonify({"message": str(e)}), 400 
