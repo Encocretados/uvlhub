@@ -369,9 +369,11 @@
 </div>
 
 <!-- HTML del botón de "Upload to Zenodo" -->
+{% if not dataset.ds_meta_data.dataset_doi %}
 <button class="btn btn-outline-success btn-sm" id="uploadToZenodo" style="border-radius: 5px;">
     Upload to Fakenodo
 </button>
+{% endif %}
 
 <script>
     document.getElementById("uploadToZenodo").addEventListener("click", function() {
