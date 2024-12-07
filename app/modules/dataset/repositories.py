@@ -116,7 +116,7 @@ class DataSetRepository(BaseRepository):
     
     def synchronize_unsynchronized_datasets(self, current_user_id: int, dataset_id: int) -> None:
         # Obtener los datasets no sincronizados para el usuario y filtrarlos por datasetId si es necesario
-        unsynchronized_datasets = self.repository.get_unsynchronized(current_user_id)
+        unsynchronized_datasets = self.get_unsynchronized(current_user_id)
 
         # Si deseas solo sincronizar un dataset específico, filtra usando el datasetId
         dataset = next((d for d in unsynchronized_datasets if d.id == dataset_id), None)
@@ -124,7 +124,7 @@ class DataSetRepository(BaseRepository):
         if dataset:
             # Lógica para sincronizar el dataset
             dataset.ds_meta_data.dataset_doi = self.generate_doi_for_dataset(dataset)
-            self.repository.session.commit()
+            self.session.commit()  # usa self.session para hacer commit
         else:
             raise ValueError("Dataset no encontrado.")
 
