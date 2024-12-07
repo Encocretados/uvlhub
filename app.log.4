@@ -28,19 +28,33 @@ pymysql.err.OperationalError: (1054, "Unknown column 'user.is_developer' in 'fie
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='sandbox.zenodo.org', port=443): Max retries exceeded with url: /api/deposit/depositions (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'sandbox.zenodo.org'. (_ssl.c:1000)")))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
     response = self.full_dispatch_request()
                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
     rv = self.handle_user_exception(e)
          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask_restful/__init__.py", line 298, in error_router
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask_restful/__init__.py", line 298, in error_router
     return original_handler(e)
            ^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
     rv = self.dispatch_request()
          ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+  File "/home/paula-luna-navarro/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/home/alex/Desktop/EGC/uvlhub/app/modules/auth/routes.py", line 68, in login

@@ -53,7 +53,7 @@ Traceback (most recent call last):
     err.raise_mysql_exception(self._data)
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
     raise errorclass(errno, errval)
-pymysql.err.OperationalError: (1054, "Unknown column 'user.is_developer' in 'field list'")
+pymysql.err.OperationalError: (1045, "Access denied for user 'default_user'@'localhost' (using password: YES)")
 
 The above exception was the direct cause of the following exception:
 
@@ -73,90 +73,101 @@ Traceback (most recent call last):
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/auth/routes.py", line 68, in login
-    user = authentication_service.login(form.email.data, form.password.data)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/auth/services.py", line 29, in login
-    user = self.repository.get_by_email(email)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/auth/repositories.py", line 21, in get_by_email
-    return self.model.query.filter_by(email=email).first()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2728, in first
-    return self.limit(1)._iter().first()  # type: ignore
-           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/app/modules/public/routes.py", line 19, in index
+    datasets_counter = dataset_service.count_synchronized_datasets()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/services.py", line 78, in count_synchronized_datasets
+    return self.repository.count_synchronized_datasets()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/repositories.py", line 98, in count_synchronized_datasets
+    .count()
+     ^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 3112, in count
+    self._legacy_from_self(col).enable_eagerloads(False).scalar()
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2805, in scalar
+    ret = self.one()
+          ^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2778, in one
+    return self._iter().one()  # type: ignore
+           ^^^^^^^^^^^^
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2827, in _iter
     result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
                                                   ^^^^^^^^^^^^^^^^^^^^^
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
     return self._execute_internal(
            ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2236, in _execute_internal
-    result: Result[Any] = compile_state_cls.orm_execute_statement(
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
-    result = conn.execute(
-             ^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
-    return meth(
-           ^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
-    return connection._execute_clauseelement(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
-    ret = self._execute_context(
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
-    return self._exec_single_context(
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2226, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2095, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3276, in connect
+    return self._connection_cls(self)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
-    self._handle_dbapi_exception(
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2353, in _handle_dbapi_exception
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 148, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2440, in _handle_dbapi_exception_noconnection
     raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 924, in do_execute
-    cursor.execute(statement, parameters)
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/cursors.py", line 153, in execute
-    result = self._query(query)
-             ^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/cursors.py", line 322, in _query
-    conn.query(q)
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 563, in query
-    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 825, in _read_query_result
-    result.read()
-  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 1199, in read
-    first_packet = self.connection._read_packet()
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 146, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3300, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1263, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 177, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 643, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 620, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 361, in __init__
+    self.connect()
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 669, in connect
+    self._request_authentication()
+  File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+                  ^^^^^^^^^^^^^^^^^^^
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/connections.py", line 775, in _read_packet
     packet.raise_for_error()
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/protocol.py", line 219, in raise_for_error
     err.raise_mysql_exception(self._data)
   File "/home/alex/Desktop/EGC/uvlhub/venv/lib/python3.12/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
     raise errorclass(errno, errval)
-sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1054, "Unknown column 'user.is_developer' in 'field list'")
-[SQL: SELECT user.id AS user_id, user.email AS user_email, user.password AS user_password, user.is_developer AS user_is_developer, user.created_at AS user_created_at 
-FROM user 
-WHERE user.email = %(email_1)s 
- LIMIT %(param_1)s]
-[parameters: {'email_1': 'user1@example.com', 'param_1': 1}]
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'default_user'@'localhost' (using password: YES)")
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
-2024-11-13 17:47:22,771 - app - ERROR - Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
-2024-11-19 09:07:22,103 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-2024-11-19 09:07:38,272 - app.modules.dataset.routes - ERROR - Exception while create dataset data in Zenodo Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
-Traceback (most recent call last):
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/dataset/routes.py", line 71, in create_dataset
-    zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/alex/Desktop/EGC/uvlhub/app/modules/zenodo/services.py", line 180, in create_new_deposition
-    raise Exception(error_message)
-Exception: Failed to create deposition. Error details: {'status': 403, 'message': 'Permission denied.'}
