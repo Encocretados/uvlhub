@@ -1,6 +1,8 @@
 import os
 import time
 
+from selenium import webdriver
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -129,6 +131,53 @@ def test_upload_dataset():
 
         # Close the browser
         close_driver(driver)
+
+def test_upload_unsynchronized_dataset_to_zenodo():
+    """
+    Test que verifica que un dataset en la sección 'unsynchronized' puede subirse
+    correctamente a Fakenodo desde la página de detalles del dataset.
+    """
+    # Configuración inicial del driver
+    driver = webdriver.Chrome()  # Asegúrate de configurar el PATH de chromedriver si es necesario
+
+    try:
+        # Navegar a la lista de datasets
+        driver.get("http://127.0.0.1:5000/dataset/list")
+        time.sleep(2)  # Esperar a que la página cargue completamente
+
+        # Seleccionar datasets solo de la sección 'unsynchronized'
+        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody a")
+        if not staging_datasets_links:
+            raise Exception("No se encontraron datasets en staging (unsynchronized).")
+
+        # Seleccionar el primer dataset en staging
+        first_dataset = staging_datasets_links[0]
+        first_dataset_url = first_dataset.get_attribute("href")
+        first_dataset.click()
+        time.sleep(2)  # Esperar a que cargue la página del dataset
+
+        # Verificar que estamos en la URL correcta
+        dataset_id = first_dataset_url.split("/")[-1]  # Extraer el ID del dataset desde la URL
+        expected_url = f"http://127.0.0.1:5000/dataset/unsynchronized/{dataset_id}/"
+        assert driver.current_url == expected_url, f"URL inesperada: {driver.current_url}"
+
+        # Localizar y hacer clic en el botón 'uploadToZenodo'
+        upload_button = driver.find_element(By.ID, "uploadToZenodo")  # Cambia 'ID' por el selector adecuado si es necesario
+        upload_button.click()
+        time.sleep(3)  # Esperar la respuesta del servidor
+
+        # Verificar el mensaje de éxito
+        success_message = driver.find_element(By.CLASS_NAME, "alert-success")  # Cambia el selector si es necesario
+        assert success_message.text == "¡Archivo subido a Fakenodo exitosamente!", "El mensaje de éxito no coincide."
+
+        print("El test pasó correctamente.")
+
+    except Exception as e:
+        print(f"El test falló: {e}")
+
+    finally:
+        # Cerrar el navegador
+        driver.quit()
 
 
 # Call the test function
