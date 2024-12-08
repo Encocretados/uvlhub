@@ -180,5 +180,105 @@ def test_upload_unsynchronized_dataset_to_zenodo():
         driver.quit()
 
 
+def test_dataset_appears_in_staging():
+    """
+    Test que verifica que un dataset subido se muestra correctamente en el área de staging.
+    """
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Contar el número inicial de datasets en staging
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        initial_staging_count = len(staging_datasets_links)
+
+        # Subir un nuevo dataset
+        driver.get(f"{host}/dataset/upload")
+        wait_for_page_to_load(driver)
+
+        # Completar los campos obligatorios
+        title_field = driver.find_element(By.NAME, "title")
+        title_field.send_keys("Título de prueba en staging")
+        desc_field = driver.find_element(By.NAME, "desc")
+        desc_field.send_keys("Descripción del dataset en staging")
+        tags_field = driver.find_element(By.NAME, "tags")
+        tags_field.send_keys("prueba,staging")
+
+        # Subir un archivo
+        file_path = os.path.abspath("app/modules/dataset/uvl_examples/file1.uvl")
+        dropzone = driver.find_element(By.CLASS_NAME, "dz-hidden-input")
+        dropzone.send_keys(file_path)
+        wait_for_page_to_load(driver)
+
+        # Aceptar términos y subir el dataset
+        upload_btn = driver.find_element(By.ID, "upload_button")
+        upload_btn.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Contar el número de datasets en staging después de la subida
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+        staging_datasets_links_after = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        final_staging_count = len(staging_datasets_links_after)
+
+        # Verificar que el número de datasets en staging haya aumentado
+        assert final_staging_count == initial_staging_count + 1, "El dataset no se añadió al área de staging."
+
+        print("El test de aparición en staging pasó correctamente.")
+
+    except Exception as e:
+        print(f"El test falló: {e}")
+
+    finally:
+        close_driver(driver)
+
+def test_unsynchronized_dataset_remains_in_staging():
+    """
+    Test que verifica que un dataset no sincronizado permanece en el área de staging.
+    """
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Navegar a la lista de datasets
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+
+        # Seleccionar datasets en staging
+        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        if not staging_datasets_links:
+            raise Exception("No se encontraron datasets en staging.")
+
+        # Seleccionar el primer dataset
+        first_dataset = staging_datasets_links[0]
+        first_dataset_url = first_dataset.find_element(By.TAG_NAME, "a").get_attribute("href")
+        first_dataset.click()
+        wait_for_page_to_load(driver)
+
+        # Verificar que el dataset no esté sincronizado con Zenodo
+        unsynchronized_message = driver.find_element(By.CLASS_NAME, "alert-warning")  # Cambia el selector si es necesario
+        assert "Este dataset no está sincronizado con Zenodo" in unsynchronized_message.text, \
+            "El dataset no muestra el mensaje esperado de no sincronizado."
+
+        # Verificar que seguimos en la sección de staging
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+        staging_datasets_links_after = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        assert any(first_dataset_url in link.find_element(By.TAG_NAME, "a").get_attribute("href") 
+                   for link in staging_datasets_links_after), "El dataset no permanece en staging."
+
+        print("El test de permanencia en staging pasó correctamente.")
+
+    except Exception as e:
+        print(f"El test falló: {e}")
+
+    finally:
+        close_driver(driver)
+
+
 # Call the test function
 test_upload_dataset()
