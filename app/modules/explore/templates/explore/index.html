@@ -114,6 +114,36 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <label for="date_range">Date Range:</label>
+                                <input type="date" id="start_date" name="start_date">
+                                <input type="date" id="end_date" name="end_date">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <label for="attributes">Attributes:</label>
+                                <input type="text" id="attributes" name="attributes" placeholder="Enter attributes">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div>
+                                <label for="keywords">Keywords:</label>
+                                <input type="text" id="keywords" name="keywords" placeholder="Enter keywords">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div>
+                                <button type="button" onclick="applyAdvancedFilter()">Apply Advanced Filter</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
 
                         <div class="col-12">
 
@@ -123,7 +153,7 @@
 
                                 </div>
 
-                                <button id="clear-filters" class="btn btn-outline-primary">
+                                <button id="clear-filters" class="btn btn-outline-primary" onclick="clearFilters()">
                                     <i data-feather="x-circle" style="vertical-align: middle; margin-top: -2px"></i>
                                     Clear filters
                                 </button>
@@ -152,4 +182,64 @@
 
 {% block scripts %}
     <script src="{{ url_for('explore.scripts') }}"></script>
+    <script>
+    function applyAdvancedFilter() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+        const attributes = document.getElementById('attributes').value;
+        const keywords = document.getElementById('keywords').value;
+
+        const filters = {
+            date_range: [startDate, endDate],
+            attributes: attributes,
+            keywords: keywords
+        };
+
+        fetch('/apply-advanced-filter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(filters)
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateResults(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function clearFilters() {
+        document.getElementById('start_date').value = '';
+        document.getElementById('end_date').value = '';
+        document.getElementById('attributes').value = '';
+        document.getElementById('keywords').value = '';
+
+        fetch('/clear-filters', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateResults(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function updateResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+        data.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.textContent = item.name;
+            resultsDiv.appendChild(resultItem);
+        });
+    }
+    </script>
 {% endblock %}
