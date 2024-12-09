@@ -11,4 +11,4 @@ class Fakenodo(db.Model):
     
     def __init__(self, doi, meta_data):
         self.doi = doi
-        self.metadata = meta_data
+        self.meta_data = meta_data

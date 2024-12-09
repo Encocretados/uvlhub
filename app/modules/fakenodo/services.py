@@ -192,7 +192,7 @@ class FakenodoService(BaseService):
         try:
             with open(file_path, "rb") as file:
                 file_content = file.read()
-                return hashlib.md5(file_content).hexdigest()
+                return hashlib.sha256(file_content).hexdigest()  # Use SHA-256 instead of MD5
         except FileNotFoundError:
             raise Exception(f"File {file_path} not found for checksum calculation")
         except Exception as e:
