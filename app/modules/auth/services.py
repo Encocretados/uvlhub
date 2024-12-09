@@ -181,13 +181,13 @@ class AuthenticationService(BaseService):
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
         mail.login(username, password)
         mail.select("inbox")
-        status, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
+        _, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
         email_ids = messages[0].split()
         key = None
 
         if email_ids:
             latest_email_id = email_ids[-1]
-            status, msg_data = mail.fetch(latest_email_id, "(RFC822)")
+            _, msg_data = mail.fetch(latest_email_id, "(RFC822)")
 
             for response_part in msg_data:
                 if isinstance(response_part, tuple):
