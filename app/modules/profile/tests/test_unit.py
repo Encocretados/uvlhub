@@ -17,7 +17,7 @@ def test_client(test_client):
     for module testing (por example, new users)
     """
     with test_client.application.app_context():
-        user_test = User(email='uvlhub.reply@gmail.com', password='1234')
+        user_test = User(email='uvlhub.reply@gmail.com', password='uvlhub1234')
         db.session.add(user_test)
         db.session.commit()
 
@@ -32,12 +32,12 @@ def test_edit_profile_page_get(test_client):
     """
     Tests access to the profile editing page via a GET request.
     """
-    login_response = login(test_client, "uvlhub.reply@gmail.com", "1234")
+    login_response = login(test_client, "uvlhub.reply@gmail.com", "uvlhub1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     time.sleep(5)
     email = "uvlhub.reply@gmail.com"
-    password = "1234"
+    password = "uvlhub1234"
     clave = authentication_service.get_validation_email_key()
     validation_response = validates_email(test_client, email, password, clave)
     assert validation_response.status_code == 200, "Email key validation unsuccessful"
