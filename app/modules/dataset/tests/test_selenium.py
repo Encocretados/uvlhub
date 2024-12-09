@@ -7,6 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import initialize_driver, close_driver
+from app.modules.auth.services import AuthenticationService
+
+authentication_service = AuthenticationService()
 
 
 def wait_for_page_to_load(driver, timeout=4):
@@ -45,6 +48,15 @@ def test_upload_dataset():
 
         # Send the form
         password_field.send_keys(Keys.RETURN)
+
+        # Email validartion
+        time.sleep(4)
+        clave = authentication_service.get_validation_email_key()
+        print(clave)
+        key_field = driver.find_element(By.NAME, 'key')
+        key_field.send_keys(clave)
+        key_field.send_keys(Keys.RETURN)
+
         wait_for_page_to_load(driver)
 
         # Count initial datasets

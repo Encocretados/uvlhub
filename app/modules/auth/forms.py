@@ -16,3 +16,9 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
     submit = SubmitField('Login')
+
+
+class EmailValidationForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired()])
+    key = StringField('Key', validators=[DataRequired()])
+    submit = SubmitField('Validate Email')
