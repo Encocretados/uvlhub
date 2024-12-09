@@ -142,40 +142,7 @@ class AuthenticationService(BaseService):
         except Exception as e:
             print(f"Error: {e}")
 
-    def get_validation_email_info(self):
-        username = "uvlhub.reply@gmail.com"
-        password = "fdqqdofcvxvcjgit"
-        mail = imaplib.IMAP4_SSL("imap.gmail.com")
-        mail.login(username, password)
-        mail.select("inbox")
-        status, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
-        email_ids = messages[0].split()
-
-        if email_ids:
-            latest_email_id = email_ids[-1]
-            status, msg_data = mail.fetch(latest_email_id, "(RFC822)")
-
-            for response_part in msg_data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_bytes(response_part[1])
-                    # Decode the email subject
-                    subject, encoding = decode_header(msg["Subject"])[0]
-                    if isinstance(subject, bytes):
-                        subject = subject.decode(encoding if encoding else "utf-8")
-                    print(f"Subject: {subject}")
-                    # Decode the sender
-                    from_ = msg.get("From")
-                    print(f"From: {from_}")
-                    # Decode the key
-                    key = re.sub(r'[^0-9]', '', subject)
-                    print(f"Key: {key}")
-        else:
-            print("No emails found from uvlhub.reply@gmail.com.")
-
-        # Logout and close the connection
-        mail.logout()
-
-    def get_validation_email_key(self):
+    def get_validation_email_info(self, verbose=False):
         username = "uvlhub.reply@gmail.com"
         password = "fdqqdofcvxvcjgit"
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -183,7 +150,7 @@ class AuthenticationService(BaseService):
         mail.select("inbox")
         _, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
         email_ids = messages[0].split()
-        key = None
+        res = {}
 
         if email_ids:
             latest_email_id = email_ids[-1]
@@ -196,11 +163,26 @@ class AuthenticationService(BaseService):
                     subject, encoding = decode_header(msg["Subject"])[0]
                     if isinstance(subject, bytes):
                         subject = subject.decode(encoding if encoding else "utf-8")
+                    res['Subject'] = subject
+                    # Decode the sender
+                    from_ = msg.get("From")
+                    res['From'] = from_
                     # Decode the key
                     key = re.sub(r'[^0-9]', '', subject)
+                    res['Key'] = key
+
+                    if (verbose):
+                        print(f"Subject: {subject}")
+                        print(f"From: {from_}")
+                        print(f"Key: {key}")
+
         else:
-            return "No emails found from uvlhub.reply@gmail.com."
+            print("No emails found from uvlhub.reply@gmail.com.")
 
         # Logout and close the connection
         mail.logout()
-        return key
+        return res
+
+    def get_validation_email_key(self):
+        res = self.get_validation_email_info(False)
+        return res['Key']
