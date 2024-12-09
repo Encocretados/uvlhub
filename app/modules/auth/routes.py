@@ -74,7 +74,8 @@ def email_validation():
     form = EmailValidationForm()
 
     if request.method == 'POST':
-        if int(form.key.data.strip()) == int(session.get('key')):
+        key = int(form.key.data.strip())
+        if key == int(session.get('key')):
             authentication_service.login(email, password)
             response = make_response(redirect(url_for('public.index')))
             session.pop('email', None)
@@ -84,7 +85,7 @@ def email_validation():
         return render_template(
             "auth/email_validation_form.html",
             form=form,
-            email=email,
+            key=key,
             error='The key does not match'
         )
 
