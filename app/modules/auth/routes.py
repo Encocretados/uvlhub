@@ -18,7 +18,10 @@ def show_signup_form():
 
     form = SignupForm()
     if form.validate_on_submit():
-        email = form.email.data
+        email = request.form['email']
+        password = request.form['password']
+        print(f"Email: {email}")
+        print(f"Password: {password}")
         if not authentication_service.is_email_available(email):
             return render_template("auth/signup_form.html", form=form, error=f'Email {email} in use')
 
@@ -29,8 +32,8 @@ def show_signup_form():
 
         # Log user
         response = make_response(redirect(url_for('auth.email_validation')))
-        response.set_cookie('email', form.email.data, max_age=3600, secure=True, httponly=True)
-        response.set_cookie('password', form.password.data, max_age=3600, secure=True, httponly=True)
+        session['email'] = email
+        session['password'] = password
         return response
 
     return render_template("auth/signup_form.html", form=form)
@@ -43,10 +46,14 @@ def login():
 
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
-        if authentication_service.correct_credentials(form.email.data, form.password.data):
+        email = request.form['email']
+        password = request.form['password']
+        print(f"Email: {email}")
+        print(f"Password: {password}")
+        if authentication_service.correct_credentials(email, password):
             response = make_response(redirect(url_for('auth.email_validation')))
-            response.set_cookie('email', form.email.data, max_age=3600, secure=True, httponly=True)
-            response.set_cookie('password', form.password.data, max_age=3600, secure=True, httponly=True)
+            session['email'] = email
+            session['password'] = password
             return response
 
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
@@ -59,8 +66,8 @@ def email_validation():
     if current_user.is_authenticated:
         return redirect(url_for('public.index'))
 
-    email = request.cookies.get('email')
-    password = request.cookies.get('password')
+    email = session['email']
+    password = session['password']
     if not email or not password:
         return redirect(url_for('auth.login'))
 
@@ -70,8 +77,8 @@ def email_validation():
         if int(form.key.data.strip()) == int(session.get('key')):
             authentication_service.login(email, password)
             response = make_response(redirect(url_for('public.index')))
-            response.delete_cookie('email')
-            response.delete_cookie('papssword')
+            session.pop('email', None)
+            session.pop('password', None)
             return response
 
         return render_template(
@@ -91,4 +98,7 @@ def email_validation():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('public.index'))
+    response = make_response(redirect(url_for('public.index')))
+    session.pop('email', None)
+    session.pop('password', None)
+    return response
