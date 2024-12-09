@@ -11,6 +11,10 @@ from core.services.BaseService import BaseService
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import imaplib
+import email
+from email.header import decode_header
+import re
 
 
 class AuthenticationService(BaseService):
@@ -137,3 +141,66 @@ class AuthenticationService(BaseService):
                 print("Email sent successfully to "+str(target_email)+"!")
         except Exception as e:
             print(f"Error: {e}")
+
+    def get_validation_email_info(self):
+        username = "uvlhub.reply@gmail.com"
+        password = "fdqqdofcvxvcjgit"
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(username, password)
+        mail.select("inbox")
+        status, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
+        email_ids = messages[0].split()
+
+        if email_ids:
+            latest_email_id = email_ids[-1]
+            status, msg_data = mail.fetch(latest_email_id, "(RFC822)")
+
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_bytes(response_part[1])
+                    # Decode the email subject
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding if encoding else "utf-8")
+                    print(f"Subject: {subject}")
+                    # Decode the sender
+                    from_ = msg.get("From")
+                    print(f"From: {from_}")
+                    # Decode the key
+                    key = re.sub(r'[^0-9]', '', subject)
+                    print(f"Key: {key}")
+        else:
+            print("No emails found from uvlhub.reply@gmail.com.")
+
+        # Logout and close the connection
+        mail.logout()
+
+    def get_validation_email_key(self):
+        username = "uvlhub.reply@gmail.com"
+        password = "fdqqdofcvxvcjgit"
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(username, password)
+        mail.select("inbox")
+        status, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
+        email_ids = messages[0].split()
+        key = None
+
+        if email_ids:
+            latest_email_id = email_ids[-1]
+            status, msg_data = mail.fetch(latest_email_id, "(RFC822)")
+
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_bytes(response_part[1])
+                    # Decode the email subject
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding if encoding else "utf-8")
+                    # Decode the key
+                    key = re.sub(r'[^0-9]', '', subject)
+        else:
+            return "No emails found from uvlhub.reply@gmail.com."
+
+        # Logout and close the connection
+        mail.logout()
+        return key

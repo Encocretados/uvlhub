@@ -13,6 +13,7 @@ class AuthSeeder(BaseSeeder):
         users = [
             User(email='user1@example.com', password='1234'),
             User(email='user2@example.com', password='1234'),
+            User(email='uvlhub.reply@gmail.com', password='1234'),
         ]
 
         # Inserted users with their assigned IDs are returned by `self.seed`.
