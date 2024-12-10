@@ -1,0 +1,97 @@
+{% extends "base_template.html" %}
+
+{% block title %}AI Assistant{% endblock %}
+
+{% block content %}
+    <h1 class="h2 mb-3"><b>AI Assistant</b></h1>
+
+    <div class="row">
+        <div class="col-lg-7 scrollable-column">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form id="queryForm">
+                        <div class="mb-3">
+                            <label for="userQuery" class="form-label">Ask your question:</label>
+                            <input type="text" class="form-control" id="userQuery" placeholder="Type your question..." required>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-4" id="responseContainer" style="display: none;">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">AI Response</div>
+                        <div class="card-body">
+                            <p id="responseText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-4" id="loadingMessage" style="display: none;">
+                <div class="col-md-8">
+                    <div class="alert alert-info" role="alert">
+                        Processing your request, please wait...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 fixed-column" id="filters">
+            <!-- Aquí puedes agregar filtros adicionales si es necesario -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        async function handleSubmit() {
+            console.log('Botón de submit presionado');  // Verifica si este mensaje aparece en la consola
+            const userQuery = document.getElementById('userQuery');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseText = document.getElementById('responseText');
+            const loadingMessage = document.getElementById('loadingMessage');
+
+            if (!userQuery.value.trim()) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            loadingMessage.style.display = 'block';
+            responseContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/ia', {  // Cambiado a '/ia'
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: userQuery.value, user_id: 'default_user' })
+                });
+
+                console.log('Solicitud enviada');  // Verifica si este mensaje aparece en la consola
+
+                if (!response.ok) {
+                    console.error('Error en la respuesta del servidor:', response.status);
+                }
+
+                const data = await response.json();
+                console.log('Respuesta del servidor:', data);  // Verifica los datos de la respuesta
+
+                responseText.textContent = data.answer || "No response received.";
+                responseContainer.style.display = 'block';
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while processing your request.");
+            } finally {
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+        document.getElementById('queryForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            handleSubmit();
+        });
+    </script>
+{% endblock %}
