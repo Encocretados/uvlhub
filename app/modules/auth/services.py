@@ -96,7 +96,7 @@ class AuthenticationService(BaseService):
     def send_email(self, target_email, random_key):
         sender_email = "uvlhub.reply@gmail.com"
         receiver_email = target_email
-        password = "fdqqdofcvxvcjgit "
+        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
         subject = f"[UVLHUB] Your key is {random_key}!"
         body = f"""
                 <html>
@@ -144,7 +144,7 @@ class AuthenticationService(BaseService):
 
     def get_validation_email_info(self, verbose=False):
         username = "uvlhub.reply@gmail.com"
-        password = "fdqqdofcvxvcjgit"
+        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
         mail.login(username, password)
         mail.select("inbox")
