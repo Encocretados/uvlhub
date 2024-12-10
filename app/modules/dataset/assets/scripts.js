@@ -129,13 +129,7 @@ var currentId = 0;
         }
 
         window.onload = function () {
-            let USE_FAKENODO = true;
 
-            if (USE_FAKENODO === false) {
-                test_zenodo_connection();
-            } else {
-                document.getElementById("use_fakenodo").style.display = "block";
-            }
 
             document.getElementById('upload_button').addEventListener('click', function () {
 
@@ -170,6 +164,16 @@ var currentId = 0;
                     for (let key in formData) {
                         if (formData.hasOwnProperty(key)) {
                             formUploadData.set(key, formData[key]);
+                        }
+                    }
+
+                    let checked_doi = true;
+                    if (formData.publication_doi) {
+                        let publicationDoi = formData.publication_doi[0].trim();
+                        if (publicationDoi !== '' && !/^10\.\d{4}$/.test(publicationDoi)) {
+                            hide_loading();
+                            write_upload_error("Invalid DOI format. Please enter a valid DOI like 10.xxxx");
+                            checked_doi = false;
                         }
                     }
 
