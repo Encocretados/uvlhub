@@ -1,9 +1,13 @@
 import pytest
+import time
 
 from app import db
-from app.modules.conftest import login, logout
+from app.modules.conftest import login, logout, validates_email
 from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
+from app.modules.auth.services import AuthenticationService
+
+authentication_service = AuthenticationService()
 
 
 @pytest.fixture(scope="module")
@@ -13,7 +17,7 @@ def test_client(test_client):
     for module testing (por example, new users)
     """
     with test_client.application.app_context():
-        user_test = User(email='user@example.com', password='test1234')
+        user_test = User(email='uvlhub.reply@gmail.com', p_code='uvl12hub34')
         db.session.add(user_test)
         db.session.commit()
 
@@ -28,8 +32,15 @@ def test_edit_profile_page_get(test_client):
     """
     Tests access to the profile editing page via a GET request.
     """
-    login_response = login(test_client, "user@example.com", "test1234")
+    login_response = login(test_client, "uvlhub.reply@gmail.com", "uvl12hub34")
     assert login_response.status_code == 200, "Login was unsuccessful."
+
+    time.sleep(5)
+    email = "uvlhub.reply@gmail.com"
+    p_code = "uvl12hub34"
+    clave = authentication_service.get_validation_email_key()
+    validation_response = validates_email(test_client, email, p_code, clave)
+    assert validation_response.status_code == 200, "Email key validation unsuccessful"
 
     response = test_client.get("/profile/edit")
     assert response.status_code == 200, "The profile editing page could not be accessed."
