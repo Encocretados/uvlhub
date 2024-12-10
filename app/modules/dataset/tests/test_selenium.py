@@ -133,3 +133,54 @@ def test_upload_dataset():
 
 # Call the test function
 test_upload_dataset()
+
+
+def test_rate_dataset():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Navigate to the login page
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
+
+        # Login
+        username_input = driver.find_element(By.NAME, "email")
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Navigate to the dataset view page
+        driver.get(f"{host}/dataset/1")  # Adjust the dataset ID as needed
+        wait_for_page_to_load(driver)
+
+        # Find the rating input and submit button
+        rating_input = driver.find_element(By.NAME, "rating")
+        submit_button = driver.find_element(By.ID, "submit-rating")
+
+        # Enter a rating value and submit
+        rating_input.clear()
+        rating_input.send_keys("4")
+        submit_button.click()
+        wait_for_page_to_load(driver)
+
+        # Verify that the rating was submitted successfully
+        success_message = driver.find_element(By.ID, "rating-success-message")
+        assert success_message.is_displayed(), "Rating success message not displayed!"
+
+        # Verify the updated rating value
+        average_rating = driver.find_element(By.ID, "average-rating")
+        assert average_rating.text == "4.0", "Average rating value is not correct!"
+
+        print("Dataset rating test passed!")
+
+    finally:
+        # Always close the browser
+        close_driver(driver)
+
+
+# Call the test function
+test_rate_dataset()
