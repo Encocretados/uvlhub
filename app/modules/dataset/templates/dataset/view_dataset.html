@@ -110,6 +110,7 @@
                                             </a>
                                         </li>
                                     </ul>
+                                    
                                 </div>
 
 
@@ -274,6 +275,42 @@
         {% endif %}
     </div>
 </div>
+<!-- HTML del botón de "Upload to Zenodo" -->
+{% if not dataset.ds_meta_data.dataset_doi %}
+<button class="btn btn-outline-success btn-sm" id="uploadToZenodo" style="border-radius: 5px;">
+    Upload to Fakenodo
+</button>
+{% endif %}
+
+<script>
+    document.getElementById("uploadToZenodo").addEventListener("click", function() {
+        const datasetId = '{{ dataset.id }}';  // Asegúrate de que esto no sea null o undefined
+        console.log("datasetId enviado:", datasetId);  // Verifica en la consola del navegador
+    
+        fetch('/dataset/synchronize_datasets', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                datasetId: datasetId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("¡Archivo subido a Fakenodo exitosamente!");
+            } else {
+                alert("Hubo un error al subir el archivo.");
+            }
+        })
+        .catch(error => {
+            console.error("Error en la solicitud:", error);
+            alert("Hubo un error en la solicitud.");
+        });
+    });
+    
+</script>
 
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
