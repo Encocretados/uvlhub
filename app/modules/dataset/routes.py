@@ -1,6 +1,6 @@
 import logging
 import os
-import json
+import re
 import shutil
 import tempfile
 import uuid
@@ -64,14 +64,17 @@ def create_dataset():
             logger.info(f"Created dataset: {dataset}")
             dataset_service.move_feature_models(dataset)
         except Exception as exc:
-            logger.exception(f"Exception while create dataset data in local {exc}")
-            return jsonify({"Exception while create dataset data in local: ": str(exc)}), 400
+            logger.exception(f"Exception while creating dataset data locally: {exc}")
+            return jsonify({"message": f"Exception while creating dataset: {str(exc)}"}), 400
 
         # send dataset as deposition to Zenodo
         # data = {}
         try:
+            # Get the publication DOI (if provided) or fall back to dataset DOI
+            publication_doi = form.publication_doi.data if form.publication_doi.data else None
+
             # Create a new deposition in Fakenodo (or Zenodo) using the dataset
-            fakenodo_response_json = fakenodo_service.create_new_fakenodo(dataset)
+            fakenodo_response_json = fakenodo_service.create_new_fakenodo(dataset, publication_doi=publication_doi)
 
             # Log the response for debugging purposes
             logger.info(f"Fakenodo response: {fakenodo_response_json}")
@@ -128,9 +131,16 @@ def list_dataset():
 def upload():
     file = request.files["file"]
     temp_folder = current_user.temp_folder()
+    publication_doi = request.form.get("publication_doi")
+
 
     if not file or not file.filename.endswith(".uvl"):
         return jsonify({"message": "No valid file"}), 400
+    
+    if publication_doi:
+        # Regex to check the DOI format "10.xxxx"
+        if not re.match(r"^10\.\d{4}$", publication_doi):
+            return jsonify({"message": "Invalid DOI format. Please enter a valid DOI like 10.xxxx"}), 400
 
     # create temp folder
     if not os.path.exists(temp_folder):
