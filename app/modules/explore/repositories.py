@@ -10,6 +10,7 @@ class ExploreRepository(BaseRepository):
     def __init__(self):
         super().__init__(DataSet)
 
+
     def filter(self, query="", sorting="newest", publication_type="any", tags=[], **kwargs):
         # Normalize and remove unwanted characters
         normalized_query = unidecode.unidecode(query).lower()
@@ -59,3 +60,28 @@ class ExploreRepository(BaseRepository):
             datasets = datasets.order_by(self.model.created_at.desc())
 
         return datasets.all()
+
+    def get_all_datasets(self):
+        # Recupera todos los datasets desde la base de datos
+        return self.model.query.all()
+
+
+    def advanced_filter(self, filters):
+        datasets = self.get_all_datasets()
+        if filters.get("date_range"):
+            start_date, end_date = filters["date_range"]
+            datasets = [d for d in datasets if start_date <= d.date <= end_date]
+
+        if filters.get("attributes"):
+            for attr, value in filters["attributes"].items():
+                datasets = [d for d in datasets if getattr(d, attr) == value]
+        
+        if filters.get("keywords"):
+            keywords = filters["keywords"]
+            datasets = [d for d in datasets if any(keyword in d.description for keyword in keywords)]
+        
+        for key, value in filters.items():
+            if key not in ["date_range", "attributes", "keywords"]:
+                datasets = [d for d in datasets if getattr(d, key) == value]
+        
+        return datasets
