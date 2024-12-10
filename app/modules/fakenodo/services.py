@@ -21,24 +21,21 @@ class FakenodoService(BaseService):
     def __init__(self):
         self.fakenodo_repository = FakenodoRepository()
 
-    def create_new_fakenodo(self, ds_meta_data: DSMetaData) -> dict:
+    def create_new_fakenodo(self, dataset: DataSet) -> dict:
         """
         Create a new fakenodo in Fakenodo.
 
         Args:
-            ds_meta_data (DSMetaData): The dataset containing the required metadata.
+            dataset (DSMetaData): The dataset containing the required metadata.
 
         Returns:
             dict: A JSON object with the details of the created fakenodo.
         """
-        logger.info("Dataset sending to Fakenodo")
-        logger.info(f"Publication type: {ds_meta_data.publication_type.value}")
-
-        metadata = self._build_metadata(ds_meta_data)
+        metadata = self._build_metadata(dataset)
 
         try:
             fakenodo = self.fakenodo_repository.create_new_fakenodo(meta_data=metadata)
-            return self._build_response(fakenodo, metadata, "Fakenodo successfully created in Fakenodo")
+            return self._build_response(fakenodo, metadata, "Fakenodo successfully created in Fakenodo", None)
         except Exception as error:
             raise Exception(f"Failed to create fakenodo in Fakenodo with error: {str(error)}")
 
@@ -54,41 +51,70 @@ class FakenodoService(BaseService):
         Returns:
             dict: A JSON object containing the details of the uploaded file.
         """
-        uvl_filename = feature_model.fm_meta_data.uvl_filename
-        user_id = current_user.id if user is None else user.id
-        file_path = os.path.join(uploads_folder_name(), f"user_{str(user_id)}", f"dataset_{dataset.id}/", uvl_filename)
+        if fakenodo_id not in self.fakenodo:
+            raise Exception("Deposition not found.")
 
-        request = {
-            "id": fakenodo_id,
-            "file": uvl_filename,
-            "fileSize": os.path.getsize(file_path),
-            "checksum": self._calculate_checksum(file_path),
-            "message": f"File Uploaded to fakenodo with id {fakenodo_id}"
+        file_name = feature_model.fm_meta_data.uvl_filename
+        user_id = current_user.id if user is None else user.id
+        file_path = os.path.join(uploads_folder_name(), f"user_{str(user_id)}", f"dataset_{dataset.id}/", file_name)
+
+        # Simulate saving the file in local storage
+        if not os.path.exists(file_path):
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, 'w') as f:
+                f.write("Simulated file content.")
+
+        # Add the file to the deposition's local record
+        self.depositions[fakenodo_id]["files"].append(file_name)
+
+        file_metadata = {
+            "file_name": file_name,
+            "file_size": os.path.getsize(file_path),
+            "file_url": f"/uploads/user_{current_user.id}/dataset_{dataset.id}/{file_name}"  
         }
 
-        return request
+        return {
+            "message": f"File {file_name} uploaded successfully.",
+            "file_metadata": file_metadata
+        }
 
-    def publish_fakenodo(self, fakenodo_id: int) -> dict:
+    def publish_fakenodo(self, fakenodo_id: str) -> dict:
         """
         Publish a fakenodo in Fakenodo.
 
         Args:
-            fakenodo_id (int): The unique identifier of the fakenodo in Fakenodo.
+            fakenodo_id (str): The unique identifier of the fakenodo in Fakenodo.
 
         Returns:
             dict: A JSON object containing the details of the published fakenodo.
         """
-        fakenodo = Fakenodo.query.get(fakenodo_id)
+        # Assuming depositions are stored in a dictionary or similar structure
+        fakenodo = self.depositions.get(fakenodo_id)
+
         if not fakenodo:
-            raise Exception("Error 404: Fakenodo not found")
+            # Raise an error if the fakenodo with the provided ID is not found
+            raise Exception(f"Fakenodo with ID {fakenodo_id} not found.")
 
         try:
-            fakenodo.doi = f"fakenodo.doi.{fakenodo_id}"
-            fakenodo.status = "published"
-            self.fakenodo_repository.update(fakenodo)
-            return self._build_response(fakenodo, fakenodo.meta_data, "Fakenodo published successfully in Fakenodo")
+            # Simulate generating a DOI for the fakenodo
+            fakenodo["doi"] = f"fakenodo.doi.{fakenodo_id}"
+            fakenodo["status"] = "published"  # Mark the fakenodo as published
+
+            # Update the fakenodo in your storage (e.g., database or dictionary)
+            self.depositions[fakenodo_id] = fakenodo
+
+            # Return a success response with the fakenodo details
+            response = {
+                "id": fakenodo_id,
+                "status": "published",
+                "conceptdoi": fakenodo["doi"],  # Use the generated DOI here
+                "message": "Fakenodo published successfully in Fakenodo."
+            }
+            return response
+
         except Exception as error:
-            raise Exception(f"Failed to publish fakenodo with errors: {str(error)}")
+            # Handle any errors that occur during the process and raise a new exception
+            raise Exception(f"Failed to publish fakenodo with error: {str(error)}")
 
     def get_fakenodo(self, fakenodo_id: int) -> dict:
         """
@@ -104,7 +130,7 @@ class FakenodoService(BaseService):
         if not fakenodo:
             raise Exception("Fakenodo not found")
 
-        return self._build_response(fakenodo, fakenodo.meta_data, "Fakenodo successfully retrieved from Fakenodo")
+        return self._build_response(fakenodo, fakenodo.meta_data, "Fakenodo successfully retrieved from Fakenodo", fakenodo.doi)
 
     def get_doi(self, fakenodo_id: int) -> str:
         """
@@ -127,41 +153,41 @@ class FakenodoService(BaseService):
             fakenodo.meta_data["doi"] = generated_doi
         return fakenodo.meta_data["doi"]
 
-    def _build_metadata(self, ds_meta_data: DSMetaData) -> dict:
+    def _build_metadata(self, dataset: DSMetaData) -> dict:
         """
         Build metadata JSON from DSMetaData.
 
         Args:
-            ds_meta_data (DSMetaData): The dataset metadata.
+            dataset (DSMetaData): The dataset metadata.
 
         Returns:
             dict: The metadata JSON.
         """
         return {
-            "title": ds_meta_data.title,
-            "upload_type": "dataset" if ds_meta_data.publication_type.value == "none" else "publication",
+            "title": dataset.ds_meta_data.title,
+            "upload_type": "dataset" if dataset.ds_meta_data.publication_type.value == "none" else "publication",
             "publication_type": (
-                ds_meta_data.publication_type.value
-                if ds_meta_data.publication_type.value != "none"
+                dataset.ds_meta_data.publication_type.value
+                if dataset.ds_meta_data.publication_type.value != "none"
                 else None
             ),
-            "description": ds_meta_data.description,
+            "description": dataset.ds_meta_data.description,
             "creators": [
                 {
                     "name": author.name,
                     **({"affiliation": author.affiliation} if author.affiliation else {}),
                     **({"orcid": author.orcid} if author.orcid else {}),
                 }
-                for author in ds_meta_data.authors
+                for author in dataset.ds_meta_data.authors
             ],
             "keywords": (
-                ["uvlhub"] if not ds_meta_data.tags else ds_meta_data.tags.split(", ") + ["uvlhub"]
+                ["uvlhub"] if not dataset.ds_meta_data.tags else dataset.ds_meta_data.tags.split(", ") + ["uvlhub"]
             ),
             "access_right": "open",
             "license": "CC-BY-4.0",
         }
 
-    def _build_response(self, fakenodo, meta_data, message) -> dict:
+    def _build_response(self, fakenodo, meta_data, message, doi) -> dict:
         """
         Build a response JSON.
 
@@ -174,7 +200,8 @@ class FakenodoService(BaseService):
             dict: The response JSON.
         """
         return {
-            "id": fakenodo.id,
+            "deposition_id": fakenodo.id,  # ID from the repository
+            "doi": doi,
             "meta_data": meta_data,
             "message": message
         }
@@ -199,13 +226,4 @@ class FakenodoService(BaseService):
             raise Exception(f"Error calculating checksum for file {file_path}: {str(e)}")
 
     def _generate_doi(self, fakenodo_id: int) -> str:
-        """
-        Generate a DOI for a fakenodo.
-
-        Args:
-            fakenodo_id (int): The unique identifier of the fakenodo.
-
-        Returns:
-            str: The generated DOI.
-        """
-        return f"10.5281/{fakenodo_id}"
+        return f"10.5281/dataset{fakenodo_id}"
