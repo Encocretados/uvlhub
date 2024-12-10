@@ -5,7 +5,8 @@ from app.modules.auth import auth_bp
 from app.modules.auth.forms import SignupForm, LoginForm, EmailValidationForm
 from app.modules.auth.services import AuthenticationService
 from app.modules.profile.services import UserProfileService
-import random
+import pyotp
+import os
 
 authentication_service = AuthenticationService()
 user_profile_service = UserProfileService()
@@ -90,9 +91,7 @@ def email_validation():
         )
 
     if request.method == 'GET':
-        piece_a = random.randint(100, 999)
-        piece_b = random.randint(100, 999)
-        random_key = 999999 - int(str(piece_a) + str(piece_b))
+        random_key = pyotp.TOTP(str(os.getenv('SECRET_CODE_GENERATOR'))).now()
         session['key'] = random_key
         authentication_service.send_email(email, random_key)
     return render_template('auth/email_validation_form.html', form=form, email=email)

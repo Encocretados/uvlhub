@@ -17,7 +17,7 @@ def test_client(test_client):
     for module testing (por example, new users)
     """
     with test_client.application.app_context():
-        user_test = User(email='uvlhub.reply@gmail.com', password='uvl12hub34')
+        user_test = User(email='uvlhub.reply@gmail.com', p_code='uvl12hub34')
         db.session.add(user_test)
         db.session.commit()
 
@@ -37,9 +37,9 @@ def test_edit_profile_page_get(test_client):
 
     time.sleep(5)
     email = "uvlhub.reply@gmail.com"
-    test_password = "uvl12hub34"
+    p_code = "uvl12hub34"
     clave = authentication_service.get_validation_email_key()
-    validation_response = validates_email(test_client, email, test_password, clave)
+    validation_response = validates_email(test_client, email, p_code, clave)
     assert validation_response.status_code == 200, "Email key validation unsuccessful"
 
     response = test_client.get("/profile/edit")
