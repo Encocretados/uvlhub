@@ -21,7 +21,7 @@ class FakenodoService(BaseService):
     def __init__(self):
         self.fakenodo_repository = FakenodoRepository()
 
-    def create_new_fakenodo(self, dataset: DataSet) -> dict:
+    def create_new_fakenodo(self, dataset: DataSet, publication_doi: str = None) -> dict:
         """
         Create a new fakenodo in Fakenodo.
 
@@ -31,11 +31,19 @@ class FakenodoService(BaseService):
         Returns:
             dict: A JSON object with the details of the created fakenodo.
         """
+        fakenodo_id = dataset.id
+
+        # If publication DOI is provided and valid, use it; otherwise, generate a DOI
+        if publication_doi:
+            fake_doi = f"{publication_doi}/dataset{fakenodo_id}"
+        else:
+            fake_doi = None
+
         metadata = self._build_metadata(dataset)
 
         try:
             fakenodo = self.fakenodo_repository.create_new_fakenodo(meta_data=metadata)
-            return self._build_response(fakenodo, metadata, "Fakenodo successfully created in Fakenodo", None)
+            return self._build_response(fakenodo, metadata, "Fakenodo successfully created in Fakenodo", fake_doi)
         except Exception as error:
             raise Exception(f"Failed to create fakenodo in Fakenodo with error: {str(error)}")
 
@@ -225,5 +233,6 @@ class FakenodoService(BaseService):
         except Exception as e:
             raise Exception(f"Error calculating checksum for file {file_path}: {str(e)}")
 
-    def _generate_doi(self, fakenodo_id: int) -> str:
-        return f"10.5281/dataset{fakenodo_id}"
+    def _generate_doi(self, deposition_id):
+        """Generate a fake DOI based on the deposition ID."""
+        return f"10.5281/dataset{deposition_id}"
