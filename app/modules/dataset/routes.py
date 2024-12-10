@@ -71,19 +71,21 @@ def create_dataset():
         # data = {}
         try:
             # Create a new deposition in Fakenodo (or Zenodo) using the dataset
-            fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
+            fakenodo_response_json = fakenodo_service.create_new_fakenodo(dataset)
 
             # Log the response for debugging purposes
             logger.info(f"Fakenodo response: {fakenodo_response_json}")
 
             # Check if the response contains the necessary deposition information (deposition_id and doi)
-            if 'deposition_id' in fakenodo_response_json and 'doi' in fakenodo_response_json:
+            if 'deposition_id' in fakenodo_response_json:
                 deposition_id = fakenodo_response_json.get("deposition_id")  # Update to the correct key name
-                deposition_doi = fakenodo_response_json.get("doi")
 
-                # Update dataset metadata with the deposition ID and DOI
-                dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id,
+                if 'doi' in fakenodo_response_json:
+                    deposition_doi = fakenodo_response_json.get("doi")
+                    dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id,
                                                   dataset_doi=deposition_doi)
+                else:
+                    dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id)
 
                 # Return success message with DOI
                 return jsonify({
