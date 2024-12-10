@@ -90,9 +90,9 @@ def email_validation():
         )
 
     if request.method == 'GET':
-        pseudo_random_key_a = random.randint(100, 999)
-        pseudo_random_key_b = random.randint(100, 999)
-        random_key = str(pseudo_random_key_a) + str(pseudo_random_key_b)
+        piece_a = random.randint(100, 999)
+        piece_b = random.randint(100, 999)
+        random_key = 999999 - int(str(piece_a) + str(piece_b))
         session['key'] = random_key
         authentication_service.send_email(email, random_key)
     return render_template('auth/email_validation_form.html', form=form, email=email)

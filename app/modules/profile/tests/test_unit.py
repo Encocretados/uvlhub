@@ -37,9 +37,9 @@ def test_edit_profile_page_get(test_client):
 
     time.sleep(5)
     email = "uvlhub.reply@gmail.com"
-    password = "uvl12hub34"
+    test_password = "uvl12hub34"
     clave = authentication_service.get_validation_email_key()
-    validation_response = validates_email(test_client, email, password, clave)
+    validation_response = validates_email(test_client, email, test_password, clave)
     assert validation_response.status_code == 200, "Email key validation unsuccessful"
 
     response = test_client.get("/profile/edit")
