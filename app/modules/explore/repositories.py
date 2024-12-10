@@ -71,7 +71,7 @@ class ExploreRepository(BaseRepository):
         if filters.get("date_range"):
             start_date, end_date = filters["date_range"]
             datasets = [d for d in datasets if start_date <= d.date <= end_date]
-        
+
         if filters.get("attributes"):
             for attr, value in filters["attributes"].items():
                 datasets = [d for d in datasets if getattr(d, attr) == value]
