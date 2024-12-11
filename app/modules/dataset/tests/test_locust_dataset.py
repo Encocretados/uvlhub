@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 from locust import HttpUser, task, between
 import random
 
