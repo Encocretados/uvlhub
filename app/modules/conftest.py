@@ -15,6 +15,31 @@ def test_app():
         yield test_app
 
 
+@pytest.fixture(scope="module")
+def test_user(test_app):
+    """
+    Crea un usuario de prueba en la base de datos y lo asegura en la sesión.
+    """
+    with test_app.app_context():
+        from app.modules.auth.models import User
+        
+        # Crea un nuevo usuario
+        user = User(email="user1@example.com", password="1234")
+
+        # Añádelo a la sesión y guarda
+        db.session.add(user)
+        db.session.commit()
+
+        # Asegúrate de que la instancia esté vinculada a la sesión
+        db.session.flush()
+        db.session.refresh(user)
+
+        return user
+
+
+     
+
+
 @pytest.fixture(scope='module')
 def test_client(test_app):
 
