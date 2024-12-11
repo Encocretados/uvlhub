@@ -1,6 +1,7 @@
 from locust import HttpUser, task, between
 import random
-
+from gevent import monkey
+monkey.patch_all(thread=False)
 
 class ApiLoadTest(HttpUser):
     # Definir el tiempo entre cada tarea
