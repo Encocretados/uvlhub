@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  issues: write
+
 jobs:
   check-for-bugs:
     runs-on: ubuntu-latest
@@ -37,10 +40,20 @@ jobs:
         run: |
           # Iniciar la aplicación Flask en segundo plano
           nohup flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 &
-          sleep 5
+          
+          # Esperar a que la aplicación esté lista
+          for i in {1..10}; do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000)
+            if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 300 ]; then
+              break
+            fi
+            sleep 5
+          done
           
           # Verificar si la aplicación está corriendo correctamente
-          curl -f http://localhost:5000 || echo "Initialization failed" > error.log
+          if [ "$HTTP_STATUS" -ne 200 ] && [ "$HTTP_STATUS" -ne 300 ]; then
+            echo "Initialization failed with status $HTTP_STATUS" > error.log
+          fi
           
           # Verificar si hay errores
           if [ -s error.log ]; then
@@ -50,7 +63,7 @@ jobs:
           fi
 
       - name: Create an issue for bugs
-        if: ${{ steps.run-app.outputs.error == 'true' }}
+        if: env.error == 'true'
         uses: peter-evans/create-issue-from-file@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +75,7 @@ jobs:
             high
 
       - name: Print logs
-        if: ${{ steps.run-app.outputs.error == 'true' }}
+        if: env.error == 'true'
         run: |
           echo "Initialization failed. Printing logs:"
           cat error.log
