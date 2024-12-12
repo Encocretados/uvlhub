@@ -56,12 +56,26 @@ jobs:
             echo "error=false" >> $GITHUB_ENV
           fi
 
+      - name: Check Application Accessibility
+        id: check-access
+        run: |
+          # Intentar acceder a la aplicación en el puerto 5000
+          if ! curl -s http://localhost:5000 > /dev/null; then
+            echo "Application is not accessible on port 5000." > access_error.log
+            echo "error=true" >> $GITHUB_ENV
+          fi
+          
+          # Verificar si hay errores de acceso
+          if [ -s access_error.log ]; then
+            echo "error=true" >> $GITHUB_ENV
+          fi
+
       - name: Create an issue for bugs
         if: env.error == 'true'
         uses: peter-evans/create-issue-from-file@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Bug Detected: Initialization Error"
+          title: "Bug Detected: Initialization or Accessibility Error"
           content-filepath: ./AUTO-ISSUE.md
           labels: |
             bug
@@ -71,6 +85,7 @@ jobs:
       - name: Print logs
         if: env.error == 'true'
         run: |
-          echo "Initialization failed. Printing logs:"
-          cat error.log
-          cat app.log
+          echo "Initialization or Accessibility failed. Printing logs:"
+          cat error.log || true
+          cat access_error.log || true
+          cat app.log || true
