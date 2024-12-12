@@ -19,8 +19,7 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Initialize Application
-        id: run-app
+      - name: Install dependencies
         run: |
           # Crear y activar el entorno virtual
           python -m venv venv
@@ -32,9 +31,16 @@ jobs:
           # Instalar dependencias
           pip install -r requirements.txt
           pip install -e ./
+
+      - name: Initialize Application
+        id: run-app
+        run: |
+          # Iniciar la aplicación Flask en segundo plano
+          nohup flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 &
+          sleep 5
           
-          # Iniciar la aplicación Flask
-          flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 || echo "Initialization failed" > error.log
+          # Verificar si la aplicación está corriendo correctamente
+          curl -f http://localhost:5000 || echo "Initialization failed" > error.log
           
           # Verificar si hay errores
           if [ -s error.log ]; then
