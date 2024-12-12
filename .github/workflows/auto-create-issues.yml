@@ -1,22 +1,51 @@
-name: Auto Create Issue
+name: Bug Report on Application Error
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'
-  workflow_dispatch:
+  workflow_dispatch: 
+  push: 
+    branches:
+      - main
 
 jobs:
-  create-issue:
+  check-for-bugs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize Application
+        id: run-app
+        run: |
+          # Crear y activar el entorno virtual
+          python3.12 -m venv venv
+          source venv/bin/activate
+          
+          # Actualizar pip
+          pip install --upgrade pip
+          
+          # Instalar dependencias
+          pip install -r requirements.txt
+          pip install -e ./
+          
+          # Iniciar la aplicación Flask
+          flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 || echo "Initialization failed" > error.log
+          
+          # Verificar si hay errores
+          if [ -s error.log ]; then
+            echo "error=true" >> $GITHUB_ENV
+          else
+            echo "error=false" >> $GITHUB_ENV
+          fi
+
       - name: Create an issue for bugs
+        if: ${{ steps.run-app.outputs.error == 'true' }}
         uses: peter-evans/create-issue-from-file@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Bug Detected: Initialization or Accessibility Error"
+          title: "Bug Detected: Initialization Error"
           content-filepath: ./AUTO-ISSUE.md
           labels: |
             bug
-            help wanted
+            hel wanted
             high
