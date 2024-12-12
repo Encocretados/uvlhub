@@ -8,9 +8,8 @@ from app import ConfigManager as config
 from unittest.mock import patch
 from app.modules import auth 
 from flask import *
-import os
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+SECRET_KEY = "test_secret_key"
 ACCESS_TOKEN_EXPIRES = 3600  # 1 hora
 
 def test_generate_access_token(test_client, test_user):
@@ -61,7 +60,6 @@ def test_protected_api_route_no_token(test_client):
     response = test_client.get('/protected-api')
     assert response.status_code == 401
     assert response.json["message"] == "Token missing"
-
 
 
 def test_protected_api_route_with_valid_token(test_client, test_user):
