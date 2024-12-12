@@ -39,18 +39,11 @@ jobs:
         id: run-app
         run: |
           # Iniciar la aplicación Flask en segundo plano
-          nohup flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 &
-          
-          # Esperar a que la aplicación esté lista
-          for i in {1..10}; do
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5000)
-            if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 300 ]; then
-              break
-            fi
-            sleep 5
-          done
+          nohup flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 & 
+          sleep 5
           
           # Verificar si la aplicación está corriendo correctamente
+          HTTP_STATUS=$(curl -w "%{http_code}" http://localhost:5000)
           if [ "$HTTP_STATUS" -ne 200 ] && [ "$HTTP_STATUS" -ne 300 ]; then
             echo "Initialization failed with status $HTTP_STATUS" > error.log
           fi
