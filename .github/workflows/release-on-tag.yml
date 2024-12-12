@@ -1,0 +1,119 @@
+name: Release Automation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main  
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch specific branch
+        run: git fetch origin main
+        
+      - name: Determine release type from commits
+        id: determine_release_type
+        run: |
+
+          # Inicializar el tipo de release como el menos importante
+          RELEASE_TYPE="unknown"
+
+          # Obtener el rango de commits entre la última versión y HEAD
+          COMMITS=$(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s")
+
+           # Iterar sobre todos los commits y buscar los tipos
+          for COMMIT_MESSAGE in $COMMITS; do
+            echo "Procesando commit: $COMMIT_MESSAGE"
+            if echo "$COMMIT_MESSAGE" | grep -qE '^feat\('; then
+              RELEASE_TYPE="major"
+              echo "Se ha detectado uno de tipo feat"
+              break
+            elif echo "$COMMIT_MESSAGE" | grep -qE '^fix\('; then
+              [ "$RELEASE_TYPE" != "minor" ] && RELEASE_TYPE="minor"
+              echo "Se ha detectado uno de tipo fix"
+              break
+            elif echo "$COMMIT_MESSAGE" | grep -qE '^refactor\('; then
+              [ "$RELEASE_TYPE" != "minor" ] && [ "$RELEASE_TYPE" != "major" ] && RELEASE_TYPE="patch"
+            elif echo "$COMMIT_MESSAGE" | grep -qE '^test\('; then
+              [ "$RELEASE_TYPE" != "minor" ] && [ "$RELEASE_TYPE" != "major" ] && RELEASE_TYPE="patch"
+            fi
+          done < <(git log origin/master..HEAD --pretty=format:"%s")
+
+          echo "RELEASE_TYPE=${RELEASE_TYPE}" >> $GITHUB_ENV
+          echo "Release type: $RELEASE_TYPE"
+
+
+      - name: Determine new version
+        id: determine_version
+        run: |
+          MAJOR=0
+          MINOR=0
+          PATCH=0
+
+          # Obtener la última versión
+          if git describe --tags --abbrev=0; then
+            LAST_VERSION=$(git describe --tags --abbrev=0)
+            MAJOR=$(echo $LAST_VERSION | cut -d. -f1 | cut -dv -f2)
+            MINOR=$(echo $LAST_VERSION | cut -d. -f2)
+            PATCH=$(echo $LAST_VERSION | cut -d. -f3)
+          fi
+
+          case $RELEASE_TYPE in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+          echo "Nueva versión: $NEW_VERSION"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "refs/tags/${{ env.NEW_VERSION }}" >/dev/null 2>&1; then
+            echo "Tag already exists"
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Release
+        if: env.TAG_EXISTS == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.NEW_VERSION }}
+          release_name: "Release ${{ env.NEW_VERSION }}"
+          body: "Automated release based on commit messages."
+          draft: false
+          prerelease: false
