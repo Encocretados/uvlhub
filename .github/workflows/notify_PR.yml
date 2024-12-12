@@ -3,6 +3,7 @@ name: Notify PR Activity to All Collaborators
 on:
   pull_request:
     types: [opened, closed]
+  workflow_dispatch:
 
 jobs:
   email_notification:
