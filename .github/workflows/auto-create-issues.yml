@@ -60,3 +60,10 @@ jobs:
             bug
             help wanted
             high
+
+      - name: Print logs
+        if: ${{ steps.run-app.outputs.error == 'true' }}
+        run: |
+          echo "Initialization failed. Printing logs:"
+          cat error.log
+          cat app.log
