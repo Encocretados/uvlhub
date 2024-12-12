@@ -2,12 +2,25 @@ from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import DataSet
 from flask import render_template, redirect, session, url_for, request
 from flask_login import login_required, current_user
-
+from flask import Blueprint, render_template
+from .repositories import get_user_profile
 from app import db
 from app.modules.profile import profile_bp
 from app.modules.profile.forms import UserProfileForm
 from app.modules.profile.services import UserProfileService
+from app.modules.profile.repositories import get_user_profile
 
+
+
+profile_bp = Blueprint('profile', __name__)
+
+@profile_bp.route('/profile/view')
+def view_profile():
+    user_profile = get_user_profile()   
+    if user_profile:
+        return render_template('profile/view_profile.html', profile=user_profile)
+    return "Profile not found", 404
+ 
 
 @profile_bp.route("/profile/edit", methods=["GET", "POST"])
 @login_required
