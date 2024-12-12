@@ -12,9 +12,7 @@ class ExploreRepository(BaseRepository):
 
     def filter(
         self, query="", sorting="newest", publication_type="any", tags=[],
-        after_date=None, before_date=None,
-        min_features=None, max_features=None, min_products=None, max_products=None,
-        min_size=None, max_size=None, size_unit="KB", author_name="", **kwargs
+        after_date=None, before_date=None, min_size=None, max_size=None, size_unit="KB", author_name=None, **kwargs
     ):
         # Normaliza y limpia el texto de búsqueda
         normalized_query = unidecode.unidecode(query).lower()
@@ -49,28 +47,18 @@ class ExploreRepository(BaseRepository):
             datasets = datasets.filter(or_(*[DSMetaData.tags.ilike(f"%{tag}%") for tag in tags]))
             print(f"After tags filter: {datasets.count()}")  # Log después del filtro de etiquetas
 
-        # Aplica filtro por autor
+        # Filtra por autor si se proporciona
         if author_name:
-            datasets = datasets.filter(or_(
-                Author.name.ilike(f"%{author_name}%"),
-                Author.affiliation.ilike(f"%{author_name}%"),
-                Author.orcid.ilike(f"%{author_name}%")
-            ))
-            print(f"After author_name filter: {datasets.count()}")  # Log después del filtro de autor
+            datasets = datasets.filter(Author.name.ilike(f"%{author_name}%"))
+            print(f"After author filter: {datasets.count()}")  # Log después del filtro de autor
 
-        # Filtros relacionados con métricas de características y productos
-        if min_features is not None:
-            datasets = datasets.filter(DSMetrics.feature_count >= min_features)
-            print(f"After min_features filter: {datasets.count()}")  # Log después del filtro de min_features
-        if max_features is not None:
-            datasets = datasets.filter(DSMetrics.feature_count <= max_features)
-            print(f"After max_features filter: {datasets.count()}")  # Log después del filtro de max_features
-        if min_products is not None:
-            datasets = datasets.filter(DSMetrics.product_count >= min_products)
-            print(f"After min_products filter: {datasets.count()}")  # Log después del filtro de min_products
-        if max_products is not None:
-            datasets = datasets.filter(DSMetrics.product_count <= max_products)
-            print(f"After max_products filter: {datasets.count()}")  # Log después del filtro de max_products
+        # Ordena los resultados por fecha de creación
+        if sorting == "oldest":
+            datasets = datasets.order_by(DataSet.created_at.asc())
+        else:
+            datasets = datasets.order_by(DataSet.created_at.desc())
+
+        print(f"Final dataset count: {datasets.count()}")  # Log final después de aplicar todos los filtros
 
         # Filtra por rango de fechas, si se proporcionan
         if after_date and before_date:
@@ -88,50 +76,66 @@ class ExploreRepository(BaseRepository):
             datasets = datasets.filter(or_(*filters))
             print(f"After title and description filter: {datasets.count()}")  # Log después del filtro de título y descripción
 
-        # Filtrar por tamaño
-        if min_size:
-            min_size = self.convert_to_bytes(min_size, size_unit)
-        if max_size:
-            max_size = self.convert_to_bytes(max_size, size_unit)
+        def safe_convert_to_float(value):
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return None
 
-        # Filtro por tamaño en bytes
-        if min_size:
-            datasets = datasets.filter(DataSet.total_size_in_bytes >= min_size)
-            print(f"After min_size filter: {datasets.count()}")  # Log después del filtro de min_size
-        if max_size:
-            datasets = datasets.filter(DataSet.total_size_in_bytes <= max_size)
-            print(f"After max_size filter: {datasets.count()}")  # Log después del filtro de max_size
+        # Filtrado por tamaño (en KB, pero puede ser convertido a bytes si es necesario)
+        def convert_to_bytes(size: float, unit: str):
+            if size is None:
+                return None
+            if unit == "bytes":
+                return size
+            elif unit == "KB":
+                return size * 1024
+            elif unit == "MB":
+                return size * 1024 * 1024
+            elif unit == "GB":
+                return size * 1024 * 1024 * 1024
+            return None  # Manejo por defecto si la unidad es desconocida
 
-        # Ordenar los resultados por fecha de creación
-        if sorting == "oldest":
-            datasets = datasets.order_by(DataSet.created_at.asc())
-        else:
-            datasets = datasets.order_by(DataSet.created_at.desc())
+        # Convertir tamaños mínimos y máximos a números válidos antes de pasarlos
+        min_size = safe_convert_to_float(min_size)
+        max_size = safe_convert_to_float(max_size)
 
-        print(f"Final dataset count: {datasets.count()}")  # Log final después de aplicar todos los filtros
+        # Convertir tamaños a bytes según la unidad
+        min_size = convert_to_bytes(min_size, size_unit) if min_size is not None else None
+        max_size = convert_to_bytes(max_size, size_unit) if max_size is not None else None
 
-        # Retorna los datasets filtrados
-        return datasets.all()
+        # Depuración
+        print(f"Min Size: {min_size} bytes, Max Size: {max_size} bytes, Size Unit: {size_unit}")
 
-    def convert_to_bytes(self, size, unit):
-        """Convierte el tamaño dado a bytes basado en la unidad."""
-        size = float(size)
-        unit = unit.lower()
+        # Obtener todos los resultados y filtrar por tamaño usando get_file_total_size()
+        # Después de la consulta inicial y la ordenación:
+        filtered_datasets = []
+        for dataset in datasets.all():
+            # Obtener el tamaño total usando el método definido
+            total_size = dataset.get_file_total_size()
 
-        # Mapeo de unidades a multiplicadores en bytes
-        unit_multipliers = {
-            'b': 1,  # byte
-            'kb': 1024,  # kilobyte
-            'mb': 1024 ** 2,  # megabyte
-            'gb': 1024 ** 3,  # gigabyte
-            'tb': 1024 ** 4,  # terabyte
-        }
+            # Asegúrate de que los datos se impriman para depuración
+            print(f"Dataset ID: {dataset.id}, Total size: {total_size} bytes")
 
-        # Asegúrate de que la unidad esté bien definida
-        if unit not in unit_multipliers:
-            raise ValueError("Unidad de tamaño no válida.")
+            # Validar el rango del tamaño
+            if min_size is not None and total_size <= min_size:
+                print(f"Excluido por ser menor al mínimo ({min_size} bytes).")
+                continue
+            if max_size is not None and total_size >= max_size:
+                print(f"Excluido por ser mayor al máximo ({max_size} bytes).")
+                continue
 
-        return size * unit_multipliers[unit]
+            # Si pasa las condiciones, añadirlo a la lista final
+            filtered_datasets.append(dataset)
+
+        # Imprimir resumen del filtrado
+        print(f"Total datasets mostrados: {len(filtered_datasets)}")
+
+        for Dataset in datasets:
+            print("Total size: " + str(Dataset.get_file_total_size()))
+
+        return filtered_datasets
+
 
     def build_filters(self, cleaned_query):
         """Construye los filtros de búsqueda a partir del texto limpio"""

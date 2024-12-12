@@ -15,6 +15,7 @@ def index():
         sorting = request.args.get('sorting', 'newest')
         publication_type = request.args.get('publication_type', 'any')
         tags = request.args.getlist('tags')
+        author_name = request.args.get('author_name', '').strip()
 
         # Validar y ajustar las fechas proporcionadas
         if after_date:
@@ -38,7 +39,8 @@ def index():
             publication_type=publication_type,
             tags=tags,
             after_date=after_date,
-            before_date=before_date
+            before_date=before_date,
+            author_name=author_name
         )
 
         # Renderiza el formulario y los resultados
@@ -50,6 +52,7 @@ def index():
         criteria = request.get_json()
         after_date = criteria.get('after_date')
         before_date = criteria.get('before_date')
+        author_name = criteria.get('author_name', '').strip()
 
         # Convierte las fechas si están presentes
         if after_date:
@@ -71,6 +74,7 @@ def index():
         # Actualiza el criterio de búsqueda con las fechas procesadas
         criteria['after_date'] = after_date
         criteria['before_date'] = before_date
+        criteria['author_name'] = author_name
 
         # Ejecuta el filtro y devuelve los resultados como JSON
         datasets = ExploreService().filter(**criteria)

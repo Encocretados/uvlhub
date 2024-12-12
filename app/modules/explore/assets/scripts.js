@@ -124,15 +124,12 @@ function clearFilters() {
         option.checked = option.value === "newest";
     });
 
-    // Resetear filtros de características, productos, fechas y tamaños
-    document.querySelector('#min_features').value = "";
-    document.querySelector('#max_features').value = "";
-    document.querySelector('#min_products').value = "";
-    document.querySelector('#max_products').value = "";
+    // Resetear filtros de fechas, tamaños y autor
     document.querySelector('#after_date').value = "";
     document.querySelector('#before_date').value = "";
     document.querySelector('#min_size').value = "";
     document.querySelector('#max_size').value = "";
+    document.querySelector('#author_name').value = "";  // Resetear el nombre del autor
 
     // Ejecutar una nueva consulta con los filtros restablecidos
     send_query();
