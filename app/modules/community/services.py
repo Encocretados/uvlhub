@@ -16,7 +16,7 @@ class CommunityService(BaseService):
         description = data.get("description")
         user = data.get("user")
         # Crear la comunidad
-        community = Community(name=name, description=description)
+        community = Community(name=name, description=description, creator_id=user.id)
         # Asociar el usuario creador con la comunidad
         community.members.append(user)
         # Guardar en la base de datos

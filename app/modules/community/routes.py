@@ -6,7 +6,7 @@ from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
 from flask_login import login_required, current_user
 
-from app.modules.community.forms import CommunityForm
+from app.modules.community.forms import CommunityForm, EditCommunityForm
 from app.modules.community import community_bp
 from app.modules.community.services import CommunityService
 from app import db, community_members
@@ -101,4 +101,54 @@ def leave_community(community_id):
 
     # Redirigir al usuario a la página de la comunidad
     return redirect(url_for('community.get_community', community_id=community_id))
+
+@community_bp.route('/community/<int:community_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_community(community_id):
+    community = Community.query.get_or_404(community_id)
+    
+    # Verificar si el usuario actual es el creador
+    if community.creator_id != current_user.id:
+        flash("You are not authorized to edit this community.", "danger")
+        return redirect(url_for('community.show_community', community_id=community.id))
+    
+    form = EditCommunityForm(obj=community)  # Precargar datos actuales
+    
+    if form.validate_on_submit():
+        community.name = form.name.data
+        community.description = form.description.data
+        try:
+            community.save()
+            flash("Community updated successfully!", "success")
+            return redirect(url_for('community.show_community', community_id=community.id))
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred while updating the community.", "danger")
+            print(e)
+    
+    return render_template('community/edit_community.html', form=form, community=community)
+
+
+@community_bp.route('/community/<int:community_id>/delete', methods=['POST'])
+@login_required
+def delete_community(community_id):
+    community = Community.query.get_or_404(community_id)
+    
+    # Verificar si el usuario actual es el creador
+    if community.creator_id != current_user.id:
+        flash("You are not authorized to delete this community.", "danger")
+        return redirect(url_for('community.show_community', community_id=community.id))
+    
+    try:
+        # Eliminar manualmente las relaciones en community_members
+        community.members.clear()
+        db.session.delete(community)
+        db.session.commit()
+        flash("Community deleted successfully.", "success")
+        return redirect(url_for('community.list_community'))
+    except Exception as e:
+        db.session.rollback()
+        flash("An error occurred while deleting the community.", "danger")
+        print(e)
+        return redirect(url_for('community.edit_community', community_id=community.id))
 

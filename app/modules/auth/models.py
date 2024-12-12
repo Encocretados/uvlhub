@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     data_sets = db.relationship('DataSet', backref='user', lazy=True)
     profile = db.relationship('UserProfile', backref='user', uselist=False)
 
-    communities = db.relationship('Community', secondary='community_members', back_populates='members');
+    communities = db.relationship('Community', secondary='community_members', back_populates='members', cascade='all, delete');
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

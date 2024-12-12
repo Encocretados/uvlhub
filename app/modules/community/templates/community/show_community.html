@@ -1,41 +1,50 @@
 {% extends "base_template.html" %}
 
-{% block title %}Community details{% endblock %}
+{% block title %}Community Details{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <!-- Nombre de la comunidad -->
-    <h1 class="mb-3">{{ community.name }}</h1>
+    <h1 class="mb-3 text-center">{{ community.name }}</h1>
     
     <!-- Descripción de la comunidad -->
-    <p class="mb-4">{{ community.description or "No description available." }}</p>
+    <p class="mb-4 text-center">{{ community.description or "No description available." }}</p>
     
-    <!-- Botón para regresar a la lista de comunidades -->
-    <div class="text-start mb-3">
-        <a href="{{ url_for('community.list_community') }}" class="btn btn-secondary">Back to Communities</a>
-    </div>
+    <!-- Contenedor de botones -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <!-- Botón para regresar a la lista de comunidades -->
+        <a href="{{ url_for('community.list_community') }}" class="btn btn-secondary m-2">
+            <i class="bi bi-arrow-left"></i> Back to Communities
+        </a>
 
-    <!-- Botón para ver datasets de la comunidad -->
-    <div class="text-end mb-3">
-        <a href="{{ url_for('community.show_community_datasets', community_id=community.id) }}" class="btn btn-primary">
-            Ver datasets de la comunidad
+        {% if community.creator_id == current_user.id %}
+        <a href="{{ url_for('community.edit_community', community_id=community.id) }}" class="btn btn-warning m-2">
+            <i class="bi bi-pencil-square"></i> Edit Community
+        </a>
+        {% endif %}
+
+        <!-- Botón para ver datasets de la comunidad -->
+        <a href="{{ url_for('community.show_community_datasets', community_id=community.id) }}" class="btn btn-primary m-2">
+            <i class="bi bi-folder"></i>Community Datasets
         </a>
     </div>
 
-    <!-- Botón para unirse a la comunidad, solo si el usuario no es miembro -->
-    {% if not is_member %}
-        <div class="text-center mt-4">
+    <!-- Botón para unirse o dejar la comunidad -->
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        {% if not is_member %}
             <form action="{{ url_for('community.join_community', community_id=community.id) }}" method="post">
-                <button type="submit" class="btn btn-success">Unirme a esta comunidad</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-person-plus"></i> Join Community
+                </button>
             </form>
-        </div>
-    {% else %}
-    <div class="text-center mt-4">
-        <form action="{{ url_for('community.leave_community', community_id=community.id) }}" method="post">
-            <button type="submit" class="btn btn-success">Dejar esta comunidad</button>
-        </form>
+        {% else %}
+            <form action="{{ url_for('community.leave_community', community_id=community.id) }}" method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-person-dash"></i> Leave Community
+                </button>
+            </form>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}
 
