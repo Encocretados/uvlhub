@@ -31,5 +31,6 @@ def test_flamapy_index():
         close_driver(driver)
 
 
+
 # Call the test function
-test_flamapy_index()
+# test_flamapy_index()
