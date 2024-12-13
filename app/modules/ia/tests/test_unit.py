@@ -174,3 +174,20 @@ def test_ia_service_no_intent_detected(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Respuesta vacía de Dialogflow."
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_invalid_json_body(mock_sessions_client, app, client):
+    """Prueba el caso en que el cuerpo de la solicitud no contiene un JSON válido."""
+    
+    ia_service = IaService()
+
+    # Simular una solicitud con cuerpo inválido (no es JSON)
+    with app.test_request_context(data="Texto no JSON", content_type="text/plain"):
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 400
+        assert "error" in data
+        assert data["error"] == "El cuerpo de la solicitud debe ser un JSON válido."
+
+
+

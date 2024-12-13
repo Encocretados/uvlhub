@@ -17,6 +17,9 @@ class IaService(BaseService):
     def ia_service(self):
         try:
             
+            if not request.is_json:
+                return jsonify({"error": "El cuerpo de la solicitud debe ser un JSON válido."}), 400
+        
             user_message = request.json.get('question')
             session_id = request.json.get('user_id')
 
