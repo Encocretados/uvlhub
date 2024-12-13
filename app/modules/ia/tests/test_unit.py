@@ -87,3 +87,18 @@ def test_ia_service_unexpected_dialogflow_response(mock_sessions_client, app, cl
         assert status_code == 500
         assert "error" in data
         assert "Estructura inesperada" in data["error"] 
+
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_empty_question(mock_sessions_client, app, client):
+    """Prueba el caso cuando el campo 'question' está vacío."""
+    
+    ia_service = IaService()
+
+    with app.test_request_context(json={"question": "", "user_id": "123"}):  # Pregunta vacía
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 400
+        assert "error" in data
+        assert data["error"] == "El campo 'question' no puede estar vacío."
+

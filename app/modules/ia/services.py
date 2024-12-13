@@ -20,7 +20,9 @@ class IaService(BaseService):
             user_message = request.json.get('question')
             session_id = request.json.get('user_id')
 
-            if not user_message or not session_id:
+            if not user_message:
+                return jsonify({"error": "El campo 'question' no puede estar vacío."}), 400
+            if not session_id:
                 return jsonify({"error": "Faltan parámetros necesarios."}), 400
 
             
