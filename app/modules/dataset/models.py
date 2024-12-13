@@ -78,6 +78,8 @@ class DataSet(db.Model):
     ds_meta_data = db.relationship('DSMetaData', backref=db.backref('data_set', uselist=False))
     feature_models = db.relationship('FeatureModel', backref='data_set', lazy=True, cascade="all, delete")
 
+    ratings = db.relationship("DatasetRating", backref="dataset", lazy=True)
+
     def name(self):
         return self.ds_meta_data.title
 
@@ -108,6 +110,12 @@ class DataSet(db.Model):
         from app.modules.dataset.services import DataSetService
         return DataSetService().get_uvlhub_doi(self)
 
+    def get_average_rating(self):
+        if not self.ratings:
+            return 0
+        total = sum(rating.rating for rating in self.ratings)
+        return round(total / len(self.ratings), 2)
+
     def to_dict(self):
         return {
             'title': self.ds_meta_data.title,
@@ -127,6 +135,7 @@ class DataSet(db.Model):
             'files_count': self.get_files_count(),
             'total_size_in_bytes': self.get_file_total_size(),
             'total_size_in_human_format': self.get_file_total_size_for_human(),
+            "average_rating": self.get_average_rating(),
         }
 
     def __repr__(self):
@@ -164,3 +173,15 @@ class DOIMapping(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dataset_doi_old = db.Column(db.String(120))
     dataset_doi_new = db.Column(db.String(120))
+
+
+class DatasetRating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    dataset_id = db.Column(db.Integer, db.ForeignKey("data_set.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    rated_at = db.Column(db.DateTime, server_default=db.func.now())
+    __table_args__ = (db.UniqueConstraint('dataset_id', 'user_id', name='unique_dataset_user'),)
+
+    def __repr__(self):
+        return f"DatasetRating<dataset_id={self.dataset_id}, user_id={self.user_id}, rating={self.rating}>"

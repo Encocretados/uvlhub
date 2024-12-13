@@ -20,6 +20,7 @@
     <div class="col-md-8">
         <div style="display: flex; justify-content: space-between;">
             <h1 style="margin-left: 0rem;"><b>{{ dataset.ds_meta_data.title }}</b></h1>
+            
             <div style="display: flex; justify-content: space-between;">
                 <a href="/explore" class="btn btn-primary btn-sm" id="search" style="border-radius: 5px; margin-bottom: 1rem; margin-right: 1rem;">
                     <i data-feather="search" class="center-button-icon"></i> Explore more datasets
@@ -145,6 +146,23 @@
                     {% endfor %} {% endfor %}
                 </div>
 
+            </div>
+        </div>
+        <div class="ratings-wrapper">
+            <div class="ratings-container">
+                <div id="stars" class="ratings" data-datasetid="{{ dataset.id }}">
+                    {% for i in range(1, 6) %}
+                        <span data-rating="{{ i }}" 
+                              class="star 
+                              {% if i <= dataset.get_average_rating()|int %}filled{% elif i - dataset.get_average_rating() < 1 %}half-filled{% endif %}">
+                            ★
+                        </span>
+                    {% endfor %}
+                </div>
+                <div class="rating-details">
+                    <span id="rating-value">{{ dataset.get_average_rating() }} / 5 stars</span>
+                    <span id="rating-count">({{ dataset.ratings|length }} ratings)</span>
+                </div>
             </div>
         </div>
         <div class="card " style="margin-top: 1rem; ">
@@ -398,6 +416,102 @@
             console.error('Failed to copy text: ', err);
         });
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const stars = document.querySelectorAll(".ratings span");
+    const userLoggedIn = JSON.parse("{{ current_user.is_authenticated|tojson }}");
+    let currentRating = 0;
+    // Initialize the current rating on page load
+    stars.forEach(star => {
+        if (star.classList.contains('filled') || star.classList.contains('half-filled')) {
+            currentRating += star.classList.contains('half-filled') ? 0.5 : 1;
+        }
+    });
+    stars.forEach((star, index) => {
+        // Hover behavior
+        star.addEventListener("mouseover", function () {
+            highlightStars(index + 1);
+        });
+        star.addEventListener("mouseout", function () {
+            restoreCurrentRating();
+        });
+        // Click behavior
+        star.addEventListener("click", function () {
+            if (!userLoggedIn) {
+                alert('Please, login to rate a dataset.');
+                return;
+            }
+            const rating = parseFloat(this.dataset.rating);
+            const datasetId = this.parentElement.dataset.datasetid;
+            // Save rating to the server
+            fetch(`/datasets/${datasetId}/rate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentRating = rating; // Update current rating
+                        updateUserVote(rating); // Update stars for personal vote
+                        fetchRatings(datasetId); // Fetch updated rating
+                        showAlert('Thank you for your rating! The dataset statistics have been updated.');
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+    // Highlight stars during hover
+    function highlightStars(rating) {
+        stars.forEach((star, index) => {
+            star.classList.toggle('filled', index < rating);
+        });
+    }
+    // Restore stars to the current personal rating
+    function restoreCurrentRating() {
+        updateUserVote(currentRating);
+    }
+    // Update stars to reflect the user's vote
+    function updateUserVote(rating) {
+        stars.forEach((star, index) => {
+            star.classList.toggle('filled', index < rating);
+            star.classList.remove('half-filled');
+        });
+    }
+    // Fetch and update rating display
+    function fetchRatings(datasetId) {
+        fetch(`/datasets/${datasetId}/ratings`)
+            .then(response => response.json())
+            .then(data => {
+                const ratingValue = document.getElementById('rating-value');
+                const ratingCount = document.getElementById('rating-count');
+                // Update average rating and total ratings
+                ratingValue.textContent = `${data.average_rating} / 5 stars`;
+                ratingCount.textContent = `(${data.total_ratings} ratings)`;
+                // Highlight updated data for visibility
+                [ratingValue, ratingCount].forEach(el => {
+                    el.classList.add('updated');
+                    setTimeout(() => el.classList.remove('updated'), 1000);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    // Show a brief alert (toast-style)
+    function showAlert(message) {
+        const alertBox = document.createElement('div');
+        alertBox.className = 'toast-alert';
+        alertBox.textContent = message;
+        document.body.appendChild(alertBox);
+        // Automatically remove the alert after 3 seconds
+        setTimeout(() => {
+            alertBox.remove();
+        }, 3000);
+    }
+});
 </script>
 
 {% endblock %}

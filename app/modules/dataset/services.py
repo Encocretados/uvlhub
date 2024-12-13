@@ -15,7 +15,8 @@ from app.modules.dataset.repositories import (
     DSDownloadRecordRepository,
     DSMetaDataRepository,
     DSViewRecordRepository,
-    DataSetRepository
+    DataSetRepository,
+    DatasetRatingRepository
 )
 from app.modules.featuremodel.repositories import FMMetaDataRepository, FeatureModelRepository
 from app.modules.hubfile.repositories import (
@@ -48,6 +49,7 @@ class DataSetService(BaseService):
         self.hubfilerepository = HubfileRepository()
         self.dsviewrecord_repostory = DSViewRecordRepository()
         self.hubfileviewrecord_repository = HubfileViewRecordRepository()
+        self.dataset_rating_repository = DatasetRatingRepository()
 
     def move_feature_models(self, dataset: DataSet):
         current_user = AuthenticationService().get_authenticated_user()
@@ -139,7 +141,7 @@ class DataSetService(BaseService):
     def get_uvlhub_doi(self, dataset: DataSet) -> str:
         domain = os.getenv('DOMAIN', 'localhost')
         return f'http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}'
-    
+
     def synchronize_unsynchronized_datasets(self, current_user_id: int, dataset_id: int) -> None:
         # Obtener los datasets no sincronizados
         unsynchronized_datasets = self.repository.get_unsynchronized(current_user_id)
@@ -148,7 +150,7 @@ class DataSetService(BaseService):
         print(f"unsynchronized_datasets: {[d.id for d in unsynchronized_datasets]}")
         print(f"dataset_id: {dataset_id} (type: {type(dataset_id)})")
         dataset = next((d for d in unsynchronized_datasets if d.id == dataset_id), None)
-        
+
         if dataset:
             # Lógica para sincronizar el dataset
             dataset.ds_meta_data.dataset_doi = self.generate_doi_for_dataset(dataset)
@@ -232,3 +234,41 @@ class SizeService():
             return f'{round(size / (1024 ** 2), 2)} MB'
         else:
             return f'{round(size / (1024 ** 3), 2)} GB'
+
+
+class DatasetRatingService(BaseService):
+    def __init__(self):
+        super().__init__(DatasetRatingRepository())
+
+    def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
+        """Allows registering or updating a rating for a dataset."""
+        try:
+            rating_value = int(rating_value)
+        except ValueError:
+            raise ValueError("Rating value must be an integer")
+        if not (1 <= rating_value <= 5):
+            raise ValueError("Rating value must be between 1 and 5")
+        # Check if a previous rating exists
+        existing_rating = self.repository.get_rating_by_user_and_dataset(
+            user_id, dataset_id
+        )
+        if existing_rating:
+            # Update the existing rating
+            existing_rating.rating = rating_value
+            self.repository.save(existing_rating)
+        else:
+            # Create a new rating
+            self.repository.create(
+                user_id=user_id, dataset_id=dataset_id, rating=rating_value
+            )
+
+    def get_dataset_rating_summary(self, dataset_id: int):
+        """Gets the average and total number of ratings for a dataset."""
+        average_rating = self.repository.get_average_rating(dataset_id)
+        total_ratings = self.repository.get_ratings_count(dataset_id)
+        return {"average_rating": average_rating, "total_ratings": total_ratings}
+
+    def get_user_rating(self, user_id: int, dataset_id: int) -> Optional[int]:
+        """Gets the rating given by a user for a specific dataset."""
+        rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+        return rating.rating if rating else None
