@@ -189,5 +189,23 @@ def test_ia_service_invalid_json_body(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "El cuerpo de la solicitud debe ser un JSON válido."
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_excessively_long_question(mock_sessions_client, app, client):
+    """Prueba el caso en que el campo 'question' es excesivamente largo."""
+
+    ia_service = IaService()
+
+    # Crear un mensaje excesivamente largo
+    long_message = "a" * 10001  # Por ejemplo, 10,001 caracteres
+
+    with app.test_request_context(json={"question": long_message, "user_id": "123"}):
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 400
+        assert "error" in data
+        assert data["error"] == "El campo 'question' excede la longitud máxima permitida."
+
+
 
 

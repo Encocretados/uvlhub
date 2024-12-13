@@ -25,6 +25,8 @@ class IaService(BaseService):
 
             if not user_message:
                 return jsonify({"error": "El campo 'question' no puede estar vacío."}), 400
+            if len(user_message) > 10000:  # Ejemplo: Limitar a 10,000 caracteres
+                return jsonify({"error": "El campo 'question' excede la longitud máxima permitida."}), 400
             if not session_id:
                 return jsonify({"error": "Faltan parámetros necesarios."}), 400
 
