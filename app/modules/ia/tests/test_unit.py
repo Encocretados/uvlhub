@@ -153,3 +153,24 @@ def test_ia_service_dialogflow_connection_error(mock_sessions_client, app, clien
         assert "error" in data
         assert data["error"] == "Error de conexión a Dialogflow"
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_no_intent_detected(mock_sessions_client, app, client):
+    """Prueba el caso en que Dialogflow no detecta ninguna intención."""
+    
+    mock_response = MagicMock()
+    mock_response.query_result.fulfillment_text = ""
+    mock_response.query_result.intent = None 
+
+    mock_sessions_client.return_value.session_path.return_value = "mock_session_path"
+    mock_sessions_client.return_value.detect_intent.return_value = mock_response
+
+    ia_service = IaService()
+
+    with app.test_request_context(json={"question": "Hola", "user_id": "123"}):
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 500
+        assert "error" in data
+        assert data["error"] == "Respuesta vacía de Dialogflow."
+
