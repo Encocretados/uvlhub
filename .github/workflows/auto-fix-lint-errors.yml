@@ -3,7 +3,7 @@ name: Auto Fix and Lint Workflow
 on:
   push:
     branches:
-      - main
+      - '**'
 workflow_dispatch:
 
 permissions:
