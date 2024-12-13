@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -33,6 +35,12 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Auto-fix lint errors [bot]" || echo "No changes to commit"
-          git push origin HEAD:efs/heads/${{ github.head_ref }}
+          
+          # Determine the push behavior based on the event type
+          if [ "${{ github.event_name }}" == "push" ]; then
+            git push origin main
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            git push origin HEAD:${{ github.head_ref }}
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
