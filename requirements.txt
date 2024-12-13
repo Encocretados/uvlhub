@@ -115,7 +115,6 @@ PyYAML==6.0.2
 pyzmq==26.0.3
 regex==2024.11.6
 requests==2.32.3
--e git+https://github.com/Encocretados/uvlhub.git@f4a3026ee5d7fe3e1ccb63f77149d95378a5be90#egg=rosemary
 rsa==4.9
 safetensors==0.4.5
 selenium==4.22.0
@@ -151,4 +150,3 @@ WTForms==3.1.2
 zope.event==5.0
 zope.interface==6.4.post2
 zstandard==0.22.0
-pytest-mock==3.11.1
