@@ -20,6 +20,7 @@ load_dotenv()
 class FakenodoService(BaseService):
     def __init__(self):
         self.fakenodo_repository = FakenodoRepository()
+        self.fakenodos = {}  # Initialize depositions as an empty dictionary
 
     def create_new_fakenodo(self, dataset: DataSet, publication_doi: str = None) -> dict:
         """
@@ -59,7 +60,7 @@ class FakenodoService(BaseService):
         Returns:
             dict: A JSON object containing the details of the uploaded file.
         """
-        if fakenodo_id not in self.fakenodo:
+        if fakenodo_id not in self.fakenodos:
             raise Exception("Deposition not found.")
 
         file_name = feature_model.fm_meta_data.uvl_filename
@@ -73,7 +74,7 @@ class FakenodoService(BaseService):
                 f.write("Simulated file content.")
 
         # Add the file to the deposition's local record
-        self.depositions[fakenodo_id]["files"].append(file_name)
+        self.fakenodos[fakenodo_id]["files"].append(file_name)
 
         file_metadata = {
             "file_name": file_name,
@@ -97,7 +98,7 @@ class FakenodoService(BaseService):
             dict: A JSON object containing the details of the published fakenodo.
         """
         # Assuming depositions are stored in a dictionary or similar structure
-        fakenodo = self.depositions.get(fakenodo_id)
+        fakenodo = self.fakenodos.get(fakenodo_id)
 
         if not fakenodo:
             # Raise an error if the fakenodo with the provided ID is not found
@@ -109,7 +110,7 @@ class FakenodoService(BaseService):
             fakenodo["status"] = "published"  # Mark the fakenodo as published
 
             # Update the fakenodo in your storage (e.g., database or dictionary)
-            self.depositions[fakenodo_id] = fakenodo
+            self.fakenodos[fakenodo_id] = fakenodo
 
             # Return a success response with the fakenodo details
             response = {
@@ -134,11 +135,11 @@ class FakenodoService(BaseService):
         Returns:
             dict: A JSON object containing the details of the specified fakenodo.
         """
-        fakenodo = Fakenodo.query.get(fakenodo_id)
+        fakenodo = self.fakenodos.get(fakenodo_id)
         if not fakenodo:
             raise Exception("Fakenodo not found")
-
-        return self._build_response(fakenodo, fakenodo.meta_data, "Fakenodo successfully retrieved from Fakenodo", fakenodo.doi)
+        
+        return fakenodo
 
     def get_doi(self, fakenodo_id: int) -> str:
         """
@@ -150,16 +151,14 @@ class FakenodoService(BaseService):
         Returns:
             str: The DOI associated with the specified fakenodo.
         """
-        fakenodo = Fakenodo.query.get(fakenodo_id)
+        fakenodo = self.fakenodos.get(fakenodo_id)
         if not fakenodo:
             raise Exception(f"Fakenodo with ID {fakenodo_id} not found.")
 
-        # Check if DOI is already assigned, otherwise generate one
-        if "doi" not in fakenodo.meta_data:
-            # Simulate DOI generation (format: 10.xxxx/yyyyyy)
+        if "doi" not in fakenodo["meta_data"] or fakenodo["meta_data"]["doi"] == None:
             generated_doi = self._generate_doi(fakenodo_id)
-            fakenodo.meta_data["doi"] = generated_doi
-        return fakenodo.meta_data["doi"]
+            fakenodo["meta_data"]["doi"] = generated_doi
+        return fakenodo["meta_data"]["doi"]
 
     def _build_metadata(self, dataset: DSMetaData) -> dict:
         """
@@ -236,3 +235,21 @@ class FakenodoService(BaseService):
     def _generate_doi(self, deposition_id):
         """Generate a fake DOI based on the deposition ID."""
         return f"10.5281/dataset{deposition_id}"
+    
+    def get_all_fakenodos(self) -> dict:
+        """
+        Get all depositions from Fakenodo.
+        """
+        return self.fakenodos
+
+    def delete_fakenodo(self, deposition_id: str) -> dict:
+        """
+        Simulate deleting a deposition from Fakenodo.
+        """
+        if deposition_id not in self.fakenodos:
+            raise Exception("Deposition not found.")
+
+        # Simulate deletion
+        del self.fakenodos[deposition_id]
+
+        return {"message": "Deposition deleted successfully."}
