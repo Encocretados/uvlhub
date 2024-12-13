@@ -1,13 +1,24 @@
 import os
+import jwt
 from flask_login import login_user
 from flask_login import current_user
-
+from datetime import datetime, timedelta
 from app.modules.auth.models import User
 from app.modules.auth.repositories import UserRepository
 from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
+from flask import request
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
+ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
+
+
+def generate_access_token(user_id: int):
+    expiration = datetime.now() + timedelta(seconds=ACCESS_TOKEN_EXPIRES)
+    token = jwt.encode({"user_id": user_id, "exp": expiration}, SECRET_KEY, algorithm="HS256")
+    return token
 
 
 class AuthenticationService(BaseService):
@@ -19,18 +30,20 @@ class AuthenticationService(BaseService):
         user = self.repository.get_by_email(email)
         if user is not None and user.check_password(password):
             login_user(user, remember=remember)
-            return True
-        return False
+            return user
+        return user
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
 
+    # Modificación en la creación de un usuario en el servicio de autenticación
     def create_with_profile(self, **kwargs):
         try:
             email = kwargs.pop("email", None)
             password = kwargs.pop("password", None)
             name = kwargs.pop("name", None)
             surname = kwargs.pop("surname", None)
+            is_developer = kwargs.pop("is_developer", False)
 
             if not email:
                 raise ValueError("Email is required.")
@@ -43,7 +56,8 @@ class AuthenticationService(BaseService):
 
             user_data = {
                 "email": email,
-                "password": password
+                "password": password,
+                "is_developer": is_developer  # Aquí se pasa el valor de is_developer
             }
 
             profile_data = {
@@ -79,3 +93,18 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    def generate_token(self, user_id: int):
+        return generate_access_token(user_id)
+
+    def get_token_from_cookie(self):
+        return request.cookies.get('access_token')
+
+    def verify_access_token(token: str):
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            return payload['user_id']
+        except jwt.ExpiredSignatureError:
+            return None
+        except jwt.InvalidTokenError:
+            return None

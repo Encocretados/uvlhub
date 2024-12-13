@@ -78,6 +78,12 @@ chico sundermann">
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ 'active' if request.endpoint == 'ia_bp.ia' else '' }}">
+                    <a class="sidebar-link" href="{{ url_for('ia_bp.ia') }}">
+                        <i class="align-middle" data-feather="help-circle"></i> <span class="align-middle">AI Assistant</span>
+                    </a>
+                </li> 
+
                 {% if current_user.is_anonymous %}
 
                     <li class="sidebar-header">

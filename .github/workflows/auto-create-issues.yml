@@ -1,0 +1,100 @@
+name: Bug Report on Application Error
+
+on:
+  workflow_dispatch:
+  push: 
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  issues: write
+
+jobs:
+  check-for-bugs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          echo "Creating and activating virtual environment..."
+          python -m venv venv
+          source venv/bin/activate
+          
+          echo "Upgrading pip..."
+          pip install --upgrade pip
+          
+          echo "Installing dependencies from requirements.txt..."
+          pip install -r requirements.txt
+          
+          echo "Installing the current package..."
+          pip install -e ./
+          
+          echo "Ensuring Flask is available..."
+          pip install flask
+
+      - name: Initialize Application
+        id: run-app
+        run: |
+          echo "Activating virtual environment..."
+          source venv/bin/activate
+          
+          echo "Starting Flask application in the background..."
+          flask run --host=0.0.0.0 --reload --debug > app.log 2>&1 & 
+          
+          echo "Waiting for the application to initialize..."
+          sleep 3
+          
+          echo "Checking for errors in app.log..."
+          if grep -i "error" app.log; then
+            echo "Initialization failed. Check app.log for details." > error.log
+          fi
+          
+          echo "Checking if error.log exists and is not empty..."
+          if [ -s error.log ]; then
+            echo "error=true" >> $GITHUB_ENV
+          else
+            echo "error=false" >> $GITHUB_ENV
+          fi
+
+      - name: Check Application Accessibility
+        id: check-access
+        run: |
+          echo "Attempting to access the application on port 5000..."
+          if ! curl -s http://localhost:5000 > /dev/null; then
+            echo "Application is not accessible on port 5000." > access_error.log
+            echo "error=true" >> $GITHUB_ENV
+          fi
+          
+          echo "Checking if access_error.log exists and is not empty..."
+          if [ -s access_error.log ]; then
+            echo "error=true" >> $GITHUB_ENV
+          fi
+
+      - name: Create an issue for bugs
+        if: env.error == 'true'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Bug Detected: Initialization or Accessibility Error"
+          content-filepath: ./AUTO-ISSUE.md
+          labels: |
+            bug
+            help wanted
+            high
+
+      - name: Print logs
+        if: env.error == 'true'
+        run: |
+          echo "Initialization or Accessibility failed. Printing logs:"
+          cat app.log || echo "app.log not found"

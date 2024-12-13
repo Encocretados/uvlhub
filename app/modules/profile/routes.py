@@ -1,7 +1,7 @@
 from app.modules.auth.services import AuthenticationService
 from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, session, url_for, request
 from flask_login import login_required, current_user
 
 from app import db
@@ -15,7 +15,8 @@ from app.modules.profile.services import UserProfileService
 def edit_profile():
     auth_service = AuthenticationService()
     profile = auth_service.get_authenticated_user_profile
-    if not profile:
+    token = request.cookies.get("access_token")
+    if not profile and not token:
         return redirect(url_for("public.index"))
 
     form = UserProfileForm()
@@ -34,6 +35,7 @@ def edit_profile():
 def my_profile():
     page = request.args.get('page', 1, type=int)
     per_page = 5
+    is_developer = session.get('is_developer', False)
 
     user_datasets_pagination = db.session.query(DataSet) \
         .filter(DataSet.user_id == current_user.id) \
@@ -52,5 +54,6 @@ def my_profile():
         user=current_user,
         datasets=user_datasets_pagination.items,
         pagination=user_datasets_pagination,
-        total_datasets=total_datasets_count
+        total_datasets=total_datasets_count,
+        is_developer=is_developer
     )
