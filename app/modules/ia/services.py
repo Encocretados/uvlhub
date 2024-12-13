@@ -47,3 +47,5 @@ class IaService(BaseService):
             return jsonify({"response": intent_response})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+    

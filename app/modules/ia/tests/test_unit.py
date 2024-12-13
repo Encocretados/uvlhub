@@ -136,4 +136,20 @@ def test_ia_service_empty_fulfillment_text(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Respuesta vacía de Dialogflow."
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_dialogflow_connection_error(mock_sessions_client, app, client):
+    """Prueba el caso en que ocurre un error de conexión a Dialogflow."""
+    
+    # Configurar el mock para simular un error de conexión
+    mock_sessions_client.side_effect = Exception("Error de conexión a Dialogflow")
+
+    ia_service = IaService()
+
+    with app.test_request_context(json={"question": "Hola", "user_id": "123"}):
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 500
+        assert "error" in data
+        assert data["error"] == "Error de conexión a Dialogflow"
 
