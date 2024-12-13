@@ -326,7 +326,7 @@ def synchronize_datasets():
         return jsonify({"success": True, "message": "Datasets sincronizados correctamente."}), 200
     except Exception as e:
         print("Error:", e)  # Log para mostrar el error específico
-        return jsonify({"message": str(e)}), 400 
+        return jsonify({"message": str(e)}), 400
 
 @dataset_bp.route("/dataset/download_all", methods=["GET"])
 def download_all_datasets():
@@ -347,7 +347,7 @@ def download_all_datasets():
 
     user_cookie = request.cookies.get("download_cookie")
     if not user_cookie:
-        user_cookie = str(uuid.uuid4())  
+        user_cookie = str(uuid.uuid4())
 
     resp = make_response(
         send_from_directory(
@@ -367,7 +367,7 @@ def download_all_datasets():
 
         if not existing_record:
             DSDownloadRecordService().create(
-                user_id=None,  
+                user_id=None,
                 dataset_id=dataset.id,
                 download_date=datetime.now(timezone.utc),
                 download_cookie=user_cookie,
