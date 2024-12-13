@@ -206,6 +206,20 @@ def test_ia_service_excessively_long_question(mock_sessions_client, app, client)
         assert "error" in data
         assert data["error"] == "El campo 'question' excede la longitud máxima permitida."
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_missing_question(mock_sessions_client, app, client):
+    """Prueba el caso cuando el campo 'question' está ausente en la solicitud."""
+
+    ia_service = IaService()
+
+    # Simular una solicitud sin el campo 'question' (solo con 'user_id')
+    with app.test_request_context(json={"user_id": "123"}):  # Falta el campo 'question'
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 400
+        assert "error" in data
+        assert data["error"] == "El campo 'question' no puede estar vacío."
 
 
 
