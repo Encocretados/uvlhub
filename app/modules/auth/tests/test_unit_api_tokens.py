@@ -95,4 +95,3 @@ def test_protected_api_route_with_invalid_token(test_client):
     # Verificar que el acceso fue denegado (código de estado 401)
     assert response.status_code == 401
     assert response.json["message"] == "Invalid token"
-

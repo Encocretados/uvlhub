@@ -32,4 +32,4 @@ def test_featuremodel_index():
 
 
 # Call the test function
-test_featuremodel_index()
+# test_featuremodel_index()

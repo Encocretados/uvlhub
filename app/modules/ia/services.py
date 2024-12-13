@@ -16,27 +16,41 @@ class IaService(BaseService):
 
     def ia_service(self):
         try:
-            # Obtención de los datos de la solicitud
+            
+            if not request.is_json:
+                return jsonify({"error": "El cuerpo de la solicitud debe ser un JSON válido."}), 400
+        
             user_message = request.json.get('question')
             session_id = request.json.get('user_id')
 
-            if not user_message or not session_id:
+            if not user_message:
+                return jsonify({"error": "El campo 'question' no puede estar vacío."}), 400
+            if len(user_message) > 10000:  # Ejemplo: Limitar a 10,000 caracteres
+                return jsonify({"error": "El campo 'question' excede la longitud máxima permitida."}), 400
+            if not session_id:
                 return jsonify({"error": "Faltan parámetros necesarios."}), 400
 
-            # Crear una sesión de Dialogflow
+            
             session_client = dialogflow.SessionsClient()
             session = session_client.session_path(DIALOGFLOW_PROJECT_ID, session_id)
 
-            # Construir el mensaje de consulta
+            
             text_input = dialogflow.TextInput(text=user_message, language_code=DIALOGFLOW_LANGUAGE_CODE)
             query_input = dialogflow.QueryInput(text=text_input)
 
-            # Hacer la solicitud a Dialogflow
+            
             response = session_client.detect_intent(session=session, query_input=query_input)
             
-            # Extraer la respuesta de Dialogflow
+            if response.query_result is None:
+                raise ValueError("Estructura inesperada en la respuesta de Dialogflow.")
+        
             intent_response = response.query_result.fulfillment_text
+
+            if not intent_response:
+                raise ValueError("Respuesta vacía de Dialogflow.")
 
             return jsonify({"response": intent_response})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+    
