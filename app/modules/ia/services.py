@@ -41,6 +41,9 @@ class IaService(BaseService):
         
             intent_response = response.query_result.fulfillment_text
 
+            if not intent_response:
+                raise ValueError("Respuesta vacía de Dialogflow.")
+
             return jsonify({"response": intent_response})
         except Exception as e:
             return jsonify({"error": str(e)}), 500

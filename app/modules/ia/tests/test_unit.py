@@ -116,3 +116,24 @@ def test_ia_service_empty_user_id(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Faltan parámetros necesarios."
 
+@patch("app.modules.ia.services.dialogflow.SessionsClient")
+def test_ia_service_empty_fulfillment_text(mock_sessions_client, app, client):
+    """Prueba el caso en que Dialogflow devuelve un fulfillment_text vacío."""
+    
+    mock_response = MagicMock()
+    mock_response.query_result.fulfillment_text = ""  # Respuesta vacía de Dialogflow
+
+    mock_sessions_client.return_value.session_path.return_value = "mock_session_path"
+    mock_sessions_client.return_value.detect_intent.return_value = mock_response
+
+    ia_service = IaService()
+
+    with app.test_request_context(json={"question": "Hola", "user_id": "123"}):
+        response, status_code = ia_service.ia_service()
+        data = response.get_json()
+
+        assert status_code == 500
+        assert "error" in data
+        assert data["error"] == "Respuesta vacía de Dialogflow."
+
+
