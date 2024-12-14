@@ -132,6 +132,9 @@ class DataSetRepository(BaseRepository):
         # Genera un DOI para el dataset (esto depende de tu implementación)
         return f"10.1234/dataset/{dataset.id}"
 
+    def get_all(self):
+        return self.model.query.all()
+
 
 class DOIMappingRepository(BaseRepository):
     def __init__(self):
