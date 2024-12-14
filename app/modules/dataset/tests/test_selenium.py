@@ -4,12 +4,15 @@ import time
 from selenium import webdriver
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+
 
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import initialize_driver, close_driver
 
+SAMPLE_DATASET_ROUTE = "/doi/10.1234/dataset1/"
 
 def wait_for_page_to_load(driver, timeout=4):
     WebDriverWait(driver, timeout).until(
@@ -279,6 +282,111 @@ def test_unsynchronized_dataset_remains_in_staging():
     finally:
         close_driver(driver)
 
+def test_download_button():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Open the dataset page
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
+        wait_for_page_to_load(driver)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(., 'Download All')]")))
+        # Check presence of buttons
+        assert driver.find_element(By.XPATH, "//a[contains(., 'Download All')]")
+
+        print("The botton is present and correctly placed!")
+
+    finally:
+        close_driver(driver)
+
+
+def test_table_UVLfiles():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Open the dataset page
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
+        wait_for_page_to_load(driver)
+
+        # Check the presence of file table and buttons
+        rows = driver.find_elements(By.XPATH, "//div[@class='list-group-item']")
+        assert len(rows) > 0, "No files are displayed in the table!"
+        for row in rows:
+            file_name = row.find_element(By.XPATH, ".//div[contains(@class, 'col-12')]")
+            assert file_name.is_displayed(), "File name is not displayed!"
+            view_button = row.find_element(By.XPATH, "//button[contains(., 'View')]")
+            assert view_button.is_displayed(), "View button is not displayed!"
+
+            # Verify "Check" button
+            check_button = row.find_element(By.XPATH, "//button[contains(., 'Check')]")
+            assert check_button.is_displayed(), "Check button is not displayed!"
+
+            # Verify "Export" button
+            export_button = row.find_element(By.XPATH, "//button[contains(., 'Export')]")
+            assert export_button.is_displayed(), "Export button is not displayed!"
+
+        print("File table and buttons are correctly displayed!")
+
+    finally:
+        close_driver(driver)
+
+def test_inter_elements():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Open the dataset page
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
+        wait_for_page_to_load(driver)
+
+        # Test modal behavior
+        view_button = driver.find_element(By.XPATH, "(//button[contains(., 'View')])[1]")
+        view_button.click()
+        time.sleep(1)  # Wait for modal to open
+        modal = driver.find_element(By.ID, "fileViewerModal")
+        assert modal.is_displayed(), "File viewer modal is not displayed!"
+        close_button = driver.find_element(By.CLASS_NAME, "btn-close")
+        close_button.click()
+        time.sleep(1)  # Wait for modal to close
+        assert not modal.is_displayed(), "File viewer modal did not close!"
+        print("Interactive elements are working!")
+
+    finally:
+        close_driver(driver)
+
+
+def test_button_explore_more_datasets():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Open the dataset page
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
+        wait_for_page_to_load(driver)
+
+        # Test the 'Explore more datasets' button
+        explore_button = driver.find_element(By.XPATH, "//a[contains(., 'Explore more datasets')]")
+        explore_button.click()
+        wait_for_page_to_load(driver)
+
+        # Verify the page navigated correctly
+        expected_url = f"{host}/explore"
+        current_url = driver.current_url
+        assert driver.current_url == expected_url, f"Did not navigate to the explore page! Current URL: {current_url}"
+
+        print("Explore more datasets button works!")
+
+    finally:
+        close_driver(driver)
 
 # Call the test function
 test_upload_dataset()
+test_download_button()
+test_table_UVLfiles()
+test_inter_elements()
+test_button_explore_more_datasets()
