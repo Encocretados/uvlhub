@@ -59,4 +59,21 @@ def test_construct_uvlhub_doi(mocked_getenv):
     # Confirmar que os.getenv fue llamado con los parámetros esperados
     mocked_getenv.assert_called_once_with('DOMAIN', 'localhost')
 
+#test de integración que verifica que el sistema maneje correctamente un caso donde no se pueda establecer una cookie.
+@patch('app.modules.dataset.services.DSViewRecordService.create_cookie')
+@patch('app.modules.dataset.services.DSMetaDataService.filter_by_doi')
+def test_subdomain_index_missing_cookie(mock_filter_by_doi, mock_create_cookie, test_client):
+    mock_dataset = MagicMock()
+    mock_filter_by_doi.return_value = MagicMock(data_set=mock_dataset)
+    mock_create_cookie.return_value = "user_cookie_value"  # Return a valid cookie value
+ 
+    response = test_client.get('/doi/10.1234/dataset1/')
+ 
+    # Verify the response is 200 OK
+    assert response.status_code == 200
+ 
+    # Verify the cookie is set
+    cookies = response.headers.get('Set-Cookie')
+    assert cookies is not None
+    assert 'view_cookie=user_cookie_value' in cookies  # Check if the correct cookie is set
 
