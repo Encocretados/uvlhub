@@ -188,36 +188,6 @@ def test_table_UVLfiles():
     finally:
         close_driver(driver)
 
-
-'''def test_display():
-    driver = initialize_driver()
-
-    try:
-        host = get_host_for_selenium_testing()
-
-        # Open the dataset page
-        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
-        wait_for_page_to_load(driver)
-
-        # Check metadata display
-        assert driver.find_element(By.TAG_NAME, "h1"), "Dataset title not found"
-        information_section = driver.find_element(By.XPATH, "//span[contains(., 'Dataset Information')]")
-        assert about_section.is_displayed(), "'About' heading is not displayed!"
-        description = about_section.find_element(
-            By.XPATH,
-            "./ancestor::div[contains(@class, 'mb-2')]//p[@class='text-muted']"
-        )
-        assert description.is_displayed(), "Dataset description is not displayed!"
-        authors_section = driver.find_element(By.XPATH, "//span[contains(., 'Authors')]")
-        assert authors_section.is_displayed(), "'Authors' heading is not displayed!"
-        doi_section = driver.find_element(By.XPATH, "//span[contains(., 'Publication DOI')]")
-            assert doi_section.is_displayed(), "'Publication DOI' heading is not displayed!" 
-        print("Metadata is correctly displayed!")
-
-    finally:
-        close_driver(driver)'''
-
-
 def test_inter_elements():
     driver = initialize_driver()
 
@@ -269,40 +239,9 @@ def test_button_explore_more_datasets():
     finally:
         close_driver(driver)
 
-
-'''def test_check_button_functionality():
-    driver = initialize_driver()
-
-    try:
-        host = get_host_for_selenium_testing()
-
-        # Open the dataset page
-        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
-        wait_for_page_to_load(driver)
-
-        # Test the 'Check' button functionality
-        check_button = driver.find_element(By.XPATH, "//button[contains(text(),'Check')]")
-        check_button.click()
-        time.sleep(1)  # Wait for check to complete
-
-        # Verify the check result
-        result_message = driver.find_element(By.CLASS_NAME, "check-result-message")
-        assert "Valid model" in result_message.text or "Syntax errors" in result_message.text, \
-            "Check button functionality failed"
-
-        print("Check button functionality works!")
-
-    finally:
-        close_driver(driver)'''
-
-
-
-
 # Call the test function
 test_upload_dataset()
 test_download_button()
 test_table_UVLfiles()
-#test_metadata_display()
 test_inter_elements()
 test_button_explore_more_datasets()
-#test_check_button_functionality()
