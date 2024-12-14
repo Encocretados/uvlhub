@@ -129,8 +129,13 @@ var currentId = 0;
         }
 
         window.onload = function () {
+            let USE_FAKENODO = true;
 
-            test_zenodo_connection();
+            if (USE_FAKENODO === false) {
+                test_zenodo_connection();
+            } else {
+                document.getElementById("use_fakenodo").style.display = "block";
+            }
 
             document.getElementById('upload_button').addEventListener('click', function () {
 
