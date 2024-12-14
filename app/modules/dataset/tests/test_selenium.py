@@ -385,8 +385,8 @@ def test_button_explore_more_datasets():
         close_driver(driver)
 
 # Call the test function
-test_upload_dataset()
-test_download_button()
-test_table_UVLfiles()
-test_inter_elements()
-test_button_explore_more_datasets()
+# test_upload_dataset()
+# test_download_button()
+# test_table_UVLfiles()
+# test_inter_elements()
+# test_button_explore_more_datasets()

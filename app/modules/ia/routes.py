@@ -8,7 +8,7 @@ ia_bp = Blueprint('ia_bp', __name__, template_folder='templates')
 # Configuración de Dialogflow
 DIALOGFLOW_PROJECT_ID = 'uvlhubia-umhn'
 DIALOGFLOW_LANGUAGE_CODE = 'es'  # O el idioma que prefieras
-GOOGLE_APPLICATION_CREDENTIALS = 'uvlhubia-umhn-a.json'
+GOOGLE_APPLICATION_CREDENTIALS = 'uvlhubia-ia.json'
 
 # Establecer la variable de entorno de credenciales de Google Cloud
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
