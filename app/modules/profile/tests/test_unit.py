@@ -1,8 +1,8 @@
 import pytest
 
 from app import db
-from app.modules.conftest import login, logout
 from app.modules.auth.models import User
+from app.modules.conftest import login, logout
 from app.modules.profile.models import UserProfile
 
 
@@ -13,7 +13,7 @@ def test_client(test_client):
     for module testing (por example, new users)
     """
     with test_client.application.app_context():
-        user_test = User(email='user@example.com', password='test1234')
+        user_test = User(email="user@example.com", password="test1234")
         db.session.add(user_test)
         db.session.commit()
 
@@ -32,12 +32,16 @@ def test_edit_profile_page_get(test_client):
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     response = test_client.get("/profile/edit")
-    assert response.status_code == 200, "The profile editing page could not be accessed."
-    assert b"Edit profile" in response.data, "The expected content is not present on the page"
+    assert (
+        response.status_code == 200
+    ), "The profile editing page could not be accessed."
+    assert (
+        b"Edit profile" in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
-    
-    
+
+
 def test_developer_profile_page_get(test_client):
     """
     Tests access to the developer profile page via a GET request.
@@ -46,14 +50,18 @@ def test_developer_profile_page_get(test_client):
     # Registrar y autenticar a un usuario desarrollador
     developer_email = "dev101@us.es"
     developer_password = "ThjuuFDSDFGHJ"
-    
+
     # Crear usuario desarrollador en la base de datos
     with test_client.application.app_context():
-        developer_user = User(email=developer_email, password=developer_password, is_developer=True)
+        developer_user = User(
+            email=developer_email, password=developer_password, is_developer=True
+        )
         db.session.add(developer_user)
         db.session.commit()
-        
-        profile = UserProfile(user_id=developer_user.id, name="developer", surname="tester")
+
+        profile = UserProfile(
+            user_id=developer_user.id, name="developer", surname="tester"
+        )
         db.session.add(profile)
         db.session.commit()
 
@@ -63,8 +71,9 @@ def test_developer_profile_page_get(test_client):
 
     # Acceder a la página de perfil
     response = test_client.get("/profile/summary")
-    assert response.status_code == 302, "The developer profile page could not be accessed."
+    assert (
+        response.status_code == 302
+    ), "The developer profile page could not be accessed."
 
     # Cerrar sesión
     logout(test_client)
-

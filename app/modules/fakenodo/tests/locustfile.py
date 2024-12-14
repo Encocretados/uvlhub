@@ -1,4 +1,5 @@
-from locust import HttpUser, TaskSet, task, between
+from locust import HttpUser, TaskSet, between, task
+
 
 class FakenodoTaskSet(TaskSet):
 
@@ -13,10 +14,7 @@ class FakenodoTaskSet(TaskSet):
 
     @task(2)
     def upload_file(self):
-        data = {
-            "dataset_id": 1,
-            "feature_model_id": 1
-        }
+        data = {"dataset_id": 1, "feature_model_id": 1}
         fakenodo_id = 1
         self.client.post(f"/fakenodo/api/{fakenodo_id}/files", data=data)
 
@@ -43,6 +41,7 @@ class FakenodoTaskSet(TaskSet):
     def delete_fakenodo(self):
         fakenodo_id = 1
         self.client.delete(f"/fakenodo/api/{fakenodo_id}")
+
 
 class FakenodoUser(HttpUser):
     host = "http://127.0.0.1:5000"

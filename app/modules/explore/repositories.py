@@ -1,18 +1,32 @@
-from sqlalchemy import or_
-import unidecode
-from app.modules.dataset.models import Author, DSMetaData, DataSet, PublicationType, DSMetrics
-from app.modules.featuremodel.models import FMMetaData, FeatureModel
-from core.repositories.BaseRepository import BaseRepository
 import re
 from datetime import datetime
+
+import unidecode
+from sqlalchemy import or_
+
+from app.modules.dataset.models import (Author, DataSet, DSMetaData, DSMetrics,
+                                        PublicationType)
+from app.modules.featuremodel.models import FeatureModel, FMMetaData
+from core.repositories.BaseRepository import BaseRepository
+
 
 class ExploreRepository(BaseRepository):
     def __init__(self):
         super().__init__(DataSet)
 
     def filter(
-        self, query="", sorting="newest", publication_type="any", tags=[],
-        after_date=None, before_date=None, min_size=None, max_size=None, size_unit="KB", author_name=None, **kwargs
+        self,
+        query="",
+        sorting="newest",
+        publication_type="any",
+        tags=[],
+        after_date=None,
+        before_date=None,
+        min_size=None,
+        max_size=None,
+        size_unit="KB",
+        author_name=None,
+        **kwargs,
     ):
         # Normaliza y limpia el texto de búsqueda
         normalized_query = unidecode.unidecode(query).lower()
@@ -24,33 +38,55 @@ class ExploreRepository(BaseRepository):
 
         # Inicia la consulta con un outerjoin para no excluir datasets sin relaciones
         datasets = (
-            self.model.query
-            .join(DataSet.ds_meta_data)  # Mantén el join con DSMetaData
-            .outerjoin(DSMetaData.authors)  # Cambiado a outerjoin para incluir datasets sin autores
-            .outerjoin(DataSet.feature_models)  # Cambiado a outerjoin para incluir datasets sin modelos de características
+            self.model.query.join(DataSet.ds_meta_data)  # Mantén el join con DSMetaData
+            .outerjoin(
+                DSMetaData.authors
+            )  # Cambiado a outerjoin para incluir datasets sin autores
+            .outerjoin(
+                DataSet.feature_models
+            )  # Cambiado a outerjoin para incluir datasets sin modelos de características
             .outerjoin(FeatureModel.fm_meta_data)  # Cambiado a outerjoin
             .outerjoin(DSMetaData.ds_metrics)  # Cambiado a outerjoin
             .filter(DSMetaData.dataset_doi.isnot(None))  # Ignorar datasets sin DOI
         )
 
-        print(f"Initial dataset count (no filters): {datasets.count()}")  # Log del número inicial de datasets
+        print(
+            f"Initial dataset count (no filters): {datasets.count()}"
+        )  # Log del número inicial de datasets
 
         # Filtra por el tipo de publicación
         if publication_type != "any":
-            matching_type = next((member for member in PublicationType if member.value.lower() == publication_type), None)
+            matching_type = next(
+                (
+                    member
+                    for member in PublicationType
+                    if member.value.lower() == publication_type
+                ),
+                None,
+            )
             if matching_type is not None:
-                datasets = datasets.filter(DSMetaData.publication_type == matching_type.name)
-                print(f"After publication_type filter: {datasets.count()}")  # Log después del filtro de tipo de publicación
+                datasets = datasets.filter(
+                    DSMetaData.publication_type == matching_type.name
+                )
+                print(
+                    f"After publication_type filter: {datasets.count()}"
+                )  # Log después del filtro de tipo de publicación
 
         # Aplica filtros basados en etiquetas
         if tags:
-            datasets = datasets.filter(or_(*[DSMetaData.tags.ilike(f"%{tag}%") for tag in tags]))
-            print(f"After tags filter: {datasets.count()}")  # Log después del filtro de etiquetas
+            datasets = datasets.filter(
+                or_(*[DSMetaData.tags.ilike(f"%{tag}%") for tag in tags])
+            )
+            print(
+                f"After tags filter: {datasets.count()}"
+            )  # Log después del filtro de etiquetas
 
         # Filtra por autor si se proporciona
         if author_name:
             datasets = datasets.filter(Author.name.ilike(f"%{author_name}%"))
-            print(f"After author filter: {datasets.count()}")  # Log después del filtro de autor
+            print(
+                f"After author filter: {datasets.count()}"
+            )  # Log después del filtro de autor
 
         # Ordena los resultados por fecha de creación
         if sorting == "oldest":
@@ -58,23 +94,35 @@ class ExploreRepository(BaseRepository):
         else:
             datasets = datasets.order_by(DataSet.created_at.desc())
 
-        print(f"Final dataset count: {datasets.count()}")  # Log final después de aplicar todos los filtros
+        print(
+            f"Final dataset count: {datasets.count()}"
+        )  # Log final después de aplicar todos los filtros
 
         # Filtra por rango de fechas, si se proporcionan
         if after_date and before_date:
-            datasets = datasets.filter(DataSet.created_at.between(after_date, before_date))
-            print(f"After date range filter: {datasets.count()}")  # Log después del filtro de rango de fechas
+            datasets = datasets.filter(
+                DataSet.created_at.between(after_date, before_date)
+            )
+            print(
+                f"After date range filter: {datasets.count()}"
+            )  # Log después del filtro de rango de fechas
         elif after_date:
             datasets = datasets.filter(DataSet.created_at >= after_date)
-            print(f"After after_date filter: {datasets.count()}")  # Log después del filtro de after_date
+            print(
+                f"After after_date filter: {datasets.count()}"
+            )  # Log después del filtro de after_date
         elif before_date:
             datasets = datasets.filter(DataSet.created_at <= before_date)
-            print(f"After before_date filter: {datasets.count()}")  # Log después del filtro de before_date
+            print(
+                f"After before_date filter: {datasets.count()}"
+            )  # Log después del filtro de before_date
 
         # Filtra por título y descripción si están presentes en la consulta
         if cleaned_query:
             datasets = datasets.filter(or_(*filters))
-            print(f"After title and description filter: {datasets.count()}")  # Log después del filtro de título y descripción
+            print(
+                f"After title and description filter: {datasets.count()}"
+            )  # Log después del filtro de título y descripción
 
         def safe_convert_to_float(value):
             try:
@@ -101,11 +149,17 @@ class ExploreRepository(BaseRepository):
         max_size = safe_convert_to_float(max_size)
 
         # Convertir tamaños a bytes según la unidad
-        min_size = convert_to_bytes(min_size, size_unit) if min_size is not None else None
-        max_size = convert_to_bytes(max_size, size_unit) if max_size is not None else None
+        min_size = (
+            convert_to_bytes(min_size, size_unit) if min_size is not None else None
+        )
+        max_size = (
+            convert_to_bytes(max_size, size_unit) if max_size is not None else None
+        )
 
         # Depuración
-        print(f"Min Size: {min_size} bytes, Max Size: {max_size} bytes, Size Unit: {size_unit}")
+        print(
+            f"Min Size: {min_size} bytes, Max Size: {max_size} bytes, Size Unit: {size_unit}"
+        )
 
         # Obtener todos los resultados y filtrar por tamaño usando get_file_total_size()
         # Después de la consulta inicial y la ordenación:
@@ -136,22 +190,23 @@ class ExploreRepository(BaseRepository):
 
         return filtered_datasets
 
-
     def build_filters(self, cleaned_query):
         """Construye los filtros de búsqueda a partir del texto limpio"""
         filters = []
         for word in cleaned_query.split():
-            filters.extend([
-                DSMetaData.title.ilike(f"%{word}%"),
-                DSMetaData.description.ilike(f"%{word}%"),
-                Author.name.ilike(f"%{word}%"),
-                Author.affiliation.ilike(f"%{word}%"),
-                Author.orcid.ilike(f"%{word}%"),
-                FMMetaData.uvl_filename.ilike(f"%{word}%"),
-                FMMetaData.title.ilike(f"%{word}%"),
-                FMMetaData.description.ilike(f"%{word}%"),
-                FMMetaData.publication_doi.ilike(f"%{word}%"),
-                FMMetaData.tags.ilike(f"%{word}%"),
-                DSMetaData.tags.ilike(f"%{word}%"),
-            ])
+            filters.extend(
+                [
+                    DSMetaData.title.ilike(f"%{word}%"),
+                    DSMetaData.description.ilike(f"%{word}%"),
+                    Author.name.ilike(f"%{word}%"),
+                    Author.affiliation.ilike(f"%{word}%"),
+                    Author.orcid.ilike(f"%{word}%"),
+                    FMMetaData.uvl_filename.ilike(f"%{word}%"),
+                    FMMetaData.title.ilike(f"%{word}%"),
+                    FMMetaData.description.ilike(f"%{word}%"),
+                    FMMetaData.publication_doi.ilike(f"%{word}%"),
+                    FMMetaData.tags.ilike(f"%{word}%"),
+                    DSMetaData.tags.ilike(f"%{word}%"),
+                ]
+            )
         return filters

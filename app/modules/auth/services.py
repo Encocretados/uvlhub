@@ -1,23 +1,26 @@
 import os
-import jwt
-from flask_login import login_user
-from flask_login import current_user
 from datetime import datetime, timedelta
+
+import jwt
+from flask import request
+from flask_login import current_user, login_user
+
 from app.modules.auth.models import User
 from app.modules.auth.repositories import UserRepository
 from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
-from flask import request
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
-ACCESS_TOKEN_EXPIRES = int(os.getenv('ACCESS_TOKEN_EXPIRES', 3600))  # 1 hora
+SECRET_KEY = os.getenv("SECRET_KEY", "secret")
+ACCESS_TOKEN_EXPIRES = int(os.getenv("ACCESS_TOKEN_EXPIRES", 3600))  # 1 hora
 
 
 def generate_access_token(user_id: int):
     expiration = datetime.now() + timedelta(seconds=ACCESS_TOKEN_EXPIRES)
-    token = jwt.encode({"user_id": user_id, "exp": expiration}, SECRET_KEY, algorithm="HS256")
+    token = jwt.encode(
+        {"user_id": user_id, "exp": expiration}, SECRET_KEY, algorithm="HS256"
+    )
     return token
 
 
@@ -57,7 +60,7 @@ class AuthenticationService(BaseService):
             user_data = {
                 "email": email,
                 "password": password,
-                "is_developer": is_developer  # Aquí se pasa el valor de is_developer
+                "is_developer": is_developer,  # Aquí se pasa el valor de is_developer
             }
 
             profile_data = {
@@ -98,12 +101,12 @@ class AuthenticationService(BaseService):
         return generate_access_token(user_id)
 
     def get_token_from_cookie(self):
-        return request.cookies.get('access_token')
+        return request.cookies.get("access_token")
 
     def verify_access_token(token: str):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            return payload['user_id']
+            return payload["user_id"]
         except jwt.ExpiredSignatureError:
             return None
         except jwt.InvalidTokenError:

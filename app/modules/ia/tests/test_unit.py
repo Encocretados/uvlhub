@@ -1,6 +1,8 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from flask import Flask, jsonify, request
+
 from app.modules.ia.services import IaService
 
 
@@ -22,7 +24,6 @@ def client(app):
 def test_ia_service_success(mock_sessions_client, app, client):
     """Prueba el caso exitoso para ia_service."""
 
-    
     mock_response = MagicMock()
     mock_response.query_result.fulfillment_text = "Respuesta simulada de Dialogflow"
 
@@ -57,7 +58,9 @@ def test_ia_service_missing_params(mock_sessions_client, app, client):
 def test_ia_service_dialogflow_error(mock_sessions_client, app, client):
     """Prueba el caso en que ocurre un error en Dialogflow."""
 
-    mock_sessions_client.return_value.detect_intent.side_effect = Exception("Error de Dialogflow simulado")
+    mock_sessions_client.return_value.detect_intent.side_effect = Exception(
+        "Error de Dialogflow simulado"
+    )
 
     ia_service = IaService()
 
@@ -69,11 +72,12 @@ def test_ia_service_dialogflow_error(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Error de Dialogflow simulado"
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_unexpected_dialogflow_response(mock_sessions_client, app, client):
     """Prueba el caso en que Dialogflow devuelve una respuesta inesperada."""
     mock_response = MagicMock()
-    mock_response.query_result = None  
+    mock_response.query_result = None
 
     mock_sessions_client.return_value.session_path.return_value = "mock_session_path"
     mock_sessions_client.return_value.detect_intent.return_value = mock_response
@@ -86,15 +90,18 @@ def test_ia_service_unexpected_dialogflow_response(mock_sessions_client, app, cl
 
         assert status_code == 500
         assert "error" in data
-        assert "Estructura inesperada" in data["error"] 
+        assert "Estructura inesperada" in data["error"]
+
 
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_empty_question(mock_sessions_client, app, client):
     """Prueba el caso cuando el campo 'question' está vacío."""
-    
+
     ia_service = IaService()
 
-    with app.test_request_context(json={"question": "", "user_id": "123"}):  # Pregunta vacía
+    with app.test_request_context(
+        json={"question": "", "user_id": "123"}
+    ):  # Pregunta vacía
         response, status_code = ia_service.ia_service()
         data = response.get_json()
 
@@ -102,13 +109,16 @@ def test_ia_service_empty_question(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "El campo 'question' no puede estar vacío."
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_empty_user_id(mock_sessions_client, app, client):
     """Prueba el caso cuando el campo 'user_id' está vacío."""
-    
+
     ia_service = IaService()
 
-    with app.test_request_context(json={"question": "Hola", "user_id": ""}):  # user_id vacío
+    with app.test_request_context(
+        json={"question": "Hola", "user_id": ""}
+    ):  # user_id vacío
         response, status_code = ia_service.ia_service()
         data = response.get_json()
 
@@ -116,10 +126,11 @@ def test_ia_service_empty_user_id(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Faltan parámetros necesarios."
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_empty_fulfillment_text(mock_sessions_client, app, client):
     """Prueba el caso en que Dialogflow devuelve un fulfillment_text vacío."""
-    
+
     mock_response = MagicMock()
     mock_response.query_result.fulfillment_text = ""  # Respuesta vacía de Dialogflow
 
@@ -136,10 +147,11 @@ def test_ia_service_empty_fulfillment_text(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Respuesta vacía de Dialogflow."
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_dialogflow_connection_error(mock_sessions_client, app, client):
     """Prueba el caso en que ocurre un error de conexión a Dialogflow."""
-    
+
     # Configurar el mock para simular un error de conexión
     mock_sessions_client.side_effect = Exception("Error de conexión a Dialogflow")
 
@@ -153,13 +165,14 @@ def test_ia_service_dialogflow_connection_error(mock_sessions_client, app, clien
         assert "error" in data
         assert data["error"] == "Error de conexión a Dialogflow"
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_no_intent_detected(mock_sessions_client, app, client):
     """Prueba el caso en que Dialogflow no detecta ninguna intención."""
-    
+
     mock_response = MagicMock()
     mock_response.query_result.fulfillment_text = ""
-    mock_response.query_result.intent = None 
+    mock_response.query_result.intent = None
 
     mock_sessions_client.return_value.session_path.return_value = "mock_session_path"
     mock_sessions_client.return_value.detect_intent.return_value = mock_response
@@ -174,10 +187,11 @@ def test_ia_service_no_intent_detected(mock_sessions_client, app, client):
         assert "error" in data
         assert data["error"] == "Respuesta vacía de Dialogflow."
 
+
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_invalid_json_body(mock_sessions_client, app, client):
     """Prueba el caso en que el cuerpo de la solicitud no contiene un JSON válido."""
-    
+
     ia_service = IaService()
 
     # Simular una solicitud con cuerpo inválido (no es JSON)
@@ -188,6 +202,7 @@ def test_ia_service_invalid_json_body(mock_sessions_client, app, client):
         assert status_code == 400
         assert "error" in data
         assert data["error"] == "El cuerpo de la solicitud debe ser un JSON válido."
+
 
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_excessively_long_question(mock_sessions_client, app, client):
@@ -204,7 +219,10 @@ def test_ia_service_excessively_long_question(mock_sessions_client, app, client)
 
         assert status_code == 400
         assert "error" in data
-        assert data["error"] == "El campo 'question' excede la longitud máxima permitida."
+        assert (
+            data["error"] == "El campo 'question' excede la longitud máxima permitida."
+        )
+
 
 @patch("app.modules.ia.services.dialogflow.SessionsClient")
 def test_ia_service_missing_question(mock_sessions_client, app, client):
@@ -220,6 +238,3 @@ def test_ia_service_missing_question(mock_sessions_client, app, client):
         assert status_code == 400
         assert "error" in data
         assert data["error"] == "El campo 'question' no puede estar vacío."
-
-
-

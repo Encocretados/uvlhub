@@ -1,16 +1,16 @@
-import logging
 import hashlib
+import logging
 import os
 
 from dotenv import load_dotenv
-from app.modules.fakenodo.repositories import FakenodoRepository
-from app.modules.fakenodo.models import Fakenodo
-from app.modules.dataset.models import DataSet, DSMetaData
-from app.modules.featuremodel.models import FeatureModel
+from flask_login import current_user
 
+from app.modules.dataset.models import DataSet, DSMetaData
+from app.modules.fakenodo.models import Fakenodo
+from app.modules.fakenodo.repositories import FakenodoRepository
+from app.modules.featuremodel.models import FeatureModel
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
-from flask_login import current_user
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,9 @@ class FakenodoService(BaseService):
         self.fakenodo_repository = FakenodoRepository()
         self.fakenodos = {}  # Initialize depositions as an empty dictionary
 
-    def create_new_fakenodo(self, dataset: DataSet, publication_doi: str = None) -> dict:
+    def create_new_fakenodo(
+        self, dataset: DataSet, publication_doi: str = None
+    ) -> dict:
         """
         Create a new fakenodo in Fakenodo.
 
@@ -44,11 +46,20 @@ class FakenodoService(BaseService):
 
         try:
             fakenodo = self.fakenodo_repository.create_new_fakenodo(meta_data=metadata)
-            return self._build_response(fakenodo, metadata, "Fakenodo successfully created in Fakenodo", fake_doi)
+            return self._build_response(
+                fakenodo,
+                metadata,
+                "Fakenodo successfully created in Fakenodo",
+                fake_doi,
+            )
         except Exception as error:
-            raise Exception(f"Failed to create fakenodo in Fakenodo with error: {str(error)}")
+            raise Exception(
+                f"Failed to create fakenodo in Fakenodo with error: {str(error)}"
+            )
 
-    def upload_file(self, dataset: DataSet, fakenodo_id: int, feature_model: FeatureModel, user=None):
+    def upload_file(
+        self, dataset: DataSet, fakenodo_id: int, feature_model: FeatureModel, user=None
+    ):
         """
         Upload a file to a fakenodo in Fakenodo.
 
@@ -65,12 +76,17 @@ class FakenodoService(BaseService):
 
         file_name = feature_model.fm_meta_data.uvl_filename
         user_id = current_user.id if user is None else user.id
-        file_path = os.path.join(uploads_folder_name(), f"user_{str(user_id)}", f"dataset_{dataset.id}/", file_name)
+        file_path = os.path.join(
+            uploads_folder_name(),
+            f"user_{str(user_id)}",
+            f"dataset_{dataset.id}/",
+            file_name,
+        )
 
         # Simulate saving the file in local storage
         if not os.path.exists(file_path):
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 f.write("Simulated file content.")
 
         # Add the file to the deposition's local record
@@ -79,12 +95,12 @@ class FakenodoService(BaseService):
         file_metadata = {
             "file_name": file_name,
             "file_size": os.path.getsize(file_path),
-            "file_url": f"/uploads/user_{current_user.id}/dataset_{dataset.id}/{file_name}"  
+            "file_url": f"/uploads/user_{current_user.id}/dataset_{dataset.id}/{file_name}",
         }
 
         return {
             "message": f"File {file_name} uploaded successfully.",
-            "file_metadata": file_metadata
+            "file_metadata": file_metadata,
         }
 
     def publish_fakenodo(self, fakenodo_id: str) -> dict:
@@ -117,7 +133,7 @@ class FakenodoService(BaseService):
                 "id": fakenodo_id,
                 "status": "published",
                 "conceptdoi": fakenodo["doi"],  # Use the generated DOI here
-                "message": "Fakenodo published successfully in Fakenodo."
+                "message": "Fakenodo published successfully in Fakenodo.",
             }
             return response
 
@@ -138,7 +154,7 @@ class FakenodoService(BaseService):
         fakenodo = self.fakenodos.get(fakenodo_id)
         if not fakenodo:
             raise Exception("Fakenodo not found")
-        
+
         return fakenodo
 
     def get_doi(self, fakenodo_id: int) -> str:
@@ -172,7 +188,11 @@ class FakenodoService(BaseService):
         """
         return {
             "title": dataset.ds_meta_data.title,
-            "upload_type": "dataset" if dataset.ds_meta_data.publication_type.value == "none" else "publication",
+            "upload_type": (
+                "dataset"
+                if dataset.ds_meta_data.publication_type.value == "none"
+                else "publication"
+            ),
             "publication_type": (
                 dataset.ds_meta_data.publication_type.value
                 if dataset.ds_meta_data.publication_type.value != "none"
@@ -182,13 +202,19 @@ class FakenodoService(BaseService):
             "creators": [
                 {
                     "name": author.name,
-                    **({"affiliation": author.affiliation} if author.affiliation else {}),
+                    **(
+                        {"affiliation": author.affiliation}
+                        if author.affiliation
+                        else {}
+                    ),
                     **({"orcid": author.orcid} if author.orcid else {}),
                 }
                 for author in dataset.ds_meta_data.authors
             ],
             "keywords": (
-                ["uvlhub"] if not dataset.ds_meta_data.tags else dataset.ds_meta_data.tags.split(", ") + ["uvlhub"]
+                ["uvlhub"]
+                if not dataset.ds_meta_data.tags
+                else dataset.ds_meta_data.tags.split(", ") + ["uvlhub"]
             ),
             "access_right": "open",
             "license": "CC-BY-4.0",
@@ -210,7 +236,7 @@ class FakenodoService(BaseService):
             "deposition_id": fakenodo.id,  # ID from the repository
             "doi": doi,
             "meta_data": meta_data,
-            "message": message
+            "message": message,
         }
 
     def _calculate_checksum(self, file_path: str) -> str:
@@ -226,16 +252,20 @@ class FakenodoService(BaseService):
         try:
             with open(file_path, "rb") as file:
                 file_content = file.read()
-                return hashlib.sha256(file_content).hexdigest()  # Use SHA-256 instead of MD5
+                return hashlib.sha256(
+                    file_content
+                ).hexdigest()  # Use SHA-256 instead of MD5
         except FileNotFoundError:
             raise Exception(f"File {file_path} not found for checksum calculation")
         except Exception as e:
-            raise Exception(f"Error calculating checksum for file {file_path}: {str(e)}")
+            raise Exception(
+                f"Error calculating checksum for file {file_path}: {str(e)}"
+            )
 
     def _generate_doi(self, deposition_id):
         """Generate a fake DOI based on the deposition ID."""
         return f"10.5281/dataset{deposition_id}"
-    
+
     def get_all_fakenodos(self) -> dict:
         """
         Get all depositions from Fakenodo.

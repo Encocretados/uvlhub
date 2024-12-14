@@ -2,17 +2,16 @@ import os
 import time
 
 from selenium import webdriver
-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.support.ui import WebDriverWait
 
 from core.environment.host import get_host_for_selenium_testing
-from core.selenium.common import initialize_driver, close_driver
+from core.selenium.common import close_driver, initialize_driver
 
 SAMPLE_DATASET_ROUTE = "/doi/10.1234/dataset1/"
+
 
 def wait_for_page_to_load(driver, timeout=4):
     WebDriverWait(driver, timeout).until(
@@ -109,7 +108,9 @@ def test_upload_dataset():
 
         name_field = driver.find_element(By.NAME, "feature_models-0-authors-2-name")
         name_field.send_keys("Author3")
-        affiliation_field = driver.find_element(By.NAME, "feature_models-0-authors-2-affiliation")
+        affiliation_field = driver.find_element(
+            By.NAME, "feature_models-0-authors-2-affiliation"
+        )
         affiliation_field.send_keys("Club3")
 
         # Check I agree and send form
@@ -135,13 +136,16 @@ def test_upload_dataset():
         # Close the browser
         close_driver(driver)
 
+
 def test_upload_unsynchronized_dataset_to_zenodo():
     """
     Test que verifica que un dataset en la sección 'unsynchronized' puede subirse
     correctamente a Fakenodo desde la página de detalles del dataset.
     """
     # Configuración inicial del driver
-    driver = webdriver.Chrome()  # Asegúrate de configurar el PATH de chromedriver si es necesario
+    driver = (
+        webdriver.Chrome()
+    )  # Asegúrate de configurar el PATH de chromedriver si es necesario
 
     try:
         # Navegar a la lista de datasets
@@ -149,7 +153,9 @@ def test_upload_unsynchronized_dataset_to_zenodo():
         time.sleep(2)  # Esperar a que la página cargue completamente
 
         # Seleccionar datasets solo de la sección 'unsynchronized'
-        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody a")
+        staging_datasets_links = driver.find_elements(
+            By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody a"
+        )
         if not staging_datasets_links:
             raise Exception("No se encontraron datasets en staging (unsynchronized).")
 
@@ -160,18 +166,28 @@ def test_upload_unsynchronized_dataset_to_zenodo():
         time.sleep(2)  # Esperar a que cargue la página del dataset
 
         # Verificar que estamos en la URL correcta
-        dataset_id = first_dataset_url.split("/")[-1]  # Extraer el ID del dataset desde la URL
+        dataset_id = first_dataset_url.split("/")[
+            -1
+        ]  # Extraer el ID del dataset desde la URL
         expected_url = f"http://127.0.0.1:5000/dataset/unsynchronized/{dataset_id}/"
-        assert driver.current_url == expected_url, f"URL inesperada: {driver.current_url}"
+        assert (
+            driver.current_url == expected_url
+        ), f"URL inesperada: {driver.current_url}"
 
         # Localizar y hacer clic en el botón 'uploadToZenodo'
-        upload_button = driver.find_element(By.ID, "uploadToZenodo")  # Cambia 'ID' por el selector adecuado si es necesario
+        upload_button = driver.find_element(
+            By.ID, "uploadToZenodo"
+        )  # Cambia 'ID' por el selector adecuado si es necesario
         upload_button.click()
         time.sleep(3)  # Esperar la respuesta del servidor
 
         # Verificar el mensaje de éxito
-        success_message = driver.find_element(By.CLASS_NAME, "alert-success")  # Cambia el selector si es necesario
-        assert success_message.text == "¡Archivo subido a Fakenodo exitosamente!", "El mensaje de éxito no coincide."
+        success_message = driver.find_element(
+            By.CLASS_NAME, "alert-success"
+        )  # Cambia el selector si es necesario
+        assert (
+            success_message.text == "¡Archivo subido a Fakenodo exitosamente!"
+        ), "El mensaje de éxito no coincide."
 
         print("El test pasó correctamente.")
 
@@ -195,7 +211,9 @@ def test_dataset_appears_in_staging():
         # Contar el número inicial de datasets en staging
         driver.get(f"{host}/dataset/list")
         wait_for_page_to_load(driver)
-        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        staging_datasets_links = driver.find_elements(
+            By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr"
+        )
         initial_staging_count = len(staging_datasets_links)
 
         # Subir un nuevo dataset
@@ -224,11 +242,15 @@ def test_dataset_appears_in_staging():
         # Contar el número de datasets en staging después de la subida
         driver.get(f"{host}/dataset/list")
         wait_for_page_to_load(driver)
-        staging_datasets_links_after = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        staging_datasets_links_after = driver.find_elements(
+            By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr"
+        )
         final_staging_count = len(staging_datasets_links_after)
 
         # Verificar que el número de datasets en staging haya aumentado
-        assert final_staging_count == initial_staging_count + 1, "El dataset no se añadió al área de staging."
+        assert (
+            final_staging_count == initial_staging_count + 1
+        ), "El dataset no se añadió al área de staging."
 
         print("El test de aparición en staging pasó correctamente.")
 
@@ -237,6 +259,7 @@ def test_dataset_appears_in_staging():
 
     finally:
         close_driver(driver)
+
 
 def test_unsynchronized_dataset_remains_in_staging():
     """
@@ -252,27 +275,40 @@ def test_unsynchronized_dataset_remains_in_staging():
         wait_for_page_to_load(driver)
 
         # Seleccionar datasets en staging
-        staging_datasets_links = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
+        staging_datasets_links = driver.find_elements(
+            By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr"
+        )
         if not staging_datasets_links:
             raise Exception("No se encontraron datasets en staging.")
 
         # Seleccionar el primer dataset
         first_dataset = staging_datasets_links[0]
-        first_dataset_url = first_dataset.find_element(By.TAG_NAME, "a").get_attribute("href")
+        first_dataset_url = first_dataset.find_element(By.TAG_NAME, "a").get_attribute(
+            "href"
+        )
         first_dataset.click()
         wait_for_page_to_load(driver)
 
         # Verificar que el dataset no esté sincronizado con Zenodo
-        unsynchronized_message = driver.find_element(By.CLASS_NAME, "alert-warning")  # Cambia el selector si es necesario
-        assert "Este dataset no está sincronizado con Zenodo" in unsynchronized_message.text, \
-            "El dataset no muestra el mensaje esperado de no sincronizado."
+        unsynchronized_message = driver.find_element(
+            By.CLASS_NAME, "alert-warning"
+        )  # Cambia el selector si es necesario
+        assert (
+            "Este dataset no está sincronizado con Zenodo"
+            in unsynchronized_message.text
+        ), "El dataset no muestra el mensaje esperado de no sincronizado."
 
         # Verificar que seguimos en la sección de staging
         driver.get(f"{host}/dataset/list")
         wait_for_page_to_load(driver)
-        staging_datasets_links_after = driver.find_elements(By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr")
-        assert any(first_dataset_url in link.find_element(By.TAG_NAME, "a").get_attribute("href") 
-                   for link in staging_datasets_links_after), "El dataset no permanece en staging."
+        staging_datasets_links_after = driver.find_elements(
+            By.CSS_SELECTOR, "div.card:nth-of-type(2) table tbody tr"
+        )
+        assert any(
+            first_dataset_url
+            in link.find_element(By.TAG_NAME, "a").get_attribute("href")
+            for link in staging_datasets_links_after
+        ), "El dataset no permanece en staging."
 
         print("El test de permanencia en staging pasó correctamente.")
 
@@ -281,6 +317,7 @@ def test_unsynchronized_dataset_remains_in_staging():
 
     finally:
         close_driver(driver)
+
 
 def test_download_button():
     driver = initialize_driver()
@@ -291,7 +328,11 @@ def test_download_button():
         # Open the dataset page
         driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
         wait_for_page_to_load(driver)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(., 'Download All')]")))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//a[contains(., 'Download All')]")
+            )
+        )
         # Check presence of buttons
         assert driver.find_element(By.XPATH, "//a[contains(., 'Download All')]")
 
@@ -325,13 +366,16 @@ def test_table_UVLfiles():
             assert check_button.is_displayed(), "Check button is not displayed!"
 
             # Verify "Export" button
-            export_button = row.find_element(By.XPATH, "//button[contains(., 'Export')]")
+            export_button = row.find_element(
+                By.XPATH, "//button[contains(., 'Export')]"
+            )
             assert export_button.is_displayed(), "Export button is not displayed!"
 
         print("File table and buttons are correctly displayed!")
 
     finally:
         close_driver(driver)
+
 
 def test_inter_elements():
     driver = initialize_driver()
@@ -344,7 +388,9 @@ def test_inter_elements():
         wait_for_page_to_load(driver)
 
         # Test modal behavior
-        view_button = driver.find_element(By.XPATH, "(//button[contains(., 'View')])[1]")
+        view_button = driver.find_element(
+            By.XPATH, "(//button[contains(., 'View')])[1]"
+        )
         view_button.click()
         time.sleep(1)  # Wait for modal to open
         modal = driver.find_element(By.ID, "fileViewerModal")
@@ -370,19 +416,24 @@ def test_button_explore_more_datasets():
         wait_for_page_to_load(driver)
 
         # Test the 'Explore more datasets' button
-        explore_button = driver.find_element(By.XPATH, "//a[contains(., 'Explore more datasets')]")
+        explore_button = driver.find_element(
+            By.XPATH, "//a[contains(., 'Explore more datasets')]"
+        )
         explore_button.click()
         wait_for_page_to_load(driver)
 
         # Verify the page navigated correctly
         expected_url = f"{host}/explore"
         current_url = driver.current_url
-        assert driver.current_url == expected_url, f"Did not navigate to the explore page! Current URL: {current_url}"
+        assert (
+            driver.current_url == expected_url
+        ), f"Did not navigate to the explore page! Current URL: {current_url}"
 
         print("Explore more datasets button works!")
 
     finally:
         close_driver(driver)
+
 
 # Call the test function
 # test_upload_dataset()
