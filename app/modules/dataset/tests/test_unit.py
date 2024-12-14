@@ -36,5 +36,27 @@ def test_subdomain_index_internal_error(mock_filter_by_doi, test_client):
     # Verificar que se devuelve un código de estado 500
     assert response is None or response.status_code == 500
 
+#test unitario, devuelve el DOI
+@patch('os.getenv')  # Simulamos la función os.getenv
+def test_construct_uvlhub_doi(mocked_getenv):
+    # Simular el valor que retorna os.getenv para el dominio
+    mocked_getenv.return_value = 'uvlhub.io'
+
+    # Simulamos un objeto de dataset con un DOI
+    fake_dataset = MagicMock()
+    fake_dataset.ds_meta_data.dataset_doi = '10.1234/example_doi'
+
+    # Instancia del servicio bajo prueba
+    dataset_service = DataSetService()
+
+    # Llamar a la función objetivo
+    generated_url = dataset_service.get_uvlhub_doi(fake_dataset)
+
+    # Comprobar que la URL generada es correcta
+    expected_url = 'http://uvlhub.io/doi/10.1234/example_doi'
+    assert generated_url == expected_url
+
+    # Confirmar que os.getenv fue llamado con los parámetros esperados
+    mocked_getenv.assert_called_once_with('DOMAIN', 'localhost')
 
 
