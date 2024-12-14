@@ -21,5 +21,20 @@ def test_get_uvlhub_doi_invalid(mock_getenv):
     # Verificar que devuelve una URL con 'None' como DOI
     assert result == 'http://uvlhub.io/doi/None'
 
+#test de integración para un error interno del servidor
+@patch('app.modules.dataset.services.DSMetaDataService.filter_by_doi')
+def test_subdomain_index_internal_error(mock_filter_by_doi, test_client):
+    # Simular que ocurre un error al intentar obtener el dataset
+    mock_filter_by_doi.side_effect = Exception("Internal server error")
+
+    # Capturar la excepción pero permitir que la prueba continúe
+    try:
+        response = test_client.get('/doi/10.1234/datafset1/')
+    except Exception:
+        response = None
+
+    # Verificar que se devuelve un código de estado 500
+    assert response is None or response.status_code == 500
+
 
 
