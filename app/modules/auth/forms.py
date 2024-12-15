@@ -12,10 +12,12 @@ class SignupForm(FlaskForm):
         validators=[
             DataRequired(),
             Length(min=8, max=20),  # Password length between 8 and 20 characters
-            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),   # Uppercase letter
-            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),   # Lowercase letter
-            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),                 # Digit
-            Regexp(r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])", message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
+            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),
+            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),
+            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),  # At least one digit
+            Regexp(
+                r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])",
+                message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
         ]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -26,7 +28,19 @@ class DeveloperSingUpForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     surname = StringField("Surname", validators=[DataRequired()])
     email = StringField("Corporate Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    password = PasswordField(
+        "Password",
+        validators=[
+            DataRequired(),
+            Length(min=8, max=20),  # Password length between 8 and 20 characters
+            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),
+            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),
+            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),  # At least one digit
+            Regexp(
+                r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])",
+                message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
+        ]
+    )
     # Campo desplegable para seleccionar el equipo
     team = SelectField(
         "Team",

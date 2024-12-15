@@ -54,7 +54,7 @@ def test_correct_redirection_to_email_validation(test_client):
 def test_login_unsuccessful_bad_email(test_client):
     response = test_client.post(
         "/login",
-        data=dict(email="bademail@example.com", password="test1234"),
+        data=dict(email="bademail@example.com", password="Test1234#"),
         follow_redirects=True,
     )
 
@@ -65,7 +65,7 @@ def test_login_unsuccessful_bad_email(test_client):
 def test_login_unsuccessful_bad_password(test_client):
     response = test_client.post(
         "/login",
-        data=dict(email="user1@example.com", password="basspassword"),
+        data=dict(email="user1@example.com", password="Basspassword"),
         follow_redirects=True,
     )
 
@@ -77,7 +77,7 @@ def test_login_unsuccessful_bad_password(test_client):
 def test_signup_user_no_name(test_client):
     response = test_client.post(
         "/signup",
-        data=dict(surname="Foo", email="test@example.com", password="test1234"),
+        data=dict(surname="Foo", email="test@example.com", password="Test1234#"),
         follow_redirects=True,
     )
     assert response.request.path == url_for(
@@ -90,7 +90,7 @@ def test_signup_user_unsuccessful(test_client):
     email = "test@example.com"
     response = test_client.post(
         "/signup",
-        data=dict(name="Test", surname="Foo", email=email, password="test1234"),
+        data=dict(name="Test", surname="Foo", email=email, password="Test1234#"),
         follow_redirects=True,
     )
     assert response.request.path == url_for(
@@ -103,7 +103,7 @@ def test_signup_user_successful(test_client):
     response = test_client.post(
         "/signup",
         data=dict(
-            name="Foo", surname="Example", email="foo@example.com", password="foo1234"
+            name="Foo", surname="Example", email="foo@example.com", password="Foo1234#"
         ),
         follow_redirects=True,
     )
@@ -116,7 +116,7 @@ def test_service_create_with_profie_success(clean_database):
         "name": "Test",
         "surname": "Foo",
         "email": "service_test@example.com",
-        "password": "test1234",
+        "password": "Test1234#",
     }
 
     AuthenticationService().create_with_profile(**data)
@@ -126,7 +126,7 @@ def test_service_create_with_profie_success(clean_database):
 
 
 def test_service_create_with_profile_fail_no_email(clean_database):
-    data = {"name": "Test", "surname": "Foo", "email": "", "password": "1234"}
+    data = {"name": "Test", "surname": "Foo", "email": "", "password": "Test1234#"}
 
     with pytest.raises(ValueError, match="Email is required."):
         AuthenticationService().create_with_profile(**data)
@@ -158,7 +158,7 @@ def test_developer_singup_success(test_client):
             name="DeveloperName",
             surname="DeveloperSurname",
             email="developer@example.com",
-            password="securepassword123",
+            password="Securepassword123#",
             team="University of Seville",
             github="devgithubuser",
         ),
@@ -177,7 +177,7 @@ def test_developer_signup_duplicate_email(test_client):
             name="Dev",
             surname="Test",
             email="duplicate@example.com",
-            password="password123",
+            password="Password123#",
             team="University of Malaga",
             github="duplicategithub",
         ),
@@ -190,7 +190,7 @@ def test_developer_signup_duplicate_email(test_client):
             name="DevNew",
             surname="TestNew",
             email="duplicate@example.com",
-            password="newpassword123",
+            password="Newpassword123#",
             team="University of Malaga",
             github="newgithub",
         ),
@@ -204,7 +204,7 @@ def test_developer_login_success(test_client):
     # Prueba el login exitoso de un developer
     response = test_client.post(
         "/login",
-        data=dict(email="developer@example.com", password="securepassword123"),
+        data=dict(email="developer@example.com", password="Securepassword123#"),
         follow_redirects=True,
     )
 
