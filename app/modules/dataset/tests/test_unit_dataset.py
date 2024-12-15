@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app import create_app
 from app.modules.dataset.models import DataSet, DSMetaData
 from app.modules.dataset.repositories import DataSetRepository
 from app.modules.dataset.services import DataSetService
@@ -98,27 +99,27 @@ def test_count_unsynchronized_datasets(dataset_repository):
     assert count == 3
 
 
-def test_synchronize_unsynchronized_datasets(
-    dataset_repository, unsynchronized_dataset
-):
+def test_synchronize_unsynchronized_datasets(dataset_repository, unsynchronized_dataset):
     """Prueba la sincronización de un dataset no sincronizado."""
 
-    # Configura el comportamiento del mock para get_unsynchronized
-    dataset_repository.get_unsynchronized = MagicMock(
-        return_value=[unsynchronized_dataset]
-    )
+    # Crea y activa el contexto de la aplicación
+    app = create_app()
+    with app.app_context():
+        # Configura el comportamiento del mock para get_unsynchronized
+        dataset_repository.get_unsynchronized = MagicMock(
+            return_value=[unsynchronized_dataset]
+        )
 
-    # Configura el comportamiento del mock para generate_doi_for_dataset
-    dataset_repository.generate_doi_for_dataset = MagicMock(
-        return_value="10.1234/new_doi"
-    )
+        # Configura el comportamiento del mock para generate_doi_for_dataset
+        dataset_repository.generate_doi_for_dataset = MagicMock(
+            return_value="10.1234/new_doi"
+        )
 
-    # Ejecuta la sincronización
-    dataset_repository.synchronize_unsynchronized_datasets(1, 2)
+        # Ejecuta la sincronización
+        dataset_repository.synchronize_unsynchronized_datasets(1, 2)
 
-    # Verifica que el dataset haya obtenido un nuevo DOI
-    assert unsynchronized_dataset.ds_meta_data.dataset_doi == "10.1234/new_doi"
-
+        # Verifica que el dataset haya obtenido un nuevo DOI
+        assert unsynchronized_dataset.ds_meta_data.dataset_doi == "10.1234/new_doi"
 
 # test verifica que se maneje correctamente un DOI que no tiene un formato válido.
 @patch("os.getenv")
