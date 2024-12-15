@@ -204,7 +204,7 @@ def test_subdomain_index_missing_cookie(
 def test_download_all_endpoint_exists(test_client):
 
     response = test_client.get('/dataset/download_all')
-    
+
     assert response.status_code == 200
 
 def test_download_all_returns_zip(test_client):
