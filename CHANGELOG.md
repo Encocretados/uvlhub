@@ -1,3 +1,15 @@
+# [3.1.0](https://github.com/Encocretados/uvlhub/compare/v3.0.0...v3.1.0) (2024-12-15)
+
+
+### Bug Fixes
+
+* **featuremodel:** test unit failure fixed ([f3b3452](https://github.com/Encocretados/uvlhub/commit/f3b345238f22653aed583dfa4005e3ce4d521e81))
+
+
+### Features
+
+* **featuremodel:** test unit for featuremodel ([6eca9e1](https://github.com/Encocretados/uvlhub/commit/6eca9e1857ca7975035f3d9e92a85dea739e24b7))
+
 # [0.1.0](https://github.com/Encocretados/uvlhub/compare/v0.0.0...v0.1.0) (2024-12-14)
 
 
