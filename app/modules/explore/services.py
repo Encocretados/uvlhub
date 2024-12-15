@@ -21,3 +21,17 @@ class ExploreService(BaseService):
             author_name=author_name,
             **kwargs
         )
+
+    def advance_filter(self, query="", sorting="newest", publication_type="any", tags=[], after_date=None, before_date=None, min_size=None, max_size=None, size_unit="KB", author_name=None):
+        return self.repository.filter(
+            query=query,
+            sorting=sorting,
+            publication_type=publication_type,
+            tags=tags,
+            after_date=after_date,
+            before_date=before_date,
+            min_size=min_size,
+            max_size=max_size,
+            size_unit=size_unit,
+            author_name=author_name
+        )
