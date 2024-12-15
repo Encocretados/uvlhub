@@ -82,3 +82,28 @@ def test_create_fm_metadata(mock_get, mock_commit, mock_add, test_client):
         uvl_version="1.0",
         fm_metrics_id=mock_fm_metrics.id  # Usa el ID de FMMetrics aquí
     )
+
+
+
+def test_create_feature_model_no_db(test_client):
+    """
+    Test for creating a new FeatureModel instance without modifying the real database.
+    """
+    with mock.patch('app.modules.featuremodel.models.db.session.add') as mock_add, \
+         mock.patch('app.modules.featuremodel.models.db.session.commit') as mock_commit, \
+         mock.patch('app.modules.featuremodel.models.FeatureModel.query.get') as mock_get:
+    
+        # Mock the data_set_id to simulate the existence of the referenced dataset
+        mock_get.return_value = mock.Mock(id=1)
+    
+        # Create a new FeatureModel with a mock data_set_id
+        new_feature_model = FeatureModel(data_set_id=1)
+    
+        # Simulate adding the object to the session (Ensure it's actually being added to the session)
+        db.session.add(new_feature_model)
+    
+        # Simulate committing the session
+        db.session.commit()
+    
+        # Assert that the 'add' method was called with the correct arguments
+        mock_add.assert_called_once_with(new_feature_model)
