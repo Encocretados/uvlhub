@@ -58,3 +58,27 @@ def test_count_feature_models(mock_count_feature_models, test_client):
         # Verificamos que la función commit haya sido llamada
         mock_commit.assert_called_once()
 
+
+@mock.patch('app.modules.featuremodel.models.db.session.add')
+@mock.patch('app.modules.featuremodel.models.db.session.commit')
+@mock.patch('app.modules.featuremodel.models.FMMetaData.query.get')
+def test_create_fm_metadata(mock_get, mock_commit, mock_add, test_client):
+    """
+    Test for creating a new FMMetaData instance (mocked version).
+    """
+    # Crea un objeto FMMetrics para que la clave foránea sea válida
+    mock_fm_metrics = FMMetrics(id=1, solver="Test Solver", not_solver="Test Not Solver")
+    db.session.add(mock_fm_metrics)
+    db.session.commit()
+
+    # Configura el mock para simular la consulta al objeto recién creado
+    mock_get.return_value = FMMetaData(
+        uvl_filename="test_file.csv",
+        title="Test Metadata",
+        description="Test description",
+        publication_type=PublicationType.RESEARCH,
+        publication_doi="10.1234/testdoi",
+        tags="test, metadata",
+        uvl_version="1.0",
+        fm_metrics_id=mock_fm_metrics.id  # Usa el ID de FMMetrics aquí
+    )
