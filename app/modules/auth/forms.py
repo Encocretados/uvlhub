@@ -7,7 +7,17 @@ from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 class SignupForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(max=100)])
     surname = StringField("Surname", validators=[DataRequired(), Length(max=100)])
-    password = PasswordField("Password", validators=[DataRequired()])
+    password = PasswordField(
+        "Password",
+        validators=[
+            DataRequired(),
+            Length(min=8, max=20),  # Password length between 8 and 20 characters
+            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),   # Uppercase letter
+            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),   # Lowercase letter
+            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),                 # Digit
+            Regexp(r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])", message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
+        ]
+    )
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Submit")
 
