@@ -30,7 +30,7 @@ def test_sample_assertion(test_client):
     ), "The greeting does not coincide with 'Hello, World!'"
 
 
-@mock.patch('app.modules.featuremodel.repository.FeatureModelRepository.count_feature_models')
+@mock.patch('app.modules.featuremodel.repositories.FeatureModelRepository.count_feature_models')
 def test_count_feature_models(mock_count_feature_models, test_client):
     """
     Test for counting feature models in the database (mocked version).
