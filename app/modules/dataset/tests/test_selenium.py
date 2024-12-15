@@ -13,6 +13,7 @@ from app.modules.auth.services import AuthenticationService
 
 authentication_service = AuthenticationService()
 
+SAMPLE_DATASET_ROUTE = "/doi/10.1234/dataset1/"
 
 def wait_for_page_to_load(driver, timeout=4):
     WebDriverWait(driver, timeout).until(
