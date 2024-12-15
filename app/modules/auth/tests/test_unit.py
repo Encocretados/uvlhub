@@ -1,12 +1,14 @@
 import pytest
 from flask import url_for
-
+import time
 from app import db
 from app.modules.auth.repositories import UserRepository
 from app.modules.auth.services import AuthenticationService
 from app.modules.profile.repositories import UserProfileRepository
 from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
+
+authentication_service = AuthenticationService()
 
 
 @pytest.fixture(scope="module")
@@ -20,12 +22,68 @@ def test_client(test_client):
         user_test = User(email='user1@example.com', password='1234', is_developer=False)
         db.session.add(user_test)
         db.session.commit()
+        user2_test = User(email='uvlhub.reply@gmail.com', password='uvl12hub34', is_developer=False)
+        db.session.add(user2_test)
+        db.session.commit()
 
         profile = UserProfile(user_id=user_test.id, name="Name", surname="Surname")
         db.session.add(profile)
         db.session.commit()
 
     yield test_client
+
+
+def test_login_and_email_authentification_success(test_client):
+    response = test_client.post(
+        "/login",
+        data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for("auth.email_validation"), "Login was unsuccessful"
+
+    time.sleep(2)
+    clave = authentication_service.get_validation_email_key()
+    response = test_client.post(
+        "/email_validation",
+        data=dict(
+            email='uvlhub.reply@gmail.com',
+            password='uvl12hub34',
+            key=clave,
+        ),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for("public.index"), "Email authetification was unsuccessful"
+    test_client.get("/logout", follow_redirects=True)
+
+
+def test_login_succes_but_email_authentification_unsuccessful(test_client):
+    response = test_client.post(
+        "/login",
+        data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for("auth.email_validation"), "Login was unsuccessful"
+
+    time.sleep(2)
+    clave = int(authentication_service.get_validation_email_key())
+    if clave != 999999:
+        clave += 1
+    else:
+        clave -= 1
+    response = test_client.post(
+        "/email_validation",
+        data=dict(
+            email='uvlhub.reply@gmail.com',
+            password='uvl12hub34',
+            key=str(clave),
+        ),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for(
+        "auth.email_validation"), "Email authetification was unexpectedly successful"
+    assert "The key does not match".encode("utf-8") in response.data
+
+    test_client.get("/logout", follow_redirects=True)
 
 
 def test_login_success(test_client):
