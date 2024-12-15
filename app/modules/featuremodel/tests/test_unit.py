@@ -60,8 +60,8 @@ def test_count_feature_models(mock_count_feature_models, test_client):
 
 
 @mock.patch('app.modules.featuremodel.models.db.session.add')
-@mock.patch('app.modules.featuremodel.models.db.session.commit')
-@mock.patch('app.modules.featuremodel.models.FMMetaData.query.get')
+@mock.patch('app.modules.featuremodel.db.session.commit')
+@mock.patch('app.modules.featuremodel.models.FMMetaData')
 def test_create_fm_metadata(mock_get, mock_commit, mock_add, test_client):
     """
     Test for creating a new FMMetaData instance (mocked version).
@@ -76,7 +76,7 @@ def test_create_fm_metadata(mock_get, mock_commit, mock_add, test_client):
         uvl_filename="test_file.csv",
         title="Test Metadata",
         description="Test description",
-        publication_type=PublicationType.RESEARCH,
+        publication_type=PublicationType.BOOK,
         publication_doi="10.1234/testdoi",
         tags="test, metadata",
         uvl_version="1.0",
