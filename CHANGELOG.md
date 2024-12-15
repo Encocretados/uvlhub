@@ -16,6 +16,26 @@
 * **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([bb49f77](https://github.com/Encocretados/uvlhub/commit/bb49f7751a250d56e766e189a8883997476c4c2e))
 * **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([83e9fa5](https://github.com/Encocretados/uvlhub/commit/83e9fa563d29c94fad4bf60f6702c263840edc33))
 * **sign-up-validation:** closes [#10](https://github.com/Encocretados/uvlhub/issues/10) ([4d20474](https://github.com/Encocretados/uvlhub/commit/4d20474132e9e2fb41982842d9544a06f87918e1))
+* **sign-up-validation:** Test unit for sign-up-validation ([107a541](https://github.com/Encocretados/uvlhub/commit/107a5418550b66ba611be3e5f9eab93d99043e7a))
+
+# [3.1.0](https://github.com/Encocretados/uvlhub/compare/v3.0.0...v3.1.0) (2024-12-15)
+
+
+### Bug Fixes
+
+* **featuremodel:** test unit failure fixed ([f3b3452](https://github.com/Encocretados/uvlhub/commit/f3b345238f22653aed583dfa4005e3ce4d521e81))
+* **selenium:** cambios con respecto chromedriver deshechos ([99731b7](https://github.com/Encocretados/uvlhub/commit/99731b71237e60569ea061d8cee3ad484e8489a7))
+* **sign-up-validation:** codacy issues fix ([e9ff07d](https://github.com/Encocretados/uvlhub/commit/e9ff07d0e630367de27160809e48df3f1e867fc4))
+* **sign-up-validation:** fix 3 new potential issues ([e48f6c0](https://github.com/Encocretados/uvlhub/commit/e48f6c00268fb8f14aa99353b6f329fa075396e7))
+* **sign-up-validation:** fixed 3 codacy medium security issues ([8ef7733](https://github.com/Encocretados/uvlhub/commit/8ef7733e822836882b6a221256a18b68a26e9fa6))
+
+
+### Features
+
+* **featuremodel:** test unit for featuremodel ([6eca9e1](https://github.com/Encocretados/uvlhub/commit/6eca9e1857ca7975035f3d9e92a85dea739e24b7))
+* **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([bb49f77](https://github.com/Encocretados/uvlhub/commit/bb49f7751a250d56e766e189a8883997476c4c2e))
+* **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([83e9fa5](https://github.com/Encocretados/uvlhub/commit/83e9fa563d29c94fad4bf60f6702c263840edc33))
+* **sign-up-validation:** closes [#10](https://github.com/Encocretados/uvlhub/issues/10) ([4d20474](https://github.com/Encocretados/uvlhub/commit/4d20474132e9e2fb41982842d9544a06f87918e1))
 
 # [3.1.0](https://github.com/Encocretados/uvlhub/compare/v3.0.0...v3.1.0) (2024-12-15)
 
