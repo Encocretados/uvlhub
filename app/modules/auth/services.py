@@ -11,6 +11,13 @@ from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import imaplib
+import email
+from email.header import decode_header
+import re
 
 SECRET_KEY = os.getenv("SECRET_KEY", "secret")
 ACCESS_TOKEN_EXPIRES = int(os.getenv("ACCESS_TOKEN_EXPIRES", 3600))  # 1 hora
@@ -35,6 +42,18 @@ class AuthenticationService(BaseService):
             login_user(user, remember=remember)
             return user
         return user
+
+    def get_user(self, email, password, remember=True):
+        user = self.repository.get_by_email(email)
+        if user is not None and user.check_password(password):
+            return user
+        return user
+
+    def correct_credentials(self, email, password, remember=False):
+        user = self.repository.get_by_email(email)
+        if user is not None and user.check_password(password):
+            return True
+        return False
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
@@ -111,3 +130,97 @@ class AuthenticationService(BaseService):
             return None
         except jwt.InvalidTokenError:
             return None
+
+    def send_email(self, target_email, random_key):
+        sender_email = "uvlhub.reply@gmail.com"
+        receiver_email = target_email
+        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
+        subject = f"[UVLHUB] Your key is {random_key}!"
+        body = f"""
+                <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                        }}
+                        .bold {{
+                            font-weight: bold;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <p>Hello,</p>
+                    <p>Thank you for using <span class="bold">UVLHUB</span>!</p>
+                    <p>To complete your authentication process, please use the following <span class="bold">
+                    authentication key</span>:</p>
+                    <p class="bold">{random_key}</p>
+                    <p>Please enter this key in the authentication form to proceed. If you did not request this key or
+                    believe this is an error, please contact our support team immediately.</p>
+                    <p>For your security, this key is valid for a limited time only.</p>
+                    <p>Best regards,</p>
+                    <p><span class="bold">The UVLHUB Team</span></p>
+                    <p><a href="mailto:support@uvlhub.com">Contact us</a> if you need assistance.</p>
+                </body>
+                </html>
+                """
+        message = MIMEMultipart()
+        message["From"] = target_email
+        message["To"] = receiver_email
+        message["Subject"] = subject
+        message.attach(MIMEText(body, "html"))
+        smtp_server = "smtp.gmail.com"
+        smtp_port = 587  # TLS port
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, message.as_string())
+                print("Email sent successfully to "+str(target_email)+"!")
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def get_validation_email_info(self, verbose=False):
+        username = "uvlhub.reply@gmail.com"
+        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(username, password)
+        mail.select("inbox")
+        _, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
+        email_ids = messages[0].split()
+        res = {}
+
+        if email_ids:
+            latest_email_id = email_ids[-1]
+            _, msg_data = mail.fetch(latest_email_id, "(RFC822)")
+
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_bytes(response_part[1])
+                    # Decode the email subject
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding if encoding else "utf-8")
+                    res['Subject'] = subject
+                    # Decode the sender
+                    from_ = msg.get("From")
+                    res['From'] = from_
+                    # Decode the key
+                    key = re.sub(r'[^0-9]', '', subject)
+                    res['Key'] = key
+
+                    if (verbose):
+                        print(f"Subject: {subject}")
+                        print(f"From: {from_}")
+                        print(f"Key: {key}")
+
+        else:
+            print("No emails found from uvlhub.reply@gmail.com.")
+
+        # Logout and close the connection
+        mail.logout()
+        return res
+
+    def get_validation_email_key(self):
+        res = self.get_validation_email_info(False)
+        return res['Key']

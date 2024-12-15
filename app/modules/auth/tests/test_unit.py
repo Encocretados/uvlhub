@@ -1,9 +1,12 @@
 import pytest
 from flask import url_for
 
+from app import db
 from app.modules.auth.repositories import UserRepository
 from app.modules.auth.services import AuthenticationService
 from app.modules.profile.repositories import UserProfileRepository
+from app.modules.auth.models import User
+from app.modules.profile.models import UserProfile
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +17,13 @@ def test_client(test_client):
     with test_client.application.app_context():
         # Add HERE new elements to the database that you want to exist in the test context.
         # DO NOT FORGET to use db.session.add(<element>) and db.session.commit() to save the data.
-        pass
+        user_test = User(email='user1@example.com', password='1234', is_developer=False)
+        db.session.add(user_test)
+        db.session.commit()
+
+        profile = UserProfile(user_id=user_test.id, name="Name", surname="Surname")
+        db.session.add(profile)
+        db.session.commit()
 
     yield test_client
 
@@ -22,7 +31,7 @@ def test_client(test_client):
 def test_login_success(test_client):
     response = test_client.post(
         "/login",
-        data=dict(email="test@example.com", password="test1234"),
+        data=dict(email="user1@example.com", password="1234"),
         follow_redirects=True,
     )
 
@@ -87,7 +96,8 @@ def test_signup_user_successful(test_client):
         ),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("public.index"), "Signup was unsuccessful"
+    # Ahora después de un login exitoso se pasa a la pestaña de verificacion del email
+    assert response.request.path == url_for("auth.email_validation"), "Signup was unsuccessful"
 
 
 def test_service_create_with_profie_success(clean_database):

@@ -102,4 +102,23 @@ def logout(test_client):
     Returns:
         response: Response to GET request to log out.
     """
-    return test_client.get("/logout", follow_redirects=True)
+    return test_client.get('/logout', follow_redirects=True)
+
+
+def validates_email(test_client, email, password, key):
+    """
+    Authenticates the user with the credentials provided.
+
+    Args:
+        test_client: Flask test client.
+        key (int): key recieved in the user's email.
+
+    Returns:
+        response: POST login request response.
+    """
+    response = test_client.post('/email_validation', data=dict(
+        email=email,
+        password=password,
+        key=key
+    ), follow_redirects=True)
+    return response
