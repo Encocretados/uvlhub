@@ -32,6 +32,18 @@ jobs:
         run: |
           npm install --save-dev semantic-release @semantic-release/git @semantic-release/changelog
           
+      - name: Clean existing tags (prevent duplicate tags)
+        run: |
+          git fetch --tags
+          TAG_TO_REMOVE=$(git tag -l v0.1.0) || true
+          if [ ! -z "$TAG_TO_REMOVE" ]; then
+            echo "Tag $TAG_TO_REMOVE exists. Deleting..."
+            git tag -d "$TAG_TO_REMOVE"
+            git push origin ":refs/tags/$TAG_TO_REMOVE"
+          else
+            echo "No duplicate tags found."
+          fi
+
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

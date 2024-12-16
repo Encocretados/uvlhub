@@ -1,11 +1,13 @@
 from flask import jsonify, request
+from flask_login import login_required
+
 from app.modules.dataset.models import DataSet
 from app.modules.fakenodo import fakenodo_bp
 from app.modules.fakenodo.services import FakenodoService
 from app.modules.featuremodel.models import FeatureModel
-from flask_login import login_required
 
 base_url = "/fakenodo/api"
+
 
 # Test connection (GET)
 @fakenodo_bp.route(base_url + "/test_connection", methods=["GET"])
@@ -33,11 +35,16 @@ def create_fakenodo():
         service = FakenodoService()
         fakenodo_data = service.create_new_fakenodo(dataset)
 
-        return jsonify({
-            "status": "success",
-            "message": "Fakenodo created successfully.",
-            "fakenodo": fakenodo_data
-        }), 201
+        return (
+            jsonify(
+                {
+                    "status": "success",
+                    "message": "Fakenodo created successfully.",
+                    "fakenodo": fakenodo_data,
+                }
+            ),
+            201,
+        )
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -58,7 +65,12 @@ def upload_file(fakenodo_id):
 
         # Check if dataset or feature model is not found
         if not dataset or not feature_model:
-            return jsonify({"status": "error", "message": "Dataset or FeatureModel not found."}), 404
+            return (
+                jsonify(
+                    {"status": "error", "message": "Dataset or FeatureModel not found."}
+                ),
+                404,
+            )
 
         # Create an instance of the FakenodoService
         service = FakenodoService()
@@ -67,11 +79,16 @@ def upload_file(fakenodo_id):
         response = service.upload_file(dataset, fakenodo_id, feature_model)
 
         # Return a success response with the file metadata
-        return jsonify({
-            "status": "success",
-            "message": response["message"],
-            "file_metadata": response.get("file_metadata", {})
-        }), 201  # HTTP Status Code 201 for successful resource creation
+        return (
+            jsonify(
+                {
+                    "status": "success",
+                    "message": response["message"],
+                    "file_metadata": response.get("file_metadata", {}),
+                }
+            ),
+            201,
+        )  # HTTP Status Code 201 for successful resource creation
 
     except Exception as e:
         # In case of an error, return a generic error message with exception details
@@ -86,10 +103,7 @@ def publish_fakenodo(fakenodo_id):
         service = FakenodoService()
         message = service.publish_fakenodo(fakenodo_id)
 
-        return jsonify({
-            "status": "success",
-            "message": message["message"]
-        }), 200
+        return jsonify({"status": "success", "message": message["message"]}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -103,10 +117,7 @@ def get_fakenodo(fakenodo_id):
         service = FakenodoService()
         fakenodo = service.get_fakenodo(fakenodo_id)
 
-        return jsonify({
-            "status": "success",
-            "fakenodo": fakenodo
-        }), 200
+        return jsonify({"status": "success", "fakenodo": fakenodo}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -120,10 +131,7 @@ def get_doi(fakenodo_id):
         service = FakenodoService()
         doi = service.get_doi(fakenodo_id)
 
-        return jsonify({
-            "status": "success",
-            "doi": doi
-        }), 200
+        return jsonify({"status": "success", "doi": doi}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -137,10 +145,7 @@ def get_all_fakenodos():
         service = FakenodoService()
         fakenodos = service.get_all_fakenodos()
 
-        return jsonify({
-            "status": "success",
-            "fakenodos": fakenodos
-        }), 200
+        return jsonify({"status": "success", "fakenodos": fakenodos}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -154,10 +159,7 @@ def delete_fakenodo(fakenodo_id):
         service = FakenodoService()
         message = service.delete_fakenodo(fakenodo_id)
 
-        return jsonify({
-            "status": "success",
-            "message": message["message"]
-        }), 200
+        return jsonify({"status": "success", "message": message["message"]}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

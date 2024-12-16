@@ -1,0 +1,29 @@
+name: Check Commit Size
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-commit-size:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get commit size
+        run: |
+          COMMIT_SIZE=$(git diff --shortstat ${{ github.event.before }} ${{ github.sha }} | grep -o '[0-9]*' | head -n 2 | awk '{s+=$1} END {print s}')
+
+          # Verificamos si COMMIT_SIZE tiene un valor numérico
+          if [ -z "$COMMIT_SIZE" ]; then
+            echo "No changes detected, skipping size check."
+          elif [ $COMMIT_SIZE -gt 1500 ]; then
+            echo "::error::Commit is too large. Please split your commit into smaller ones."
+            exit 1
+          fi

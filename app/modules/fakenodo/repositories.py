@@ -1,6 +1,7 @@
+from app import db
 from app.modules.fakenodo.models import Fakenodo
 from core.repositories.BaseRepository import BaseRepository
-from app import db
+
 
 class FakenodoRepository(BaseRepository):
     def __init__(self):
