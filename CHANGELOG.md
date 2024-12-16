@@ -53,6 +53,51 @@
 * **dataset:** correccion import erroneo ([820fd1c](https://github.com/Encocretados/uvlhub/commit/820fd1cc76bce0d0ed3299e57621e227734caf2b))
 * **dataset:** eliminar un espacio en blanco innecesario ([e69dd37](https://github.com/Encocretados/uvlhub/commit/e69dd37c4b61d9482f0758d72dfa026e79cc4e33))
 * **dataset:** fixed login at test_selenium_dataset test_upload_dataset() ([268c11a](https://github.com/Encocretados/uvlhub/commit/268c11a129cef12941383c5af4eefc98644dd5e6))
+* **dataset:** modificación listado dataset, version original ([adfdb5b](https://github.com/Encocretados/uvlhub/commit/adfdb5b0364771d25b0f0c69c7423b4a53a5ea8e))
+* **featuremodel:** test unit failure fixed ([f3b3452](https://github.com/Encocretados/uvlhub/commit/f3b345238f22653aed583dfa4005e3ce4d521e81))
+* **migrate, community:** modificación seeders community ([01b00bb](https://github.com/Encocretados/uvlhub/commit/01b00bbf551266fb8ea805fa9b224a8f1c89ed40))
+* migrations heads merged ([ffecd92](https://github.com/Encocretados/uvlhub/commit/ffecd92e746872bf757c36a89c7dada9b76cf544))
+* **migrations:** migraciones sin errores aparentes ([97b3a3c](https://github.com/Encocretados/uvlhub/commit/97b3a3c224381ea6d0e8791af3781f5b580b4b6f))
+* **migrations:** migraciones sin errores aparentes ([e05aa64](https://github.com/Encocretados/uvlhub/commit/e05aa6465b126474399412411cb9dc13522b36ce))
+* **migrations:** migrations problem fixed ([9879e5f](https://github.com/Encocretados/uvlhub/commit/9879e5f47fdbddf4d5615e781a48c8571e4b100b))
+* **selenium:** cambios con respecto chromedriver deshechos ([99731b7](https://github.com/Encocretados/uvlhub/commit/99731b71237e60569ea061d8cee3ad484e8489a7))
+* **selenium:** deshacer cambios del chromedriver ([3df4eca](https://github.com/Encocretados/uvlhub/commit/3df4eca35b464373fc5db0438dc160996bbed468))
+* **sign-up-validation:** codacy issues fix ([e9ff07d](https://github.com/Encocretados/uvlhub/commit/e9ff07d0e630367de27160809e48df3f1e867fc4))
+* **sign-up-validation:** fix 3 new potential issues ([e48f6c0](https://github.com/Encocretados/uvlhub/commit/e48f6c00268fb8f14aa99353b6f329fa075396e7))
+* **sign-up-validation:** fixed 3 codacy medium security issues ([8ef7733](https://github.com/Encocretados/uvlhub/commit/8ef7733e822836882b6a221256a18b68a26e9fa6))
+* **test:** detele duplicate test ([5d288e7](https://github.com/Encocretados/uvlhub/commit/5d288e7e76cd62de8af0d8fae4efff26a8813a3a))
+* **test:** module names ([4056fe3](https://github.com/Encocretados/uvlhub/commit/4056fe338227c45cb6d001e6eb8672b10c4e734c))
+* **uvlhub:** cambio de nombre a algunos archivos ([c6f8abe](https://github.com/Encocretados/uvlhub/commit/c6f8abe0527282a2abc69290bab78b3f3b99b93a))
+* **workflow:** cambio, git pull antes de hacer el commit ([345b37a](https://github.com/Encocretados/uvlhub/commit/345b37aaac2dd96db643c4b107a43b29bf7d77bc))
+
+
+### Features
+
+* **auth, community, dataset:** cambio de modelo(user-community-dataset) ([9609b5a](https://github.com/Encocretados/uvlhub/commit/9609b5a24679ece94654919891261e2dcaa5a4ca))
+* **community, dataset:** listado datasets dentro de comunidades ([2cb3442](https://github.com/Encocretados/uvlhub/commit/2cb344247b2f478da668109f22a304dfd52df1d7))
+* **community:** crear, listar, mostrar comunidades ([e6b643d](https://github.com/Encocretados/uvlhub/commit/e6b643d04a63eb70d8283b83f74822234d333f65))
+* **community:** unit and interface tests ([cabb9c1](https://github.com/Encocretados/uvlhub/commit/cabb9c137b9086572ef2092dbee4c305853ccbbb))
+* **dataset, profile, public:** arreglo listado comunidades y listado de comunidades sin autenticacion ([b2e54e3](https://github.com/Encocretados/uvlhub/commit/b2e54e3206a35e32f6a9e730a553f1541f08fc06))
+* **featuremodel:** test unit for featuremodel ([6eca9e1](https://github.com/Encocretados/uvlhub/commit/6eca9e1857ca7975035f3d9e92a85dea739e24b7))
+* **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([bb49f77](https://github.com/Encocretados/uvlhub/commit/bb49f7751a250d56e766e189a8883997476c4c2e))
+* **sign-up-validation:** [#54](https://github.com/Encocretados/uvlhub/issues/54) ([83e9fa5](https://github.com/Encocretados/uvlhub/commit/83e9fa563d29c94fad4bf60f6702c263840edc33))
+* **sign-up-validation:** Added new password rules before Developer sign up ([2eef3f2](https://github.com/Encocretados/uvlhub/commit/2eef3f2adf651ceb6c674f9afd3bcf8388f20f1c))
+* **sign-up-validation:** Added new password rules before sign up ([c8e0b65](https://github.com/Encocretados/uvlhub/commit/c8e0b6511aa8831824732ba2a5b407e64b2bdac1))
+* **sign-up-validation:** closes [#10](https://github.com/Encocretados/uvlhub/issues/10) ([4d20474](https://github.com/Encocretados/uvlhub/commit/4d20474132e9e2fb41982842d9544a06f87918e1))
+* **sign-up-validation:** Closes [#54](https://github.com/Encocretados/uvlhub/issues/54) ([553ce19](https://github.com/Encocretados/uvlhub/commit/553ce195822e63a3f971ad38013ab0b42404ebe9))
+* **sign-up-validation:** Extended [#54](https://github.com/Encocretados/uvlhub/issues/54) adding 2 more unitary tests ([4298df8](https://github.com/Encocretados/uvlhub/commit/4298df8c044ce61df73f7461a751199b782d965f))
+* **sign-up-validation:** Test unit for sign-up-validation ([107a541](https://github.com/Encocretados/uvlhub/commit/107a5418550b66ba611be3e5f9eab93d99043e7a))
+
+# [3.1.0](https://github.com/Encocretados/uvlhub/compare/v3.0.0...v3.1.0) (2024-12-16)
+
+
+### Bug Fixes
+
+* **auth, community:** improvement security. closes [#118](https://github.com/Encocretados/uvlhub/issues/118) ([c86c359](https://github.com/Encocretados/uvlhub/commit/c86c3599aada1102dcf05eed6676e2d7e0c0f1ed))
+* **communities:** Fixes [#125](https://github.com/Encocretados/uvlhub/issues/125) selenium and unitary test ([5e66195](https://github.com/Encocretados/uvlhub/commit/5e66195e97c38df53c178aeab3b9d196c8c53476))
+* **dataset:** correccion import erroneo ([820fd1c](https://github.com/Encocretados/uvlhub/commit/820fd1cc76bce0d0ed3299e57621e227734caf2b))
+* **dataset:** eliminar un espacio en blanco innecesario ([e69dd37](https://github.com/Encocretados/uvlhub/commit/e69dd37c4b61d9482f0758d72dfa026e79cc4e33))
+* **dataset:** fixed login at test_selenium_dataset test_upload_dataset() ([268c11a](https://github.com/Encocretados/uvlhub/commit/268c11a129cef12941383c5af4eefc98644dd5e6))
 * **featuremodel:** test unit failure fixed ([f3b3452](https://github.com/Encocretados/uvlhub/commit/f3b345238f22653aed583dfa4005e3ce4d521e81))
 * **migrate, community:** modificación seeders community ([01b00bb](https://github.com/Encocretados/uvlhub/commit/01b00bbf551266fb8ea805fa9b224a8f1c89ed40))
 * migrations heads merged ([ffecd92](https://github.com/Encocretados/uvlhub/commit/ffecd92e746872bf757c36a89c7dada9b76cf544))
