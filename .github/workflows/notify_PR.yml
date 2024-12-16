@@ -1,0 +1,35 @@
+name: Notify PR Activity to All Collaborators
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  email_notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: "GitHub PR Notification"
+          to: ${{ secrets.EMAIL_RECIPIENTS }}
+          from: ${{ secrets.GMAIL_USERNAME }}
+          body: |
+            Hello,
+            
+            A pull request in the repository ${{ github.repository }} has been ${{ github.event.action }}.
+
+            Pull Request #${{ github.event.pull_request.number }}
+            Title: ${{ github.event.pull_request.title }}
+            Author: @${{ github.actor }}
+            URL: ${{ github.event.pull_request.html_url }}
+
+            Best regards,
+            GitHub Actions Bot

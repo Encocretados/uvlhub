@@ -2,9 +2,10 @@ import logging
 
 from flask import render_template
 
+from app.modules.community.models import Community
+from app.modules.dataset.services import DataSetService
 from app.modules.featuremodel.services import FeatureModelService
 from app.modules.public import public_bp
-from app.modules.dataset.services import DataSetService
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,9 @@ def index():
 
     # Statistics: total downloads
     total_dataset_downloads = dataset_service.total_dataset_downloads()
-    total_feature_model_downloads = feature_model_service.total_feature_model_downloads()
+    total_feature_model_downloads = (
+        feature_model_service.total_feature_model_downloads()
+    )
 
     # Statistics: total views
     total_dataset_views = dataset_service.total_dataset_views()
@@ -35,5 +38,12 @@ def index():
         total_dataset_downloads=total_dataset_downloads,
         total_feature_model_downloads=total_feature_model_downloads,
         total_dataset_views=total_dataset_views,
-        total_feature_model_views=total_feature_model_views
+        total_feature_model_views=total_feature_model_views,
     )
+
+
+@public_bp.route("/community")
+def community():
+    logger.info("Access community")
+    communities = Community.query.all()
+    return render_template("public/community.html", communities=communities)

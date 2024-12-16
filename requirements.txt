@@ -19,7 +19,7 @@ click==8.1.7
 ConfigArgParse==1.7
 coverage==7.6.0
 cryptography==42.0.8
-dd==0.6.0
+dd==0.5.7
 dialogflow==2.0.0
 dnspython==2.6.1
 docker==7.1.0
@@ -150,3 +150,4 @@ WTForms==3.1.2
 zope.event==5.0
 zope.interface==6.4.post2
 zstandard==0.22.0
+pyotp==2.9.0
