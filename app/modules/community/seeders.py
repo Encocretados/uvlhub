@@ -1,6 +1,7 @@
-from app.modules.community.models import Community
 from app.modules.auth.models import User
+from app.modules.community.models import Community
 from core.seeders.BaseSeeder import BaseSeeder
+
 
 class CommunitySeeder(BaseSeeder):
 
@@ -9,8 +10,8 @@ class CommunitySeeder(BaseSeeder):
     def run(self):
 
         communities = [
-            Community(name='community1', description='Community 1 description'),
-            Community(name='community2', description='Community 2 description'),
+            Community(name="community1", description="Community 1 description"),
+            Community(name="community2", description="Community 2 description"),
         ]
 
         seeded_communities = self.seed(communities)

@@ -70,7 +70,7 @@ class DSMetaData(db.Model):
 
 class DataSet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     publico = db.Column(db.Boolean, default=False)
 
     ds_meta_data_id = db.Column(

@@ -1,6 +1,7 @@
 from locust import HttpUser, TaskSet, task
-from core.locust.common import get_csrf_token, fake
+
 from core.environment.host import get_host_for_locust_testing
+from core.locust.common import fake, get_csrf_token
 
 
 class ViewCommunitiesBehavior(TaskSet):
@@ -36,11 +37,14 @@ class ManageCommunityBehavior(TaskSet):
         response = self.client.get("/community/create")
         csrf_token = get_csrf_token(response)
 
-        response = self.client.post("/community/create", data={
-            "name": fake.company(),
-            "description": fake.text(),
-            "csrf_token": csrf_token
-        })
+        response = self.client.post(
+            "/community/create",
+            data={
+                "name": fake.company(),
+                "description": fake.text(),
+                "csrf_token": csrf_token,
+            },
+        )
         if response.status_code != 200:
             print(f"Failed to create community: {response.status_code}")
 
@@ -53,11 +57,14 @@ class ManageCommunityBehavior(TaskSet):
         response = self.client.get(f"/community/{community_id}/edit")
         csrf_token = get_csrf_token(response)
 
-        response = self.client.post(f"/community/{community_id}/edit", data={
-            "name": fake.company(),
-            "description": fake.text(),
-            "csrf_token": csrf_token
-        })
+        response = self.client.post(
+            f"/community/{community_id}/edit",
+            data={
+                "name": fake.company(),
+                "description": fake.text(),
+                "csrf_token": csrf_token,
+            },
+        )
         if response.status_code != 200:
             print(f"Failed to edit community {community_id}: {response.status_code}")
 
@@ -70,9 +77,9 @@ class ManageCommunityBehavior(TaskSet):
         response = self.client.get(f"/community/{community_id}/edit")
         csrf_token = get_csrf_token(response)
 
-        response = self.client.post(f"/community/{community_id}/delete", data={
-            "csrf_token": csrf_token
-        })
+        response = self.client.post(
+            f"/community/{community_id}/delete", data={"csrf_token": csrf_token}
+        )
         if response.status_code != 200:
             print(f"Failed to delete community {community_id}: {response.status_code}")
 
@@ -83,11 +90,14 @@ class ManageCommunityBehavior(TaskSet):
         response = self.client.get("/login")
         csrf_token = get_csrf_token(response)
 
-        response = self.client.post("/login", data={
-            "email": 'user1@example.com',
-            "password": '1234',
-            "csrf_token": csrf_token
-        })
+        response = self.client.post(
+            "/login",
+            data={
+                "email": "user1@example.com",
+                "password": "1234",
+                "csrf_token": csrf_token,
+            },
+        )
         if response.status_code != 200:
             print(f"Login failed: {response.status_code}")
 

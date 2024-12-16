@@ -1,7 +1,8 @@
-from app.modules.community.repositories import CommunityRepository
-from app.modules.community.models import Community
 from app import db
+from app.modules.community.models import Community
+from app.modules.community.repositories import CommunityRepository
 from core.services.BaseService import BaseService
+
 
 class CommunityService(BaseService):
     def __init__(self):

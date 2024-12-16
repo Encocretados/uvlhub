@@ -41,6 +41,7 @@ def index():
         total_feature_model_views=total_feature_model_views,
     )
 
+
 @public_bp.route("/community")
 def community():
     logger.info("Access community")

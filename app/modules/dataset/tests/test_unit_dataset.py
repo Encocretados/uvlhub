@@ -99,7 +99,9 @@ def test_count_unsynchronized_datasets(dataset_repository):
     assert count == 3
 
 
-def test_synchronize_unsynchronized_datasets(dataset_repository, unsynchronized_dataset):
+def test_synchronize_unsynchronized_datasets(
+    dataset_repository, unsynchronized_dataset
+):
     """Prueba la sincronización de un dataset no sincronizado."""
 
     # Crea y activa el contexto de la aplicación
@@ -120,6 +122,7 @@ def test_synchronize_unsynchronized_datasets(dataset_repository, unsynchronized_
 
         # Verifica que el dataset haya obtenido un nuevo DOI
         assert unsynchronized_dataset.ds_meta_data.dataset_doi == "10.1234/new_doi"
+
 
 # test verifica que se maneje correctamente un DOI que no tiene un formato válido.
 @patch("os.getenv")
@@ -202,15 +205,17 @@ def test_subdomain_index_missing_cookie(
         "view_cookie=user_cookie_value" in cookies
     )  # Check if the correct cookie is set
 
+
 def test_download_all_endpoint_exists(test_client):
 
-    response = test_client.get('/dataset/download_all')
+    response = test_client.get("/dataset/download_all")
 
     assert response.status_code == 200
 
+
 def test_download_all_returns_zip(test_client):
 
-    response = test_client.get('/dataset/download_all')
+    response = test_client.get("/dataset/download_all")
 
     assert response.data is not None
-    assert response.content_type == 'application/zip'
+    assert response.content_type == "application/zip"

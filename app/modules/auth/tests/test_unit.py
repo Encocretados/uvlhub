@@ -1,12 +1,14 @@
+import time
+
 import pytest
 from flask import url_for
-import time
+
 from app import db
+from app.modules.auth.models import User
 from app.modules.auth.repositories import UserRepository
 from app.modules.auth.services import AuthenticationService
-from app.modules.profile.repositories import UserProfileRepository
-from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
+from app.modules.profile.repositories import UserProfileRepository
 
 authentication_service = AuthenticationService()
 
@@ -19,10 +21,12 @@ def test_client(test_client):
     with test_client.application.app_context():
         # Add HERE new elements to the database that you want to exist in the test context.
         # DO NOT FORGET to use db.session.add(<element>) and db.session.commit() to save the data.
-        user_test = User(email='user1@example.com', password='1234', is_developer=False)
+        user_test = User(email="user1@example.com", password="1234", is_developer=False)
         db.session.add(user_test)
         db.session.commit()
-        user2_test = User(email='uvlhub.reply@gmail.com', password='uvl12hub34', is_developer=False)
+        user2_test = User(
+            email="uvlhub.reply@gmail.com", password="uvl12hub34", is_developer=False
+        )
         db.session.add(user2_test)
         db.session.commit()
 
@@ -39,20 +43,24 @@ def test_login_and_email_authentification_success(test_client):
         data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("auth.email_validation"), "Login was unsuccessful"
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Login was unsuccessful"
 
     time.sleep(2)
     clave = authentication_service.get_validation_email_key()
     response = test_client.post(
         "/email_validation",
         data=dict(
-            email='uvlhub.reply@gmail.com',
-            password='uvl12hub34',
+            email="uvlhub.reply@gmail.com",
+            password="uvl12hub34",
             key=clave,
         ),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("public.index"), "Email authetification was unsuccessful"
+    assert response.request.path == url_for(
+        "public.index"
+    ), "Email authetification was unsuccessful"
     test_client.get("/logout", follow_redirects=True)
 
 
@@ -62,7 +70,9 @@ def test_login_succes_but_email_authentification_unsuccessful(test_client):
         data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
         follow_redirects=True,
     )
-    assert response.request.path == url_for("auth.email_validation"), "Login was unsuccessful"
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Login was unsuccessful"
 
     time.sleep(2)
     clave = int(authentication_service.get_validation_email_key())
@@ -73,14 +83,15 @@ def test_login_succes_but_email_authentification_unsuccessful(test_client):
     response = test_client.post(
         "/email_validation",
         data=dict(
-            email='uvlhub.reply@gmail.com',
-            password='uvl12hub34',
+            email="uvlhub.reply@gmail.com",
+            password="uvl12hub34",
             key=str(clave),
         ),
         follow_redirects=True,
     )
     assert response.request.path == url_for(
-        "auth.email_validation"), "Email authetification was unexpectedly successful"
+        "auth.email_validation"
+    ), "Email authetification was unexpectedly successful"
     assert "The key does not match".encode("utf-8") in response.data
 
     test_client.get("/logout", follow_redirects=True)
@@ -105,7 +116,9 @@ def test_correct_redirection_to_email_validation(test_client):
         follow_redirects=True,
     )
 
-    assert response.request.path == url_for("auth.email_validation"), "Login was unsuccessful"
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Login was unsuccessful"
     test_client.get("/logout", follow_redirects=True)
 
 
@@ -167,7 +180,10 @@ def test_signup_user_unsuccessful_password_without_uppercase(test_client):
     assert response.request.path == url_for(
         "auth.show_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one uppercase letter".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one uppercase letter".encode("utf-8")
+        in response.data
+    )
 
 
 def test_signup_user_unsuccessful_password_without_lowercase(test_client):
@@ -180,7 +196,10 @@ def test_signup_user_unsuccessful_password_without_lowercase(test_client):
     assert response.request.path == url_for(
         "auth.show_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one lowercase letter".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one lowercase letter".encode("utf-8")
+        in response.data
+    )
 
 
 def test_signup_user_unsuccessful_password_without_numbers(test_client):
@@ -206,7 +225,10 @@ def test_signup_user_unsuccessful_password_without_special_characters(test_clien
     assert response.request.path == url_for(
         "auth.show_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one special character: #,@,~,€".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one special character: #,@,~,€".encode("utf-8")
+        in response.data
+    )
 
 
 def test_signup_user_successful(test_client):
@@ -218,7 +240,9 @@ def test_signup_user_successful(test_client):
         follow_redirects=True,
     )
     # Ahora después de un login exitoso se pasa a la pestaña de verificacion del email
-    assert response.request.path == url_for("auth.email_validation"), "Signup was unsuccessful"
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Signup was unsuccessful"
 
 
 def test_service_create_with_profie_success(clean_database):
@@ -278,7 +302,10 @@ def test_signup_developer_unsuccessful_password_without_uppercase(test_client):
     assert response.request.path == url_for(
         "auth.show_developer_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one uppercase letter".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one uppercase letter".encode("utf-8")
+        in response.data
+    )
 
 
 def test_signup_developer_unsuccessful_password_without_lowercase(test_client):
@@ -299,7 +326,10 @@ def test_signup_developer_unsuccessful_password_without_lowercase(test_client):
     assert response.request.path == url_for(
         "auth.show_developer_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one lowercase letter".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one lowercase letter".encode("utf-8")
+        in response.data
+    )
 
 
 def test_signup_developer_unsuccessful_password_without_numbers(test_client):
@@ -341,7 +371,10 @@ def test_signup_developer_unsuccessful_password_without_special_characters(test_
     assert response.request.path == url_for(
         "auth.show_developer_signup_form"
     ), "Signup was unsuccessful"
-    assert "Password must contain at least one special character: #,@,~,€".encode("utf-8") in response.data
+    assert (
+        "Password must contain at least one special character: #,@,~,€".encode("utf-8")
+        in response.data
+    )
 
 
 def test_developer_singup_success(test_client):

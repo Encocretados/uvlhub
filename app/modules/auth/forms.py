@@ -12,13 +12,22 @@ class SignupForm(FlaskForm):
         validators=[
             DataRequired(),
             Length(min=8, max=20),  # Password length between 8 and 20 characters
-            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),
-            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),
-            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),  # At least one digit
+            Regexp(
+                r"^(?=.*[A-Z])",
+                message="Password must contain at least one uppercase letter\n",
+            ),
+            Regexp(
+                r"^(?=.*[a-z])",
+                message="Password must contain at least one lowercase letter\n",
+            ),
+            Regexp(
+                r"^(?=.*\d)", message="Password must contain at least one digit\n"
+            ),  # At least one digit
             Regexp(
                 r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])",
-                message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
-        ]
+                message="Password must contain at least one special character: #,@,~,€\n",
+            ),  # Special character
+        ],
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Submit")
@@ -33,13 +42,22 @@ class DeveloperSingUpForm(FlaskForm):
         validators=[
             DataRequired(),
             Length(min=8, max=20),  # Password length between 8 and 20 characters
-            Regexp(r"^(?=.*[A-Z])", message="Password must contain at least one uppercase letter\n"),
-            Regexp(r"^(?=.*[a-z])", message="Password must contain at least one lowercase letter\n"),
-            Regexp(r"^(?=.*\d)", message="Password must contain at least one digit\n"),  # At least one digit
+            Regexp(
+                r"^(?=.*[A-Z])",
+                message="Password must contain at least one uppercase letter\n",
+            ),
+            Regexp(
+                r"^(?=.*[a-z])",
+                message="Password must contain at least one lowercase letter\n",
+            ),
+            Regexp(
+                r"^(?=.*\d)", message="Password must contain at least one digit\n"
+            ),  # At least one digit
             Regexp(
                 r"^(?=.*[!@#$%^&*()_+={}\[\]:;'\"<>,.?/-])",
-                message="Password must contain at least one special character: #,@,~,€\n"),  # Special character
-        ]
+                message="Password must contain at least one special character: #,@,~,€\n",
+            ),  # Special character
+        ],
     )
     # Campo desplegable para seleccionar el equipo
     team = SelectField(
@@ -64,13 +82,13 @@ class DeveloperSingUpForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember me')
-    submit = SubmitField('Login')
+    email = StringField("Email", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    remember_me = BooleanField("Remember me")
+    submit = SubmitField("Login")
 
 
 class EmailValidationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
-    key = StringField('Key', validators=[DataRequired()])
-    submit = SubmitField('Validate Email')
+    email = StringField("Email", validators=[DataRequired()])
+    key = StringField("Key", validators=[DataRequired()])
+    submit = SubmitField("Validate Email")
