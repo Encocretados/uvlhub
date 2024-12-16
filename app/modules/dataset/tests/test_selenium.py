@@ -452,3 +452,27 @@ def test_button_explore_more_datasets():
 # test_table_UVLfiles()
 # test_inter_elements()
 # test_button_explore_more_datasets()
+
+
+def test_downloadall():
+    driver = initialize_driver()
+    try:
+        host = get_host_for_selenium_testing()
+
+        driver.get(f"{host}/")
+
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
+
+        download_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.LINK_TEXT, "Download all datasets"))
+        )
+        driver.execute_script("arguments[0].scrollIntoView(true);", download_button)
+        driver.execute_script("arguments[0].click();", download_button)
+
+        time.sleep(2)
+
+        print("Test passed, all datasets downloaded!")
+
+    finally:
+        close_driver(driver)
