@@ -1,6 +1,7 @@
 import logging
 
 from flask import flash, redirect, render_template, request, url_for
+from app.modules.dataset.services import DataSetService
 from flask_login import current_user, login_required
 
 from app import community_members, db
@@ -9,9 +10,10 @@ from app.modules.community import community_bp
 from app.modules.community.forms import CommunityForm, EditCommunityForm
 from app.modules.community.models import Community
 from app.modules.community.services import CommunityService
-from app.modules.dataset.models import DataSet
+from app.modules.dataset.models import DSMetaData, DataSet
 
 community_service = CommunityService()
+dataset_service = DataSetService()
 
 logger = logging.getLogger(__name__)
 
@@ -74,12 +76,17 @@ def show_community_datasets(community_id):
 
     # Obtener todos los datasets de los usuarios de esta comunidad
     datasets = (
-        DataSet.query.join(User)
-        .join(community_members)
-        .filter(community_members.c.community_id == community_id)
-        .filter(DataSet.publico == True)
-        .all()
-    )
+    DataSet.query.join(User)
+    .join(community_members, community_members.c.user_id == User.id)
+    .join(Community, community_members.c.community_id == Community.id)
+    .filter(Community.id == community_id)
+    .join(DSMetaData)
+    .filter(DSMetaData.dataset_doi.isnot(None))
+    .order_by(DataSet.created_at.desc())
+    .all()
+)
+
+
     return render_template(
         "community/community_datasets.html", community=community, datasets=datasets
     )
