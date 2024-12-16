@@ -1,11 +1,12 @@
-import pytest
 import time
+
+import pytest
 from flask import url_for
 
 from app import db
 from app.modules.auth.models import User
-from app.modules.community.models import Community
 from app.modules.auth.services import AuthenticationService
+from app.modules.community.models import Community
 
 authentication_service = AuthenticationService()
 
