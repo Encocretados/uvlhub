@@ -92,6 +92,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- Gráfica de Datasets por PublicationType -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="h5 mb-4 text-center text-secondary">Datasets by PublicationType</h3>
+                    <canvas id="publicationTypeChart" style="max-width: 300px; margin: auto;"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Datos para las gráficas -->
@@ -99,6 +110,8 @@
     <div id="totalDownloads" style="display: none;">{{ data.total_downloads | default(0) }}</div>
     <div id="totalFeatureModelViews" style="display: none;">{{ data.total_fm_views | default(0) }}</div>
     <div id="totalFeatureModelDownloads" style="display: none;">{{ data.total_fm_downloads | default(0) }}</div>
+    <div id="publicationTypeData" style="display: none;">{{ data.publication_type_data | tojson | safe }}</div>
+
 </div>
 {% endblock %}
 

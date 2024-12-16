@@ -148,3 +148,57 @@ document.addEventListener('DOMContentLoaded', function () {
     featureModelPercentageElement.className = 'text-center text-secondary mt-3';
     document.getElementById('featureModelChart').parentElement.appendChild(featureModelPercentageElement);
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const publicationTypeData = JSON.parse(document.getElementById('publicationTypeData').textContent);
+
+    const publicationLabels = Object.keys(publicationTypeData);
+    const publicationCounts = Object.values(publicationTypeData);
+
+    const publicationTypeConfig = {
+        type: 'doughnut',
+        data: {
+            labels: publicationLabels,
+            datasets: [{
+                label: 'Publication Types',
+                data: publicationCounts,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = publicationCounts.reduce((sum, count) => sum + count, 0);
+                            const percentage = ((value / total) * 100).toFixed(2);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const publicationTypeCtx = document.getElementById('publicationTypeChart').getContext('2d');
+    new Chart(publicationTypeCtx, publicationTypeConfig);
+});

@@ -1,8 +1,10 @@
 from app.modules.auth.models import User  
+from app.modules.dataset.models import DSMetaData, DataSet
 from app.modules.dataset.repositories import DataSetRepository, DSDownloadRecordRepository, DSViewRecordRepository
 from app.modules.featuremodel.repositories import FeatureModelRepository  
 from app import db  
 from sqlalchemy import func  
+
 
 class DashboardRepository:
     
@@ -44,8 +46,18 @@ class DashboardRepository:
         """
         dataset_downloads = self.ds_download_record_repository.total_dataset_downloads()
         return dataset_downloads
-    
 
+    def get_datasets_by_publication_type(self):
+        """
+        Devuelve un diccionario con el número de datasets agrupados por PublicationType.
+        """
+        result = db.session.query(
+            DSMetaData.publication_type,
+            func.count(DataSet.id)
+        ).join(DataSet.ds_meta_data).group_by(DSMetaData.publication_type).all()
+
+        return {row[0].value if row[0] else 'Unknown': row[1] for row in result}
+    
     # get_total_feature_model_views en el service
     # get_total_feature_model_downloads en el service
     
@@ -62,5 +74,4 @@ class DashboardRepository:
     #     """
     #     avg_rating = db.session.query(func.avg(DatasetRating.rating)).scalar()
     #     return round(avg_rating, 1) if avg_rating is not None else 0.0
-
 
