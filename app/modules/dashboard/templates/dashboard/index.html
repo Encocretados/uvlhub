@@ -1,0 +1,111 @@
+{% extends "base_template.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h2 mb-4">
+        <b>Dashboard</b>
+    </h1>
+
+    <!-- Métricas Principales -->
+    <div class="row">
+        <!-- Total Datasets -->
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="h5">
+                            Total Datasets
+                        </h2>
+                        <i data-feather="database" class="icon-lg"></i>
+                    </div>
+                    <p class="display-6 fw-bold text-primary">{{ data.total_datasets }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Features -->
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="h5">
+                            Total Features Models
+                        </h2>
+                        <i data-feather="layers" class="icon-lg"></i>
+                    </div>
+                    <p class="display-6 fw-bold text-success">{{ data.total_features }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Users -->
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="h5">
+                            Total Users
+                        </h2>
+                        <i data-feather="users" class="icon-lg"></i>
+                    </div>
+                    <p class="display-6 fw-bold text-warning">{{ data.total_users }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Authors -->
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="h5">
+                            Total Authors
+                        </h2>
+                        <i data-feather="user-check" class="icon-lg"></i>
+                    </div>
+                    <p class="display-6 fw-bold text-danger">{{ data.total_authors }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="row mt-4">
+        <!-- Gráfica de Vistas y Descargas de Datasets -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="h5 mb-4 text-center text-secondary">Dataset Views vs Downloads</h3>
+                    <canvas id="viewsDownloadsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfica de Vistas y Descargas de Feature Models -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="h5 mb-4 text-center text-secondary">Feature Model Views vs Downloads</h3>
+                    <canvas id="featureModelChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos para las gráficas -->
+    <div id="totalViews" style="display: none;">{{ data.total_views | default(0) }}</div>
+    <div id="totalDownloads" style="display: none;">{{ data.total_downloads | default(0) }}</div>
+    <div id="totalFeatureModelViews" style="display: none;">{{ data.total_fm_views | default(0) }}</div>
+    <div id="totalFeatureModelDownloads" style="display: none;">{{ data.total_fm_downloads | default(0) }}</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/index_dashboard.js') }}"></script>
+<script>
+    feather.replace();
+</script>
+{% endblock %}

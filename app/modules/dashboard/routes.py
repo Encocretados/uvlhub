@@ -1,11 +1,12 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify
-from flask_login import login_required, current_user
+from flask import render_template
 from app.modules.dashboard import dashboard_bp
-from app.modules.dataset.services import DataSetService
+from app.modules.dashboard.services import DashboardService
 
-datasetservice = DataSetService()
 
+dashboard_service = DashboardService()
 
 @dashboard_bp.route('/dashboard', methods=['GET'])
 def index():
-    return render_template('index.html')
+    dashboard_data = dashboard_service.get_dashboard_data()
+
+    return render_template('dashboard/index.html', data=dashboard_data)
