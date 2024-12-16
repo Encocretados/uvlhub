@@ -36,13 +36,13 @@ class DashboardRepository:
     
     def get_total_dataset_views(self) -> int:
         """
-        Obtiene el número total de visualizaciones de datasets y modelos de características.
+        Obtiene el número total de visualizaciones de datasets.
         """
         return self.ds_view_record_repository.total_dataset_views()
 
     def get_total_dataset_downloads(self) -> int:
         """
-        Obtiene el número total de descargas de datasets y modelos de características.
+        Obtiene el número total de descargas de datasets.
         """
         dataset_downloads = self.ds_download_record_repository.total_dataset_downloads()
         return dataset_downloads
@@ -63,7 +63,7 @@ class DashboardRepository:
     
     def get_total_feature_model_downloads(self) -> int:
         """
-        Obtiene el número total de descargas de datasets y modelos de características.
+        Obtiene el número total de descargas de modelos de características.
         """
         dataset_downloads = self.ds_download_record_repository.total_dataset_downloads()
         return dataset_downloads
