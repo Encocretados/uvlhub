@@ -41,20 +41,29 @@ def test_upload_dataset():
 
         # Open the login page
         driver.get(f"{host}/login")
-        wait_for_page_to_load(driver)
 
-        # Find the username and password field and enter the values
-        email_field = driver.find_element(By.NAME, "email")
-        password_field = driver.find_element(By.NAME, "password")
+        # Espera para asegurarse de que la página cargue completamente
+        time.sleep(2)
 
-        email_field.send_keys("user1@example.com")
-        password_field.send_keys("1234")
+        # 2. Rellenar el formulario de login
+        email_field = driver.find_element(
+            By.ID, "email"
+        )  # Suponiendo que el campo es 'email'
+        password_field = driver.find_element(
+            By.ID, "password"
+        )  # Suponiendo que el campo es 'password'
 
-        # Send the form
-        password_field.send_keys(Keys.RETURN)
+        # Ingresar las credenciales
+        email_field.send_keys("uvlhub.reply@gmail.com")
+        password_field.send_keys("uvl12hub34")
 
-        # Email validartion
+        # 3. Enviar el formulario de login
+        password_field.send_keys(Keys.RETURN)  # Enviar el formulario con "Enter"
+
+        # Esperar un poco para asegurarse de que el login sea exitoso y redirija a la página de creación de comunidad
         time.sleep(4)
+
+        # Insert the email key
         clave = authentication_service.get_validation_email_key()
         print(clave)
         key_field = driver.find_element(By.NAME, "key")
