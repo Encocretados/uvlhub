@@ -1,24 +1,24 @@
 import click
 
-from rosemary.commands.module_list import module_list
-from rosemary.commands.locust import locust, stop
-from rosemary.commands.compose_env import compose_env
-from rosemary.commands.route_list import route_list
-from rosemary.commands.db_seed import db_seed
 from rosemary.commands.clear_cache import clear_cache
+from rosemary.commands.clear_log import clear_log
+from rosemary.commands.clear_uploads import clear_uploads
+from rosemary.commands.compose_env import compose_env
+from rosemary.commands.coverage import coverage
 from rosemary.commands.db_console import db_console
 from rosemary.commands.db_migrate import db_migrate
 from rosemary.commands.db_reset import db_reset
-from rosemary.commands.clear_log import clear_log
-from rosemary.commands.clear_uploads import clear_uploads
-from rosemary.commands.coverage import coverage
-from rosemary.commands.linter import linter
-from rosemary.commands.selenium import selenium
-from rosemary.commands.update import update
-from rosemary.commands.info import info, info2
-from rosemary.commands.make_module import make_module
+from rosemary.commands.db_seed import db_seed
 from rosemary.commands.env import env
+from rosemary.commands.info import info, info2
+from rosemary.commands.linter import linter
+from rosemary.commands.locust import locust, stop
+from rosemary.commands.make_module import make_module
+from rosemary.commands.module_list import module_list
+from rosemary.commands.route_list import route_list
+from rosemary.commands.selenium import selenium
 from rosemary.commands.test import test
+from rosemary.commands.update import update
 
 
 class RosemaryCLI(click.Group):
@@ -60,5 +60,5 @@ cli.add_command(selenium)
 cli.add_command(module_list)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

@@ -1,40 +1,26 @@
 import logging
 import os
-import json
+import re
 import shutil
 import tempfile
 import uuid
 from datetime import datetime, timezone
 from zipfile import ZipFile
 
-from flask import (
-    redirect,
-    render_template,
-    request,
-    jsonify,
-    send_from_directory,
-    make_response,
-    abort,
-    url_for,
-)
-from flask_login import login_required, current_user
+from flask import (abort, jsonify, make_response, redirect, render_template,
+                   request, send_from_directory, url_for)
+from flask_login import current_user, login_required
 
+from app.modules.dataset import dataset_bp
 from app import db
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import (
-    DSDownloadRecord,
+from app.modules.dataset.models import DSDownloadRecord, DataSet,
     DataSet
-)
-from app.modules.dataset import dataset_bp
-from app.modules.dataset.services import (
-    AuthorService,
-    DSDownloadRecordService,
-    DSMetaDataService,
-    DSViewRecordService,
-    DataSetService,
-    DOIMappingService
-)
-
+from app.modules.dataset.services import (AuthorService, DataSetService,
+                                          DOIMappingService,
+                                          DSDownloadRecordService,
+                                          DSMetaDataService,
+                                          DSViewRecordService)
 from app.modules.fakenodo.services import FakenodoService
 from core.configuration.configuration import USE_FAKENODO
 
@@ -62,66 +48,82 @@ def create_dataset():
 
         try:
             logger.info("Creating dataset...")
-            dataset = dataset_service.create_from_form(form=form, current_user=current_user)
+            dataset = dataset_service.create_from_form(
+                form=form, current_user=current_user
+            )
             logger.info(f"Created dataset: {dataset}")
             dataset_service.move_feature_models(dataset)
         except Exception as exc:
-            logger.exception(f"Exception while create dataset data in local {exc}")
-            return jsonify({"Exception while create dataset data in local: ": str(exc)}), 400
+            logger.exception(f"Exception while creating dataset data locally: {exc}")
+            return (
+                jsonify({"message": f"Exception while creating dataset: {str(exc)}"}),
+                400,
+            )
 
-        if USE_FAKENODO:
-            data = {}
-            try:
-                fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
-                response_data = json.dumps(fakenodo_response_json)
-                data = json.loads(response_data)
-            except Exception as exc:
-                data = {}
-                fakenodo_response_json = {}
-                logger.exception(f"Exception while create dataset data in Fakenodo {exc}")
-            if data.get("conceptrecid"):
-                deposition_id = data.get("id")
-                # update dataset with deposition id in Fakenodo
-                dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id)
-                try:
-                    # iterate for each feature model (one feature model = one request to Fakenodo)
-                    for feature_model in dataset.feature_models:
-                        fakenodo_service.upload_file(dataset, deposition_id, feature_model)
-                    # publish deposition
-                    fakenodo_service.publish_deposition(deposition_id)
-                    # update DOI
-                    deposition_doi = fakenodo_service.get_doi(deposition_id)
-                    dataset_service.update_dsmetadata(dataset.ds_meta_data_id, dataset_doi=deposition_doi)
-                except Exception as e:
-                    msg = f"it has not been possible upload feature models in Fakenodo and update the DOI: {e}"
-                    return jsonify({"message": msg}), 200
-        else:
-            # send dataset as deposition to Zenodo
-            data = {}
-            try:
-                zenodo_response_json = fakenodo_service.create_new_deposition(dataset)
-                response_data = json.dumps(zenodo_response_json)
-                data = json.loads(response_data)
-            except Exception as exc:
-                data = {}
-                zenodo_response_json = {}
-                logger.exception(f"Exception while create dataset data in Zenodo {exc}")
-            if data.get("conceptrecid"):
-                deposition_id = data.get("id")
-                # update dataset with deposition id in Zenodo
-                dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id)
-                try:
-                    # iterate for each feature model (one feature model = one request to Zenodo)
-                    for feature_model in dataset.feature_models:
-                        fakenodo_service.upload_file(dataset, deposition_id, feature_model)
-                    # publish deposition
-                    fakenodo_service.publish_deposition(deposition_id)
-                    # update DOI
-                    deposition_doi = fakenodo_service.get_doi(deposition_id)
-                    dataset_service.update_dsmetadata(dataset.ds_meta_data_id, dataset_doi=deposition_doi)
-                except Exception as e:
-                    msg = f"it has not been possible upload feature models in Zenodo and update the DOI: {e}"
-                    return jsonify({"message": msg}), 200
+        # send dataset as deposition to Zenodo
+        # data = {}
+        try:
+            # Get the publication DOI (if provided) or fall back to dataset DOI
+            publication_doi = (
+                form.publication_doi.data if form.publication_doi.data else None
+            )
+
+            # Create a new deposition in Fakenodo (or Zenodo) using the dataset
+            fakenodo_response_json = fakenodo_service.create_new_fakenodo(
+                dataset, publication_doi=publication_doi
+            )
+
+            # Log the response for debugging purposes
+            logger.info(f"Fakenodo response: {fakenodo_response_json}")
+
+            # Check if the response contains the necessary deposition information (deposition_id and doi)
+            if "deposition_id" in fakenodo_response_json:
+                deposition_id = fakenodo_response_json.get(
+                    "deposition_id"
+                )  # Update to the correct key name
+
+                if "doi" in fakenodo_response_json:
+                    deposition_doi = fakenodo_response_json.get("doi")
+                    dataset_service.update_dsmetadata(
+                        dataset.ds_meta_data_id,
+                        deposition_id=deposition_id,
+                        dataset_doi=deposition_doi,
+                    )
+                else:
+                    dataset_service.update_dsmetadata(
+                        dataset.ds_meta_data_id, deposition_id=deposition_id
+                    )
+
+                # Return success message with DOI
+                return (
+                    jsonify(
+                        {
+                            "status": "success",
+                            "message": "Dataset successfully uploaded and DOI generated.",
+                            "deposition_doi": deposition_doi,
+                        }
+                    ),
+                    200,
+                )
+            else:
+                # If no deposition ID or DOI is returned, handle the failure case
+                logger.error(
+                    "Failed to create deposition, missing deposition_id or DOI."
+                )
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": "Deposition creation failed, missing required information.",
+                        }
+                    ),
+                    500,
+                )
+
+        except Exception as e:
+            # Log and handle errors during the process
+            logger.exception(f"Error while creating or processing the deposition: {e}")
+            return jsonify({"status": "error", "message": str(e)}), 500
 
         # Delete temp folder
         file_path = current_user.temp_folder()
@@ -131,7 +133,10 @@ def create_dataset():
         msg = "Everything works!"
         return jsonify({"message": msg}), 200
 
-    return render_template("dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO)
+    return render_template(
+        "dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO
+    )
+
 
 @dataset_bp.route("/dataset/list", methods=["GET", "POST"])
 @login_required
@@ -148,9 +153,22 @@ def list_dataset():
 def upload():
     file = request.files["file"]
     temp_folder = current_user.temp_folder()
+    publication_doi = request.form.get("publication_doi")
 
     if not file or not file.filename.endswith(".uvl"):
         return jsonify({"message": "No valid file"}), 400
+
+    if publication_doi:
+        # Regex to check the DOI format "10.xxxx"
+        if not re.match(r"^10\.\d{4}$", publication_doi):
+            return (
+                jsonify(
+                    {
+                        "message": "Invalid DOI format. Please enter a valid DOI like 10.xxxx"
+                    }
+                ),
+                400,
+            )
 
     # create temp folder
     if not os.path.exists(temp_folder):
@@ -251,7 +269,7 @@ def download_dataset(dataset_id):
     existing_record = DSDownloadRecord.query.filter_by(
         user_id=current_user.id if current_user.is_authenticated else None,
         dataset_id=dataset_id,
-        download_cookie=user_cookie
+        download_cookie=user_cookie,
     ).first()
 
     if not existing_record:
@@ -273,7 +291,7 @@ def subdomain_index(doi):
     new_doi = doi_mapping_service.get_new_doi(doi)
     if new_doi:
         # Redirect to the same path with the new DOI
-        return redirect(url_for('dataset.subdomain_index', doi=new_doi), code=302)
+        return redirect(url_for("dataset.subdomain_index", doi=new_doi), code=302)
 
     # Try to search the dataset by the provided DOI (which should already be the new one)
     ds_meta_data = dsmetadata_service.filter_by_doi(doi)
@@ -330,7 +348,7 @@ def toggle_visibility(dataset_id):
 
 
 
-@dataset_bp.route('/dataset/synchronize_datasets', methods=['POST'])
+@dataset_bp.route("/dataset/synchronize_datasets", methods=["POST"])
 @login_required
 def synchronize_datasets():
     try:
@@ -340,17 +358,78 @@ def synchronize_datasets():
 
         # Verificar que datasetId esté presente
         dataset_id = int(data.get("datasetId"))
-        
+
         if not dataset_id:
-            print("Error: No se recibió el datasetId.")  # Si el datasetId es None o no está presente
+            print(
+                "Error: No se recibió el datasetId."
+            )  # Si el datasetId es None o no está presente
             return jsonify({"message": "El datasetId es requerido."}), 400
 
-        print("datasetId recibido:", dataset_id)  # Log para verificar que se recibe el datasetId correctamente
-        
+        print(
+            "datasetId recibido:", dataset_id
+        )  # Log para verificar que se recibe el datasetId correctamente
+
         # Llamar al servicio para sincronizar los datasets con el datasetId
         dataset_service.synchronize_unsynchronized_datasets(current_user.id, dataset_id)
-        
-        return jsonify({"success": True, "message": "Datasets sincronizados correctamente."}), 200
+
+        return (
+            jsonify(
+                {"success": True, "message": "Datasets sincronizados correctamente."}
+            ),
+            200,
+        )
     except Exception as e:
         print("Error:", e)  # Log para mostrar el error específico
-        return jsonify({"message": str(e)}), 400 
+        return jsonify({"message": str(e)}), 400
+
+
+@dataset_bp.route("/dataset/download_all", methods=["GET"])
+def download_all_datasets():
+    datasets = dataset_service.get_all()
+
+    temp_dir = tempfile.mkdtemp()
+    zip_path = os.path.join(temp_dir, "all_datasets.zip")
+
+    with ZipFile(zip_path, "w") as zipf:
+        for dataset in datasets:
+            file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
+            if os.path.exists(file_path):
+                for subdir, dirs, files in os.walk(file_path):
+                    for file in files:
+                        full_path = os.path.join(subdir, file)
+                        relative_path = os.path.relpath(full_path, file_path)
+                        zipf.write(
+                            full_path,
+                            arcname=os.path.join(str(dataset.id), relative_path),
+                        )
+
+    user_cookie = request.cookies.get("download_cookie")
+    if not user_cookie:
+        user_cookie = str(uuid.uuid4())
+
+    resp = make_response(
+        send_from_directory(
+            temp_dir,
+            "all_datasets.zip",
+            as_attachment=True,
+            mimetype="application/zip",
+        )
+    )
+    resp.set_cookie("download_cookie", user_cookie)
+
+    for dataset in datasets:
+        existing_record = DSDownloadRecord.query.filter_by(
+            dataset_id=dataset.id, download_cookie=user_cookie
+        ).first()
+
+        if not existing_record:
+            DSDownloadRecordService().create(
+                user_id=None,
+                dataset_id=dataset.id,
+                download_date=datetime.now(timezone.utc),
+                download_cookie=user_cookie,
+            )
+
+    shutil.rmtree(temp_dir)
+
+    return resp
