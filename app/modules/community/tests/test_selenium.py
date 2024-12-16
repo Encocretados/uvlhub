@@ -6,10 +6,12 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from app.modules.auth.services import AuthenticationService
 from app.modules.community.models import Community
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import close_driver, initialize_driver
 
+authentication_service = AuthenticationService()
 
 def test_create_community():
     driver = webdriver.Chrome()
@@ -32,13 +34,22 @@ def test_create_community():
         )  # Suponiendo que el campo es 'password'
 
         # Ingresar las credenciales
-        email_field.send_keys("user1@example.com")
-        password_field.send_keys("1234")
+        email_field.send_keys("uvlhub.reply@gmail.com")
+        password_field.send_keys("uvl12hub34")
 
         # 3. Enviar el formulario de login
         password_field.send_keys(Keys.RETURN)  # Enviar el formulario con "Enter"
 
         # Esperar un poco para asegurarse de que el login sea exitoso y redirija a la página de creación de comunidad
+        time.sleep(4)
+
+        # Insert the email key
+        clave = authentication_service.get_validation_email_key()
+        print(clave)
+        key_field = driver.find_element(By.NAME, "key")
+        key_field.send_keys(clave)
+        key_field.send_keys(Keys.RETURN)
+
         time.sleep(4)
 
         # 1. Abrir la página de creación de la comunidad
@@ -105,13 +116,22 @@ def test_edit_community():
         )  # Suponiendo que el campo es 'password'
 
         # Ingresar las credenciales
-        email_field.send_keys("user1@example.com")
-        password_field.send_keys("1234")
+        email_field.send_keys("uvlhub.reply@gmail.com")
+        password_field.send_keys("uvl12hub34")
 
         # 3. Enviar el formulario de login
         password_field.send_keys(Keys.RETURN)  # Enviar el formulario con "Enter"
 
         # Esperar un poco para asegurarse de que el login sea exitoso y redirija a la página de creación de comunidad
+        time.sleep(4)
+
+        # Insert the email key
+        clave = authentication_service.get_validation_email_key()
+        print(clave)
+        key_field = driver.find_element(By.NAME, "key")
+        key_field.send_keys(clave)
+        key_field.send_keys(Keys.RETURN)
+
         time.sleep(4)
 
         # 1. Abrir la página de edición de la comunidad
@@ -190,13 +210,22 @@ def test_delete_community():
         )  # Suponiendo que el campo es 'password'
 
         # Ingresar las credenciales
-        email_field.send_keys("user1@example.com")
-        password_field.send_keys("1234")
+        email_field.send_keys("uvlhub.reply@gmail.com")
+        password_field.send_keys("uvl12hub34")
 
         # 3. Enviar el formulario de login
         password_field.send_keys(Keys.RETURN)  # Enviar el formulario con "Enter"
 
         # Esperar un poco para asegurarse de que el login sea exitoso y redirija a la página de creación de comunidad
+        time.sleep(4)
+
+        # Insert the email key
+        clave = authentication_service.get_validation_email_key()
+        print(clave)
+        key_field = driver.find_element(By.NAME, "key")
+        key_field.send_keys(clave)
+        key_field.send_keys(Keys.RETURN)
+
         time.sleep(4)
 
         # 1. Abrir la página de edición de la comunidad

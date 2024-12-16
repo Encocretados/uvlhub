@@ -12,6 +12,7 @@ from app.modules.auth.forms import (DeveloperSingUpForm, EmailValidationForm,
 from app.modules.auth.services import (AuthenticationService,
                                        generate_access_token)
 from app.modules.profile.services import UserProfileService
+from app import db
 
 authentication_service = AuthenticationService()
 user_profile_service = UserProfileService()
@@ -163,8 +164,12 @@ def email_validation():
     form = EmailValidationForm()
 
     if request.method == "POST":
-        key = int(form.key.data.strip())
-        if key == int(session.get("key")):
+        key = str(form.key.data.strip())
+
+        # Buscar el usuario en la base de datos
+        user = authentication_service.get_user(email, password)
+
+        if user and key == user.key_code:
             authentication_service.login(email, password)
             response = make_response(redirect(url_for("public.index")))
             session.pop("email", None)
@@ -174,12 +179,16 @@ def email_validation():
         return render_template(
             "auth/email_validation_form.html",
             form=form,
-            key=key,
             error="The key does not match",
         )
 
     if request.method == "GET":
         random_key = pyotp.TOTP(str(os.getenv("SECRET_CODE_GENERATOR"))).now()
-        session["key"] = random_key
-        authentication_service.send_email(email, random_key)
+        user = authentication_service.get_user(email, password)
+
+        if user:
+            user.key_code = random_key
+            db.session.commit()
+            authentication_service.send_email(email, random_key)
+
     return render_template("auth/email_validation_form.html", form=form, email=email)

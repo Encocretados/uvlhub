@@ -44,6 +44,8 @@ def test_login_and_check_element():
         key_field.send_keys(clave)
         key_field.send_keys(Keys.RETURN)
 
+        time.sleep(4)
+
         try:
 
             driver.find_element(
