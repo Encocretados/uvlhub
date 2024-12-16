@@ -10,6 +10,15 @@ from app.modules.dataset.models import (Author, DataSet, DSMetaData, DSMetrics,
 from app.modules.featuremodel.models import FeatureModel, FMMetaData
 from app.modules.hubfile.models import Hubfile
 from core.seeders.BaseSeeder import BaseSeeder
+from app.modules.dataset.models import (
+    DataSet,
+    DSMetaData,
+    DatasetRating,
+    PublicationType,
+    DSMetrics,
+    Author)
+from datetime import datetime, timezone
+from dotenv import load_dotenv
 
 
 class DataSetSeeder(BaseSeeder):
@@ -132,3 +141,13 @@ class DataSetSeeder(BaseSeeder):
                 feature_model_id=feature_model.id,
             )
             self.seed([uvl_file])
+
+            # Create DatasetRating for the datasets
+        ratings = [
+            DatasetRating(dataset_id=seeded_datasets[0].id, user_id=user1.id, rating=4),
+            DatasetRating(dataset_id=seeded_datasets[0].id, user_id=user2.id, rating=5),
+            DatasetRating(dataset_id=seeded_datasets[1].id, user_id=user1.id, rating=3),
+            DatasetRating(dataset_id=seeded_datasets[2].id, user_id=user2.id, rating=2),
+            DatasetRating(dataset_id=seeded_datasets[3].id, user_id=user1.id, rating=4),
+        ]
+        self.seed(ratings)
