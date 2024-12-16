@@ -244,3 +244,29 @@ He implementado dos workflows para automatizar tareas en el repositorio:
 ## Conclusión
 
 Durante este período, he trabajado en mejorar la interfaz de usuario y he ejecutado un conjunto completo de pruebas para asegurar la correcta funcionalidad de diferentes partes del sistema. Además, implementé workflows para mejorar la automatización de tareas y facilitar el proceso de colaboración en el proyecto. Mi enfoque ha sido garantizar una alta calidad en la interfaz y en la funcionalidad del sistema, a la vez que optimizo los procesos internos del equipo.
+
+ **Raúl Toro Romero**
+
+## WI Asignado
+
+Me he encargado del WI "Sign up validation". Es considerado un Low Work Item así que decidí expandirlo: no solo se realiza una validación de una contraseña segura, sino que además se valida el correo de los usuarios mandándoles a su correo el código de 6 dígitos (creado de forma segura) que deben introducir en la web, tanto para registrarse (valdiación) como para iniciar sesión (autentificación).
+
+## Pruebas Realizadas
+
+He realizado un total de **_ pruebas de Selenium** y **_ pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas de Selenium
+
+1. **Prueba _ **:  
+
+### Pruebas Unitarias
+
+1. **Prueba _ **: 
+
+### Workflows Implementados
+
+No he implementado workflows.
+
+## Conclusión
+
+Diseñé un sistema de validación completo que aumenta enormemente la seguridad de la plataforma, además de un testeo exhaustivo y proporcionado para verificar que todo funciona correctamente a la vez que otros compañeros añaden nuevas funcionalidades.
