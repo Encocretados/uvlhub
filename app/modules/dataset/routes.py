@@ -14,20 +14,12 @@ from flask_login import current_user, login_required
 from app import db
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import (
-    DSDownloadRecord,
-    DataSet
-)
-from app.modules.dataset.services import (
-    AuthorService,
-    DSDownloadRecordService,
-    DSMetaDataService,
-    DSViewRecordService,
-    DataSetService,
-    DOIMappingService,
-    DatasetRatingService
-)
-
+from app.modules.dataset.models import DataSet, DSDownloadRecord
+from app.modules.dataset.services import (AuthorService, DatasetRatingService,
+                                          DataSetService, DOIMappingService,
+                                          DSDownloadRecordService,
+                                          DSMetaDataService,
+                                          DSViewRecordService)
 from app.modules.fakenodo.services import FakenodoService
 from core.configuration.configuration import USE_FAKENODO
 
@@ -141,7 +133,9 @@ def create_dataset():
         msg = "Everything works!"
         return jsonify({"message": msg}), 200
 
-    return render_template("dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO)
+    return render_template(
+        "dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO
+    )
 
 
 @dataset_bp.route("/dataset/list", methods=["GET", "POST"])
@@ -372,12 +366,19 @@ def synchronize_datasets():
             )  # Si el datasetId es None o no está presente
             return jsonify({"message": "El datasetId es requerido."}), 400
 
-        print("datasetId recibido:", dataset_id)  # Log para verificar que se recibe el datasetId correctamente
+        print(
+            "datasetId recibido:", dataset_id
+        )  # Log para verificar que se recibe el datasetId correctamente
 
         # Llamar al servicio para sincronizar los datasets con el datasetId
         dataset_service.synchronize_unsynchronized_datasets(current_user.id, dataset_id)
 
-        return jsonify({"success": True, "message": "Datasets sincronizados correctamente."}), 200
+        return (
+            jsonify(
+                {"success": True, "message": "Datasets sincronizados correctamente."}
+            ),
+            200,
+        )
     except Exception as e:
         print("Error:", e)  # Log para mostrar el error específico
         return jsonify({"message": str(e)}), 400

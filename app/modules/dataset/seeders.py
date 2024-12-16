@@ -5,16 +5,11 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 
 from app.modules.auth.models import User
+from app.modules.dataset.models import (Author, DataSet, DatasetRating,
+                                        DSMetaData, DSMetrics, PublicationType)
 from app.modules.featuremodel.models import FeatureModel, FMMetaData
 from app.modules.hubfile.models import Hubfile
 from core.seeders.BaseSeeder import BaseSeeder
-from app.modules.dataset.models import (
-    DataSet,
-    DSMetaData,
-    DatasetRating,
-    PublicationType,
-    DSMetrics,
-    Author)
 
 
 class DataSetSeeder(BaseSeeder):

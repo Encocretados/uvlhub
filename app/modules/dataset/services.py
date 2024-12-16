@@ -8,22 +8,19 @@ from typing import Optional
 from flask import request
 
 from app.modules.auth.services import AuthenticationService
-from app.modules.dataset.models import DSViewRecord, DataSet, DSMetaData
-from app.modules.dataset.repositories import (
-    AuthorRepository,
-    DOIMappingRepository,
-    DSDownloadRecordRepository,
-    DSMetaDataRepository,
-    DSViewRecordRepository,
-    DataSetRepository,
-    DatasetRatingRepository
-)
-from app.modules.featuremodel.repositories import FMMetaDataRepository, FeatureModelRepository
-from app.modules.hubfile.repositories import (
-    HubfileDownloadRecordRepository,
-    HubfileRepository,
-    HubfileViewRecordRepository
-)
+from app.modules.dataset.models import DataSet, DSMetaData, DSViewRecord
+from app.modules.dataset.repositories import (AuthorRepository,
+                                              DatasetRatingRepository,
+                                              DataSetRepository,
+                                              DOIMappingRepository,
+                                              DSDownloadRecordRepository,
+                                              DSMetaDataRepository,
+                                              DSViewRecordRepository)
+from app.modules.featuremodel.repositories import (FeatureModelRepository,
+                                                   FMMetaDataRepository)
+from app.modules.hubfile.repositories import (HubfileDownloadRecordRepository,
+                                              HubfileRepository,
+                                              HubfileViewRecordRepository)
 from core.services.BaseService import BaseService
 
 logger = logging.getLogger(__name__)
@@ -158,10 +155,12 @@ class DataSetService(BaseService):
         return self.dsmetadata_repository.update(id, **kwargs)
 
     def get_uvlhub_doi(self, dataset: DataSet) -> str:
-        domain = os.getenv('DOMAIN', 'localhost')
-        return f'http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}'
+        domain = os.getenv("DOMAIN", "localhost")
+        return f"http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}"
 
-    def synchronize_unsynchronized_datasets(self, current_user_id: int, dataset_id: int) -> None:
+    def synchronize_unsynchronized_datasets(
+        self, current_user_id: int, dataset_id: int
+    ) -> None:
         # Obtener los datasets no sincronizados
         unsynchronized_datasets = self.repository.get_unsynchronized(current_user_id)
 
@@ -257,7 +256,7 @@ class SizeService:
         elif size < 1024**3:
             return f"{round(size / (1024 ** 2), 2)} MB"
         else:
-            return f'{round(size / (1024 ** 3), 2)} GB'
+            return f"{round(size / (1024 ** 3), 2)} GB"
 
 
 class DatasetRatingService(BaseService):

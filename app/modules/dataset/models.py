@@ -78,8 +78,12 @@ class DataSet(db.Model):
     )
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    ds_meta_data = db.relationship('DSMetaData', backref=db.backref('data_set', uselist=False))
-    feature_models = db.relationship('FeatureModel', backref='data_set', lazy=True, cascade="all, delete")
+    ds_meta_data = db.relationship(
+        "DSMetaData", backref=db.backref("data_set", uselist=False)
+    )
+    feature_models = db.relationship(
+        "FeatureModel", backref="data_set", lazy=True, cascade="all, delete"
+    )
 
     ratings = db.relationship("DatasetRating", backref="dataset", lazy=True)
 
@@ -134,23 +138,25 @@ class DataSet(db.Model):
 
     def to_dict(self):
         return {
-            'title': self.ds_meta_data.title,
-            'id': self.id,
-            'created_at': self.created_at,
-            'created_at_timestamp': int(self.created_at.timestamp()),
-            'description': self.ds_meta_data.description,
-            'authors': [author.to_dict() for author in self.ds_meta_data.authors],
-            'publication_type': self.get_cleaned_publication_type(),
-            'publication_doi': self.ds_meta_data.publication_doi,
-            'dataset_doi': self.ds_meta_data.dataset_doi,
-            'tags': self.ds_meta_data.tags.split(",") if self.ds_meta_data.tags else [],
-            'url': self.get_uvlhub_doi(),
-            'download': f'{request.host_url.rstrip("/")}/dataset/download/{self.id}',
-            'zenodo': self.get_zenodo_url(),
-            'files': [file.to_dict() for fm in self.feature_models for file in fm.files],
-            'files_count': self.get_files_count(),
-            'total_size_in_bytes': self.get_file_total_size(),
-            'total_size_in_human_format': self.get_file_total_size_for_human(),
+            "title": self.ds_meta_data.title,
+            "id": self.id,
+            "created_at": self.created_at,
+            "created_at_timestamp": int(self.created_at.timestamp()),
+            "description": self.ds_meta_data.description,
+            "authors": [author.to_dict() for author in self.ds_meta_data.authors],
+            "publication_type": self.get_cleaned_publication_type(),
+            "publication_doi": self.ds_meta_data.publication_doi,
+            "dataset_doi": self.ds_meta_data.dataset_doi,
+            "tags": self.ds_meta_data.tags.split(",") if self.ds_meta_data.tags else [],
+            "url": self.get_uvlhub_doi(),
+            "download": f'{request.host_url.rstrip("/")}/dataset/download/{self.id}',
+            "zenodo": self.get_zenodo_url(),
+            "files": [
+                file.to_dict() for fm in self.feature_models for file in fm.files
+            ],
+            "files_count": self.get_files_count(),
+            "total_size_in_bytes": self.get_file_total_size(),
+            "total_size_in_human_format": self.get_file_total_size_for_human(),
             "average_rating": self.get_average_rating(),
         }
 
@@ -197,7 +203,9 @@ class DatasetRating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     rated_at = db.Column(db.DateTime, server_default=db.func.now())
-    __table_args__ = (db.UniqueConstraint('dataset_id', 'user_id', name='unique_dataset_user'),)
+    __table_args__ = (
+        db.UniqueConstraint("dataset_id", "user_id", name="unique_dataset_user"),
+    )
 
     def __repr__(self):
         return f"DatasetRating<dataset_id={self.dataset_id}, user_id={self.user_id}, rating={self.rating}>"
