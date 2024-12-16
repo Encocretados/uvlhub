@@ -140,7 +140,6 @@ class DataSetRepository(BaseRepository):
         # Si deseas solo sincronizar un dataset específico, filtra usando el datasetId
         dataset = next((d for d in unsynchronized_datasets if d.id == dataset_id), None)
 
-
         if dataset:
             # Lógica para sincronizar el dataset
             dataset.ds_meta_data.dataset_doi = self.generate_doi_for_dataset(dataset)

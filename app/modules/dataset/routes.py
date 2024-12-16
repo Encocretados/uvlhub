@@ -15,9 +15,9 @@ from app import db
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.forms import DataSetForm
 from app.modules.dataset.models import (
-    DSDownloadRecord
+    DSDownloadRecord,
+    DataSet
 )
-from app.modules.dataset import dataset_bp
 from app.modules.dataset.services import (
     AuthorService,
     DSDownloadRecordService,
@@ -365,7 +365,6 @@ def synchronize_datasets():
 
         # Verificar que datasetId esté presente
         dataset_id = int(data.get("datasetId"))
-
 
         if not dataset_id:
             print(
