@@ -436,3 +436,42 @@ He realizado un total de **7 pruebas unitarias** relacionadas con la funcionalid
 ## Conclusión
 
 Durante este período, me he centrado en mejorar los filtros avanzados y he llevado a cabo una serie de pruebas exhaustivas para asegurar la correcta funcionalidad de diversas partes del sistema. Además, he implementado workflows para optimizar la automatización de tareas y facilitar la colaboración en el proyecto. Mi objetivo ha sido asegurar una alta calidad en la funcionalidad del sistema, al mismo tiempo que optimizo los procesos internos del equipo.
+
+
+# Alejandro Nicolalde Bravo
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI de clase High, "Create community". Al principio cuando empecé a desarrollar la funcionalidad tuve un enfoque algo erronéo. Al principio en la aplicación se relacionaban los DataSet con los Users. Al añadir Community a la ecuación tomé un camino algo enrredoso ya que eliminé dicha relacion y conecte a los datasets con los usuarios a partir de comunidad, es decir, los datasets pertenecian a las comunidades. Despues del M1, tras hablar con mi corrector me dijo que sería mejor mantener la relación que había de User con Dataset y añadir una relacion de Community con User. Así hice y cree una relación many to many entre Community y User. Para ello, me ayude de una tabla intermedia community_members. Ya una vez aclarado lo que se quería, los usuarios podían crear, editar, unirse y eliminar comunidades. A partir de las cuales se podrán ver los datasets publicados por los miembros de dicha comunidad.
+A demás, implementé al principio un atributo "público" para los datasets que le permitía al creador de los datasets cambiar la visibilidad de los datasets para que salieran en los datasets de las comunidades a las que pertenecian. Posteriormente, tras la implementación del fakenodo por parte de otro compañero, decidí cambiarlo ya que era un poco redundante y solo filtrar el mostrado de datasets de las comunidades por los dataset que hayan sido publicados(que tengan doi).
+
+## Pruebas Realizadas
+
+He realizado un total de **3 pruebas unitarias** y **3 pruebas de interfaz** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas Unitarias
+
+1. **Prueba de Creación de Comunidad estando Autenticado**:  
+   Verifiqué que un usuario autenticado pudiera crear crear una comunidad y se verificaba que efectivamente se había creado.
+
+2. **Prueba de Creación de Comunidad no estando Autenticado**:  
+   Probé que si un usuario sin autenticar intentaba acceder al endpoint de creacion enviando los datos para crear una comunidad no se creará y verifiqué que efectivamente no se creaba.
+
+3. **Prueba de Borrado de Comunidad**:  
+   Verifiqué que sólo el ususario el cual fuera el creador de dicha comunidad pudiera efectuar el borrado de la comunidad, verificando tanto que los usuarios de esa comunidad ya no pertenecieran a dicha comunidad y que dicha comunidad ya no constaba en la base de datos.
+
+## Pruebas de interfaz
+
+1. **Prueba de Creación de Comunidad**:  
+   Probé que tras hacer login y la validación del código de autenticación, se puede acceder a la url de creación, se reconocen los inputs de nombre y descripción, se rellenan con datos de prueba y se pulsa el boton de submit. Al crearla que se llega al endpoint del listado de comunidades y que hay una comunidad cuyo titulo es el nombre de la comunidad.
+
+2. **Prueba de Edición de Comunidad**:  
+   Probé que tras hacer login y la validación del código de autenticación, se puede acceder a la url de edición, se reconocen los inputs de nombre y descripción, se cambian los datos existentes con datos de prueba y se pulsa el boton de submit. Al editarlo se comprueban que los contenidos de los inputs ya han cambiado.
+
+3. **Prueba de Eliminación de Comunidad**:  
+   Probé que tras hacer login y la validación del código de autenticación, se puede acceder a la url de edición(dode se encuentra el botón de borrar), se encuentra el botón de "Eliminar comunidad". Al eliminarla que se llega al endpoint del listado de comunidades y se comprueba que ya no existe una comunidad cuyo titulo es el nombre de la comunidad eliminada.
+
+
+## Conclusión
+
+Durante este período, a pesar del malentendido inicial y de la implementación del atributo "público" un tanto innecesario, he conseguido implementar las funcionalidade básicas que el WI requeria junto con la realización de pruebas tanto unitarias como de interfaz con Selenium.
