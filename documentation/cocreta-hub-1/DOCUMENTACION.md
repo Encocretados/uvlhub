@@ -139,9 +139,112 @@ El subgrupo **Cocreta-Hub-2** ha trabajado en las siguientes funcionalidades:
 
 *Se explicará el sistema desarrollado desde un punto de vista funcional y arquitectónico. Se hará una descripción tanto funcional como técnica de sus componentes y su relación con el resto de subsistemas. Habrá una sección que enumere explícitamente cuáles son los cambios que se han desarrollado para el proyecto.*
 
-## Visión global del proceso de desarrollo *(1500 palabras)* <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
+## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
 
-*Debe dar una visión general del proceso que ha seguido enlazándolo con las herramientas que ha utilizado. Ponga un ejemplo de un cambio que se proponga al sistema y cómo abordaría todo el ciclo hasta tener ese cambio en producción. Los detalles de cómo hacer el cambio vendrán en el apartado correspondiente.*
+### Planificación y diseño
+
+La fase de planificación desempeñó un papel crucial para establecer las bases organizativas y metodológicas del proyecto. Este proceso comenzó con una serie de reuniones periódicas en las que el equipo definió y acordó aspectos clave del flujo de trabajo, diseñados para garantizar un desarrollo eficiente y ordenado. A continuación, se detallan los puntos principales tratados durante esta fase:
+
+1. **Plantillas estándar**:  
+   Se diseñaron plantillas específicas para la creación de issues, mensajes de commits y pull requests. Esto permitió al equipo mantener un enfoque uniforme en la documentación de tareas y cambios. Por ejemplo:  
+   - En las issues, se incluyeron campos obligatorios como descripción, criterios de aceptación y pasos para reproducir errores (en caso de bugs).  
+   - Los mensajes de commit siguieron un formato estructurado, como: feat(modulo al que afecta): descripción del cambio para funcionalidades o fix(modulo al que afecta): descripción del bug corregido, lo que facilitó el rastreo del historial de cambios.  
+   - Las pull requests debían incluir un resumen detallado del cambio, capturas de pantalla (si eran relevantes) y una referencia directa a las issues vinculadas.  
+
+   Además, se utilizó un tablero Kanban para gestionar las issues, moviéndolas a través de diferentes estados (como "Por hacer", "En progreso", "En revisión" y "Finalizado") para facilitar el seguimiento del progreso del equipo y asegurar que todas las tareas se completaran de manera organizada.
+
+2. **Gestión de ramas**:  
+   Para evitar conflictos en el código y mantener un flujo de trabajo ordenado, se definió una estrategia clara para las ramas:  
+   - **main**: la rama principal siempre reflejó una versión estable y lista para producción.  
+   - **Ramas funcionales**: se nombraron siguiendo un estándar descriptivo, como feature/nueva-funcionalidad. Esto permitió a los desarrolladores trabajar de manera ordenada y en sus tareas específicas sin interferir con el código de otros.  
+
+3. **Etiquetado (labels) para las issues**:  
+   Se establecieron etiquetas específicas para categorizar las issues según su tipo, prioridad y estado. Algunas de las etiquetas utilizadas fueron:  
+   - **Tipo**: bug, documentation, enhancement, test, workflow.  
+   - **Prioridad**: high, medium, low.  
+   - **Estado o contexto**: good first issue, help wanted, question, invalid, duplicate, wontfix.  
+
+   Estas etiquetas facilitaron la gestión del backlog, ayudando a priorizar tareas y asignarlas a los miembros del equipo según su disponibilidad y experiencia.  
+
+   Además, se utilizó un tablero Kanban para gestionar las issues y moverlas según su estado, lo que proporcionó una visualización clara del flujo de trabajo y permitió mantener a todo el equipo alineado respecto al progreso del proyecto.
+
+4. **Revisión de Pull Requests**:  
+   Se definieron políticas estrictas para las revisiones de código. Antes de realizar un merge a la rama principal, cada pull request debía ser revisada por al menos un compañero, garantizando así la calidad del código. Durante estas revisiones, se verificaban aspectos como:  
+   - Cumplimiento de los criterios de aceptación definidos en la issue.  
+   - Calidad y claridad del código, incluyendo comentarios y organización.  
+   - Ejecución correcta de pruebas automatizadas y ausencia de errores.  
+
+Esta fase de planificación no solo estableció un marco sólido para el desarrollo, sino que también promovió una cultura de colaboración y calidad en el equipo.
+
+---
+
+### Fase de desarrollo
+
+En la fase de desarrollo, el equipo trabajó siguiendo los lineamientos definidos en la planificación. Dos herramientas fundamentales para garantizar la consistencia y eficiencia del trabajo fueron el uso del archivo .env y el control de versiones con GitHub.
+
+1. **Entorno de desarrollo**:  
+   Se utilizó un archivo .env para gestionar variables de entorno críticas, como claves de API, credenciales y configuraciones específicas de cada entorno (desarrollo, pruebas, producción). Este enfoque permitió:  
+   - **Estandarización**: Todos los miembros del equipo pudieron replicar fácilmente el entorno de desarrollo local sin riesgo de errores de configuración.  
+   - **Seguridad**: Las variables sensibles se mantuvieron fuera del código fuente, reduciendo riesgos de exposición en los repositorios públicos.  
+
+   Por ejemplo, la configuración de la base de datos local y la clave para servicios externos se definieron en este archivo, asegurando que cada desarrollador trabajara bajo las mismas condiciones.
+
+2. **Control de versiones con GitHub**:  
+   GitHub fue el pilar principal para la gestión del código fuente y la colaboración del equipo. Entre sus principales usos, destacan:  
+   - **Ramas organizadas**: Se utilizó una estructura de ramas basada en funcionalidades, siguiendo los estándares definidos en la planificación.  
+   - **Commits descriptivos**: Cada cambio realizado se documentó con mensajes claros y estructurados, facilitando la trazabilidad del proyecto.  
+   - **Pull Requests**: Todas las integraciones a la rama principal (main) se realizaron a través de pull requests, asegurando que el código fuera revisado y probado antes de ser aceptado.  
+
+   La colaboración en GitHub fue respaldada por el uso de herramientas de comunicación como **WhatsApp** y **Discord**, que permitieron mantener una interacción fluida entre los miembros del equipo. Estas plataformas facilitaron la resolución rápida de dudas y la discusión de aspectos técnicos y no técnicos del proyecto, lo que mejoró la eficiencia del trabajo en equipo.
+
+Estas herramientas y prácticas garantizaron un desarrollo ordenado, minimizando conflictos y manteniendo un historial claro de las modificaciones realizadas.
+
+---
+
+### Integración Continua y Pruebas
+
+Para mantener un nivel constante de calidad, el equipo implementó flujos de integración continua mediante **workflows de GitHub Actions**. Estos workflows ejecutaron automáticamente una serie de pruebas cada vez que se realizaban cambios en el código, ofreciendo retroalimentación inmediata sobre posibles errores o incumplimientos de estándares.
+
+1. **Workflows automatizados**:  
+   - Los workflows se activaban con cada commit o pull request, ejecutando un conjunto de tareas predefinidas, como validaciones de estilo de código y ejecución de pruebas.  
+   - Las notificaciones automáticas alertaban al equipo en caso de fallos, permitiendo corregir errores rápidamente antes de que fueran integrados a las ramas principales.  
+
+2. **Pruebas con pytest y Selenium**:  
+   Para validar las funcionalidades desarrolladas, se utilizó la herramienta **pytest** para pruebas unitarias, junto con **Selenium** para realizar pruebas de automatización de interfaces de usuario. Entre las ventajas de estas herramientas destacan:  
+   - **Facilidad de uso**: Su sintaxis simple permitió escribir casos de prueba de manera rápida y efectiva.  
+   - **Cobertura de pruebas**: Se implementaron pruebas unitarias y funcionales para garantizar que cada componente del sistema funcionara correctamente, incluso bajo condiciones inesperadas.  
+
+   Además, se realizaron pruebas de carga con **Locust**, lo que permitió evaluar el rendimiento del sistema bajo condiciones de alta demanda, asegurando que el sistema pudiera manejar picos de tráfico sin problemas.
+
+   Por ejemplo, al desarrollar una nueva funcionalidad, como la validación de etiquetas en los modelos, se crearon pruebas específicas para verificar que las entradas inválidas fueran correctamente rechazadas y que el sistema respondiera adecuadamente en caso de errores.
+
+---
+
+### Despliegue
+
+El despliegue del proyecto se realizó utilizando una combinación de herramientas que garantizaron consistencia, escalabilidad y facilidad de uso.
+
+1. **Docker**:  
+   Docker fue una herramienta esencial para crear contenedores que encapsularan el entorno de ejecución del proyecto. Esto permitió:  
+   - **Portabilidad**: El mismo contenedor podía ejecutarse en cualquier entorno, asegurando que el sistema funcionara de manera consistente, independientemente de la plataforma.  
+   - **Eficiencia**: Los contenedores se crearon con imágenes ligeras, optimizando los tiempos de despliegue.  
+
+2. **Render**:  
+   El sistema se desplegó en la plataforma **Render**, elegida por su facilidad de configuración y soporte para despliegues automatizados. Algunos beneficios de usar Render incluyen:  
+   - **Actualización continua**: Render detecta automáticamente cambios en el repositorio y despliega la nueva versión del sistema sin interrupciones significativas.  
+   - **Escalabilidad**: La plataforma permite escalar recursos según la demanda, asegurando que el sistema pueda manejar picos de tráfico sin problemas.
+
+---
+
+### Lecciones aprendidas
+
+A lo largo del proyecto, el equipo ha aprendido valiosas lecciones que han mejorado la forma en que trabajamos y colaboramos. Entre las principales lecciones aprendidas, destacamos:
+
+- **Trabajo con integración continua**: Hemos aprendido a trabajar bajo el modelo de integración continua, donde las pruebas se ejecutan de manera automática en cada cambio, lo que ha permitido detectar errores de forma temprana y garantizar la calidad del código antes de su integración en la rama principal.
+  
+- **Familiarización con GitHub**: El uso intensivo de GitHub nos ha permitido mejorar nuestras habilidades en la gestión de código fuente, en el manejo de pull requests, la revisión de código y la resolución de conflictos. También nos hemos familiarizado con las herramientas de integración continua como GitHub Actions, lo que ha optimizado nuestro flujo de trabajo.
+
+CUANTAS PALABRAS HAY AQUI
 
 ## Entorno de desarrollo *(800 palabras)*  <!--{#entorno-de-desarrollo-(800-palabras)}-->
 
