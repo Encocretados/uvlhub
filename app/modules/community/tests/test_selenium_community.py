@@ -2,6 +2,7 @@ import time
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -10,7 +11,6 @@ from app.modules.auth.services import AuthenticationService
 from app.modules.community.models import Community
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import close_driver
-from selenium.webdriver.chrome.service import Service
 
 authentication_service = AuthenticationService()
 
@@ -18,7 +18,7 @@ authentication_service = AuthenticationService()
 def test_create_community():
 
     # driver = webdriver.Chrome()
-    service = Service('/usr/bin/chromedriver')
+    service = Service("/usr/bin/chromedriver")
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=options)
 
@@ -104,7 +104,7 @@ def test_edit_community():
             raise AssertionError("Test failed! Community not found.")
 
     # driver = webdriver.Chrome()
-    service = Service('/usr/bin/chromedriver')
+    service = Service("/usr/bin/chromedriver")
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=options)
 
@@ -201,7 +201,7 @@ def test_delete_community():
             raise AssertionError("Test failed! Community not found.")
 
     # driver = webdriver.Chrome()
-    service = Service('/usr/bin/chromedriver')
+    service = Service("/usr/bin/chromedriver")
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=options)
 
