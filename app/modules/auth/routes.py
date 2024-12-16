@@ -178,6 +178,7 @@ def email_validation():
 
         return render_template(
             "auth/email_validation_form.html",
+            email=email,
             form=form,
             error="The key does not match",
         )
