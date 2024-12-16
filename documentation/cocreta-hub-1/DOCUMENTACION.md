@@ -244,8 +244,6 @@ A lo largo del proyecto, el equipo ha aprendido valiosas lecciones que han mejor
   
 - **Familiarización con GitHub**: El uso intensivo de GitHub nos ha permitido mejorar nuestras habilidades en la gestión de código fuente, en el manejo de pull requests, la revisión de código y la resolución de conflictos. También nos hemos familiarizado con las herramientas de integración continua como GitHub Actions, lo que ha optimizado nuestro flujo de trabajo.
 
-CUANTAS PALABRAS HAY AQUI
-
 ## Entorno de desarrollo *(800 palabras)*  <!--{#entorno-de-desarrollo-(800-palabras)}-->
 
 # Entorno de Desarrollo
