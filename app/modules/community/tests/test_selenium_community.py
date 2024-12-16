@@ -10,17 +10,14 @@ from selenium.webdriver.common.keys import Keys
 from app.modules.auth.services import AuthenticationService
 from app.modules.community.models import Community
 from core.environment.host import get_host_for_selenium_testing
-from core.selenium.common import close_driver
+from core.selenium.common import close_driver, initialize_driver
 
 authentication_service = AuthenticationService()
 
 
 def test_create_community():
 
-    # driver = webdriver.Chrome()
-    service = Service("/usr/bin/chromedriver")
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = initialize_driver()
 
     try:
         host = get_host_for_selenium_testing()
@@ -103,10 +100,7 @@ def test_edit_community():
         if not community:
             raise AssertionError("Test failed! Community not found.")
 
-    # driver = webdriver.Chrome()
-    service = Service("/usr/bin/chromedriver")
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = initialize_driver()
 
     try:
         host = get_host_for_selenium_testing()
@@ -200,10 +194,7 @@ def test_delete_community():
         if not community:
             raise AssertionError("Test failed! Community not found.")
 
-    # driver = webdriver.Chrome()
-    service = Service("/usr/bin/chromedriver")
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = initialize_driver()
 
     try:
         host = get_host_for_selenium_testing()
