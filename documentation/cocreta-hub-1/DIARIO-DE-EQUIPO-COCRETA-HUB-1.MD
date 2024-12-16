@@ -291,7 +291,7 @@ En todos los tests (tanto de selenium como unitarios) en los que se probaba un i
 Diseñé un sistema de validación completo que aumenta en gran medida la seguridad de la plataforma, además de un testeo exhaustivo y proporcionado para verificar que todo funciona correctamente a la vez que otros compañeros añaden nuevas funcionalidades.
 
 
-**José Manuel Miret Martín**
+# José Manuel Miret Martín
 
 ## WI Asignado
 
@@ -399,3 +399,40 @@ He implementado dos workflows para automatizar tareas en el repositorio:
 ## Conclusión
 
 Durante este periodo, he trabajado en crear un botón para descargar todos los datasets del sistema y en crear un nuevo módulo conocido como `Fakenodo`, el cual sustituye al módulo de zenodo como he explicado anteriormente. A su vez, he creado un conjunto de pruebas para asegurar la correcta funcionalidad de las diferentes partes del sistema que he modificado/implementado. Además, implementé workflows para crear issues de forma automática cada vez hay algún fallo del sistema y crear tags para una mejor organización del proyecto en base a los commits realizados. Mi enfoque principalemnte ha sido que funcione correctamente el nuevo módulo que he implementado, a la vez que organizo los procesos internos del equipo.
+
+# Ramón Vergara Garrido
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI de clase High, "Advance filtering". Mi enfoque ha estado en mejorar los filtros avanzados para la búsqueda y organización de datos en la plataforma, permitiendo a los usuarios aplicar múltiples criterios de filtrado simultáneamente.
+
+## Pruebas Realizadas
+
+He realizado un total de **7 pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas Unitarias
+
+1. **Prueba de Filtro por Título**:  
+   Verifiqué que el sistema filtra correctamente los datasets por título, devolviendo solo aquellos que coinciden con el título especificado.
+
+2. **Prueba de Filtro por Tipo de Publicación**:  
+   Probé que el sistema filtra correctamente los datasets por tipo de publicación, devolviendo solo aquellos que coinciden con el tipo de publicación especificado.
+
+3. **Prueba de Filtro por Autor**:  
+   Verifiqué que el sistema filtra correctamente los datasets por autor, devolviendo solo aquellos que coinciden con el autor especificado.
+
+4. **Prueba de Filtro por Etiquetas**:  
+   Probé que el sistema filtra correctamente los datasets por etiquetas, devolviendo solo aquellos que contienen las etiquetas especificadas.
+
+5. **Prueba de Filtro por Rango de Fechas**:  
+   Verifiqué que el sistema filtra correctamente los datasets por rango de fechas, devolviendo solo aquellos que fueron creados dentro del rango de fechas especificado.
+
+6. **Prueba de Filtro por Tamaño**:  
+   Probé que el sistema filtra correctamente los datasets por tamaño, devolviendo solo aquellos que están dentro del rango de tamaño especificado.
+
+7. **Prueba de Ordenación por Fecha**:  
+   Verifiqué que el sistema ordena correctamente los datasets por fecha de creación, devolviendo los datasets en el orden especificado (más nuevo a más viejo o más viejo a más nuevo).
+
+## Conclusión
+
+Durante este período, me he centrado en mejorar los filtros avanzados y he llevado a cabo una serie de pruebas exhaustivas para asegurar la correcta funcionalidad de diversas partes del sistema. Además, he implementado workflows para optimizar la automatización de tareas y facilitar la colaboración en el proyecto. Mi objetivo ha sido asegurar una alta calidad en la funcionalidad del sistema, al mismo tiempo que optimizo los procesos internos del equipo.
