@@ -1,8 +1,8 @@
-from datetime import datetime, timezone
 import logging
-from flask_login import current_user
+from datetime import datetime, timezone
 from typing import Optional
 
+from flask_login import current_user
 from sqlalchemy import desc, func
 
 from app.modules.dataset.models import (
@@ -53,26 +53,36 @@ class DSViewRecordRepository(BaseRepository):
         return self.model.query.filter_by(
             user_id=current_user.id if current_user.is_authenticated else None,
             dataset_id=dataset.id,
-            view_cookie=user_cookie
+            view_cookie=user_cookie,
         ).first()
 
     def create_new_record(self, dataset: DataSet, user_cookie: str) -> DSViewRecord:
         return self.create(
-                user_id=current_user.id if current_user.is_authenticated else None,
-                dataset_id=dataset.id,
-                view_date=datetime.now(timezone.utc),
-                view_cookie=user_cookie,
-            )
+            user_id=current_user.id if current_user.is_authenticated else None,
+            dataset_id=dataset.id,
+            view_date=datetime.now(timezone.utc),
+            view_cookie=user_cookie,
+        )
 
 
 class DataSetRepository(BaseRepository):
     def __init__(self):
         super().__init__(DataSet)
 
+    def get_all_synchronized(self) -> DataSet:
+        return (
+            self.model.query.join(DSMetaData)
+            .filter(DSMetaData.dataset_doi.isnot(None))
+            .order_by(self.model.created_at.desc())
+            .all()
+        )
+
     def get_synchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.isnot(None))
+            .filter(
+                DataSet.user_id == current_user_id, DSMetaData.dataset_doi.isnot(None)
+            )
             .order_by(self.model.created_at.desc())
             .all()
         )
@@ -80,15 +90,23 @@ class DataSetRepository(BaseRepository):
     def get_unsynchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.is_(None))
+            .filter(
+                DataSet.user_id == current_user_id, DSMetaData.dataset_doi.is_(None)
+            )
             .order_by(self.model.created_at.desc())
             .all()
         )
 
-    def get_unsynchronized_dataset(self, current_user_id: int, dataset_id: int) -> DataSet:
+    def get_unsynchronized_dataset(
+        self, current_user_id: int, dataset_id: int
+    ) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DataSet.id == dataset_id, DSMetaData.dataset_doi.is_(None))
+            .filter(
+                DataSet.user_id == current_user_id,
+                DataSet.id == dataset_id,
+                DSMetaData.dataset_doi.is_(None),
+            )
             .first()
         )
 
@@ -122,6 +140,7 @@ class DataSetRepository(BaseRepository):
         # Si deseas solo sincronizar un dataset específico, filtra usando el datasetId
         dataset = next((d for d in unsynchronized_datasets if d.id == dataset_id), None)
 
+
         if dataset:
             # Lógica para sincronizar el dataset
             dataset.ds_meta_data.dataset_doi = self.generate_doi_for_dataset(dataset)
@@ -132,6 +151,9 @@ class DataSetRepository(BaseRepository):
     def generate_doi_for_dataset(self, dataset: DataSet) -> str:
         # Genera un DOI para el dataset (esto depende de tu implementación)
         return f"10.1234/dataset/{dataset.id}"
+
+    def get_all(self):
+        return self.model.query.all()
 
 
 class DOIMappingRepository(BaseRepository):

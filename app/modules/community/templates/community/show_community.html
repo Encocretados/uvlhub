@@ -1,0 +1,53 @@
+{% extends "base_template.html" %}
+
+{% block title %}Community Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Nombre de la comunidad -->
+    <h1 class="mb-3 text-center">{{ community.name }}</h1>
+    
+    <!-- Descripción de la comunidad -->
+    <p class="mb-4 text-center">{{ community.description or "No description available." }}</p>
+    
+    <!-- Contenedor de botones -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <!-- Botón para regresar a la lista de comunidades -->
+        <a href="{{ url_for('community.list_community') }}" class="btn btn-secondary m-2">
+            <i class="bi bi-arrow-left"></i> Back to Communities
+        </a>
+
+        {% if community.creator_id == current_user.id %}
+        <a href="{{ url_for('community.edit_community', community_id=community.id) }}" class="btn btn-warning m-2">
+            <i class="bi bi-pencil-square"></i> Edit Community
+        </a>
+        {% endif %}
+
+        <!-- Botón para ver datasets de la comunidad -->
+        <a href="{{ url_for('community.show_community_datasets', community_id=community.id) }}" class="btn btn-primary m-2">
+            <i class="bi bi-folder"></i>Community Datasets
+        </a>
+    </div>
+
+    <!-- Botón para unirse o dejar la comunidad -->
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        {% if not is_member %}
+            <form action="{{ url_for('community.join_community', community_id=community.id) }}" method="post">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-person-plus"></i> Join Community
+                </button>
+            </form>
+        {% else %}
+            <form action="{{ url_for('community.leave_community', community_id=community.id) }}" method="post">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-person-dash"></i> Leave Community
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('community.scripts') }}"></script>
+{% endblock %}

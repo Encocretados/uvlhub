@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, FieldList, FormField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, URL, Optional
+from wtforms import (FieldList, FormField, SelectField, StringField,
+                     SubmitField, TextAreaField)
+from wtforms.validators import URL, DataRequired, Optional, Regexp
 
 from app.modules.dataset.models import PublicationType
 
@@ -28,7 +29,9 @@ class FeatureModelForm(FlaskForm):
     desc = TextAreaField("Description", validators=[Optional()])
     publication_type = SelectField(
         "Publication type",
-        choices=[(pt.value, pt.name.replace("_", " ").title()) for pt in PublicationType],
+        choices=[
+            (pt.value, pt.name.replace("_", " ").title()) for pt in PublicationType
+        ],
         validators=[Optional()],
     )
     publication_doi = StringField("Publication DOI", validators=[Optional(), URL()])
@@ -59,11 +62,21 @@ class DataSetForm(FlaskForm):
     desc = TextAreaField("Description", validators=[DataRequired()])
     publication_type = SelectField(
         "Publication type",
-        choices=[(pt.value, pt.name.replace("_", " ").title()) for pt in PublicationType],
+        choices=[
+            (pt.value, pt.name.replace("_", " ").title()) for pt in PublicationType
+        ],
         validators=[DataRequired()],
     )
-    publication_doi = StringField("Publication DOI", validators=[Optional(), URL()])
-    dataset_doi = StringField("Dataset DOI", validators=[Optional(), URL()])
+    publication_doi = StringField(
+        "Publication DOI",
+        validators=[
+            Optional(),  # This makes the field optional
+            Regexp(
+                r"^10\.\d{4}$"  # DOI format: starts with '10.' followed by 4 digits
+            ),
+        ],
+    )
+    dataset_doi = StringField("Dataset DOI")
     tags = StringField("Tags (separated by commas)")
     authors = FieldList(FormField(AuthorForm))
     feature_models = FieldList(FormField(FeatureModelForm), min_entries=1)
@@ -72,7 +85,9 @@ class DataSetForm(FlaskForm):
 
     def get_dsmetadata(self):
 
-        publication_type_converted = self.convert_publication_type(self.publication_type.data)
+        publication_type_converted = self.convert_publication_type(
+            self.publication_type.data
+        )
 
         return {
             "title": self.title.data,
