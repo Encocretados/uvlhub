@@ -170,11 +170,11 @@ def test_signup_user_unsuccessful(test_client):
     assert f"Email {email} in use".encode("utf-8") in response.data
 
 
-def test_signup_user_unsuccessful_password_without_uppercase(test_client):
+def test_signup_user_unsuccessful_password_without_uppercase_nor_lowercase(test_client):
     email = "test@example.com"
     response = test_client.post(
         "/signup",
-        data=dict(name="Test", surname="Foo", email=email, password="test1234#"),
+        data=dict(name="Test", surname="Foo", email=email, password="1234#"),
         follow_redirects=True,
     )
     assert response.request.path == url_for(
@@ -184,47 +184,23 @@ def test_signup_user_unsuccessful_password_without_uppercase(test_client):
         "Password must contain at least one uppercase letter".encode("utf-8")
         in response.data
     )
-
-
-def test_signup_user_unsuccessful_password_without_lowercase(test_client):
-    email = "test@example.com"
-    response = test_client.post(
-        "/signup",
-        data=dict(name="Test", surname="Foo", email=email, password="TEST1234#"),
-        follow_redirects=True,
-    )
-    assert response.request.path == url_for(
-        "auth.show_signup_form"
-    ), "Signup was unsuccessful"
     assert (
         "Password must contain at least one lowercase letter".encode("utf-8")
         in response.data
     )
 
 
-def test_signup_user_unsuccessful_password_without_numbers(test_client):
+def test_signup_user_unsuccessful_password_without_numbers_nor_special_characters(test_client):
     email = "test@example.com"
     response = test_client.post(
         "/signup",
-        data=dict(name="Test", surname="Foo", email=email, password="Test#"),
+        data=dict(name="Test", surname="Foo", email=email, password="Test"),
         follow_redirects=True,
     )
     assert response.request.path == url_for(
         "auth.show_signup_form"
     ), "Signup was unsuccessful"
     assert "Password must contain at least one digit".encode("utf-8") in response.data
-
-
-def test_signup_user_unsuccessful_password_without_special_characters(test_client):
-    email = "test@example.com"
-    response = test_client.post(
-        "/signup",
-        data=dict(name="Test", surname="Foo", email=email, password="Test1234"),
-        follow_redirects=True,
-    )
-    assert response.request.path == url_for(
-        "auth.show_signup_form"
-    ), "Signup was unsuccessful"
     assert (
         "Password must contain at least one special character: #,@,~,€".encode("utf-8")
         in response.data
@@ -284,7 +260,7 @@ def test_service_create_with_profile_fail_no_password(clean_database):
     assert UserProfileRepository().count() == 0
 
 
-def test_signup_developer_unsuccessful_password_without_uppercase(test_client):
+def test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers(test_client):
     email = "test@example.com"
     response = test_client.post(
         "/signup/developer",
@@ -292,7 +268,7 @@ def test_signup_developer_unsuccessful_password_without_uppercase(test_client):
             name="Dev",
             surname="Test",
             email=email,
-            password="password123#",
+            password="password#",
             team="University of Malaga",
             github="duplicategithub",
         ),
@@ -306,9 +282,10 @@ def test_signup_developer_unsuccessful_password_without_uppercase(test_client):
         "Password must contain at least one uppercase letter".encode("utf-8")
         in response.data
     )
+    assert "Password must contain at least one digit".encode("utf-8") in response.data
 
 
-def test_signup_developer_unsuccessful_password_without_lowercase(test_client):
+def test_signup_developer_unsuccessful_password_without_lowercase_nor_special_characters(test_client):
     email = "test@example.com"
     response = test_client.post(
         "/signup/developer",
@@ -316,7 +293,7 @@ def test_signup_developer_unsuccessful_password_without_lowercase(test_client):
             name="Dev",
             surname="Test",
             email=email,
-            password="PASSWORD123#",
+            password="PASSWORD123",
             team="University of Malaga",
             github="duplicategithub",
         ),
@@ -330,47 +307,6 @@ def test_signup_developer_unsuccessful_password_without_lowercase(test_client):
         "Password must contain at least one lowercase letter".encode("utf-8")
         in response.data
     )
-
-
-def test_signup_developer_unsuccessful_password_without_numbers(test_client):
-    email = "test@example.com"
-    response = test_client.post(
-        "/signup/developer",
-        data=dict(
-            name="Dev",
-            surname="Test",
-            email=email,
-            password="Password#",
-            team="University of Malaga",
-            github="duplicategithub",
-        ),
-        follow_redirects=True,
-    )
-
-    assert response.request.path == url_for(
-        "auth.show_developer_signup_form"
-    ), "Signup was unsuccessful"
-    assert "Password must contain at least one digit".encode("utf-8") in response.data
-
-
-def test_signup_developer_unsuccessful_password_without_special_characters(test_client):
-    email = "test@example.com"
-    response = test_client.post(
-        "/signup/developer",
-        data=dict(
-            name="Dev",
-            surname="Test",
-            email=email,
-            password="Password123",
-            team="University of Malaga",
-            github="duplicategithub",
-        ),
-        follow_redirects=True,
-    )
-
-    assert response.request.path == url_for(
-        "auth.show_developer_signup_form"
-    ), "Signup was unsuccessful"
     assert (
         "Password must contain at least one special character: #,@,~,€".encode("utf-8")
         in response.data
