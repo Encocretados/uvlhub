@@ -17,6 +17,7 @@
    - [ACTA 2024-02](#acta-2024-02)
    - [ACTA 2024-03](#acta-2024-03)
    - [ACTA 2024-04](#acta-2024-04)
+4. Diario por participante
 
 ---
 
@@ -187,3 +188,59 @@ Pusimoe en común todo lo que teníamos hecho cada integrante del equipo. Vimos 
   Organizamos entre los miembros del equipo el como deberíamos de hacer el video explicativo de 10 minutos necesario para la entrega final, dividiendo las tareas que habían sido necesarias para su correcta elaboración.
 - **Acuerdo 2024-04-03: Despliegue del proyecto.**  
   Se le ha asignado a un miembro de nuestro equipo (Nicolalde Bravo, Alejandro ) el despliegue final del proyecto en Render, siendo este uno de los requisitos necesarios para la última sesión de seguimiento del proyecto M3.
+
+# Diario por participante
+ **Celia Aguilera Camino**
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI "Improve_UI". Mi enfoque ha estado en mejorar la interfaz de usuario para facilitar una experiencia más fluida y atractiva para los usuarios.
+
+## Pruebas Realizadas
+
+He realizado un total de **4 pruebas de Selenium** y **4 pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas de Selenium
+
+1. **Prueba de Botón de Descarga**:  
+   He probado la presencia del botón "Download All" en la página de conjuntos de datos. Se verificó que el botón está presente y correctamente ubicado en la interfaz.
+
+2. **Prueba de Tabla de Archivos UVL**:  
+   Se verificó que la tabla que muestra los archivos esté correctamente cargada, con la presencia de los botones de "Ver", "Check" y "Export" en cada fila de la tabla. La prueba garantizó que los archivos se muestran adecuadamente y que todos los botones interactivos están disponibles.
+
+3. **Prueba de Elementos Interactivos**:  
+   Se probó el comportamiento del modal al hacer clic en el botón "Ver". Esta prueba verificó que el modal se abre y se cierra correctamente, lo que asegura la funcionalidad interactiva del sistema.
+
+4. **Prueba de Botón "Explorar Más Conjuntos de Datos"**:  
+   Verifiqué que el botón "Explore more datasets" funciona correctamente, asegurando que el sistema redirige al usuario a la página de exploración de conjuntos de datos al hacer clic.
+
+5. **Prueba de Descarga de Todos los Conjuntos de Datos**:  
+   Se realizó una prueba para verificar que la opción de "Download all datasets" descargue correctamente todos los conjuntos de datos disponibles en el sistema.
+
+### Pruebas Unitarias
+
+1. **Prueba de DOI Inválido**:  
+   Se verificó que el sistema maneje correctamente un DOI con formato no válido, asegurando que la URL generada sea apropiada, incluso cuando el DOI es `None`.
+
+2. **Prueba de Error Interno del Servidor**:  
+   Realicé una prueba de integración para simular un error interno del servidor al intentar obtener un conjunto de datos. La prueba verificó que el sistema devuelva un código de estado 500 en caso de error, como es esperado en situaciones de fallo en el servidor.
+
+3. **Prueba de Construcción de URL para DOI**:  
+   Esta prueba unitario garantizó que el sistema genere correctamente la URL del DOI de un conjunto de datos cuando se proporciona un DOI válido, y verificó que la función `get_uvlhub_doi` construya la URL correctamente usando el dominio configurado.
+
+4. **Prueba de Cookie Faltante**:  
+   Verifiqué cómo el sistema maneja un caso en el que no se puede establecer una cookie al acceder a un conjunto de datos, asegurando que el sistema maneje correctamente la situación y se establezca la cookie de manera adecuada.
+
+### Workflows Implementados
+
+He implementado dos workflows para automatizar tareas en el repositorio:
+
+1. **Workflow de Formateo de Código (Linting)**:  
+   Cada vez que se hace un `push` al repositorio, este workflow asegura que el código se formatee de acuerdo con las reglas de estilo definidas mediante `lint`. Esto garantiza que el código del proyecto se mantenga limpio y consistente.
+
+2. **Workflow de Notificación por Correo en Pull Requests**:  
+   Este workflow envía un correo electrónico a todos los colaboradores del proyecto cada vez que se crea una `pull request`. El correo contiene información relevante sobre la `pull request`, como el autor, la descripción y el estado de la solicitud, asegurando que todos los miembros del equipo estén al tanto de los cambios.
+
+## Conclusión
+
+Durante este período, he trabajado en mejorar la interfaz de usuario y he ejecutado un conjunto completo de pruebas para asegurar la correcta funcionalidad de diferentes partes del sistema. Además, implementé workflows para mejorar la automatización de tareas y facilitar el proceso de colaboración en el proyecto. Mi enfoque ha sido garantizar una alta calidad en la interfaz y en la funcionalidad del sistema, a la vez que optimizo los procesos internos del equipo.
