@@ -12,8 +12,9 @@ from flask import (abort, jsonify, make_response, redirect, render_template,
 from flask_login import current_user, login_required
 
 from app.modules.dataset import dataset_bp
+from app import db
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import DSDownloadRecord
+from app.modules.dataset.models import DSDownloadRecord, DataSet,DataSet
 from app.modules.dataset.services import (AuthorService, DataSetService,
                                           DOIMappingService,
                                           DSDownloadRecordService,
@@ -319,6 +320,31 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+@dataset_bp.route("/dataset/<int:dataset_id>/", methods=["GET"])
+def view_dataset(dataset_id):
+    # Obtén el dataset usando el ID
+    dataset = dataset_service.get_or_404(dataset_id)
+
+    # Renderiza la plantilla con la información del dataset
+    return render_template("dataset/view_dataset.html", dataset=dataset)
+
+@dataset_bp.route('/dataset/toggle_visibility/<int:dataset_id>', methods=['POST'])
+def toggle_visibility(dataset_id):
+    dataset = DataSet.query.get(dataset_id)
+    if dataset:
+        # Obtén el nuevo valor de visibilidad desde el cuerpo de la solicitud
+        data = request.get_json()
+        new_visibility = data.get('publico')
+
+        # Actualiza la visibilidad
+        dataset.publico = new_visibility
+        db.session.commit()
+
+        return jsonify({'message': 'Visibility changed successfully'}), 200
+    else:
+        return jsonify({'message': 'Dataset not found'}), 404
+
 
 
 @dataset_bp.route("/dataset/synchronize_datasets", methods=["POST"])
