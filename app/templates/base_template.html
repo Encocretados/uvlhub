@@ -82,6 +82,12 @@ chico sundermann">
                     <a class="sidebar-link" href="{{ url_for('ia_bp.ia') }}">
                         <i class="align-middle" data-feather="help-circle"></i> <span class="align-middle">AI Assistant</span>
                     </a>
+                </li>
+
+                <li class="sidebar-item {{ 'active' if request.endpoint == 'dashboard.index' else '' }}">
+                    <a class="sidebar-link" href="{{ url_for('dashboard.index') }}">
+                        <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Dashboard</span>
+                    </a>
                 </li> 
 
                 {% if current_user.is_anonymous %}
