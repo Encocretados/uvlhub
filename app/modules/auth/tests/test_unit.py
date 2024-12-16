@@ -190,7 +190,9 @@ def test_signup_user_unsuccessful_password_without_uppercase_nor_lowercase(test_
     )
 
 
-def test_signup_user_unsuccessful_password_without_numbers_nor_special_characters(test_client):
+def test_signup_user_unsuccessful_password_without_numbers_nor_special_characters(
+    test_client,
+):
     email = "test@example.com"
     response = test_client.post(
         "/signup",
@@ -260,7 +262,9 @@ def test_service_create_with_profile_fail_no_password(clean_database):
     assert UserProfileRepository().count() == 0
 
 
-def test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers(test_client):
+def test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers(
+    test_client,
+):
     email = "test@example.com"
     response = test_client.post(
         "/signup/developer",
@@ -285,7 +289,9 @@ def test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers(te
     assert "Password must contain at least one digit".encode("utf-8") in response.data
 
 
-def test_signup_developer_unsuccessful_password_without_lowercase_nor_special_characters(test_client):
+def test_signup_developer_unsuccessful_password_without_lowercase_nor_special_characters(
+    test_client,
+):
     email = "test@example.com"
     response = test_client.post(
         "/signup/developer",
