@@ -102,7 +102,7 @@ def logout(test_client):
     Returns:
         response: Response to GET request to log out.
     """
-    return test_client.get('/logout', follow_redirects=True)
+    return test_client.get("/logout", follow_redirects=True)
 
 
 def validates_email(test_client, email, password, key):
@@ -116,9 +116,9 @@ def validates_email(test_client, email, password, key):
     Returns:
         response: POST login request response.
     """
-    response = test_client.post('/email_validation', data=dict(
-        email=email,
-        password=password,
-        key=key
-    ), follow_redirects=True)
+    response = test_client.post(
+        "/email_validation",
+        data=dict(email=email, password=password, key=key),
+        follow_redirects=True,
+    )
     return response

@@ -17,6 +17,7 @@
    - [ACTA 2024-02](#acta-2024-02)
    - [ACTA 2024-03](#acta-2024-03)
    - [ACTA 2024-04](#acta-2024-04)
+4. Diario por participante
 
 ---
 
@@ -187,3 +188,251 @@ Pusimoe en común todo lo que teníamos hecho cada integrante del equipo. Vimos 
   Organizamos entre los miembros del equipo el como deberíamos de hacer el video explicativo de 10 minutos necesario para la entrega final, dividiendo las tareas que habían sido necesarias para su correcta elaboración.
 - **Acuerdo 2024-04-03: Despliegue del proyecto.**  
   Se le ha asignado a un miembro de nuestro equipo (Nicolalde Bravo, Alejandro ) el despliegue final del proyecto en Render, siendo este uno de los requisitos necesarios para la última sesión de seguimiento del proyecto M3.
+
+# Diario por participante
+ 
+# Celia Aguilera Camino
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI "Improve_UI". Mi enfoque ha estado en mejorar la interfaz de usuario para facilitar una experiencia más fluida y atractiva para los usuarios.
+
+## Pruebas Realizadas
+
+He realizado un total de **4 pruebas de Selenium** y **4 pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas de Selenium
+
+1. **Prueba de Tabla de Archivos UVL**:  
+   Se verificó que la tabla que muestra los archivos esté correctamente cargada, con la presencia de los botones de "Ver", "Check" y "Export" en cada fila de la tabla. La prueba garantizó que los archivos se muestran adecuadamente y que todos los botones interactivos están disponibles.
+
+2. **Prueba de Elementos Interactivos**:  
+   Se probó el comportamiento del modal al hacer clic en el botón "Ver". Esta prueba verificó que el modal se abre y se cierra correctamente, lo que asegura la funcionalidad interactiva del sistema.
+
+3. **Prueba de Botón "Explorar Más Conjuntos de Datos"**:  
+   Verifiqué que el botón "Explore more datasets" funciona correctamente, asegurando que el sistema redirige al usuario a la página de exploración de conjuntos de datos al hacer clic.
+
+4. **Prueba de Descarga de Todos los Conjuntos de Datos**:  
+   Se realizó una prueba para verificar que la opción de "Download all datasets" descargue correctamente todos los conjuntos de datos disponibles en el sistema.
+
+### Pruebas Unitarias
+
+1. **Prueba de DOI Inválido**:  
+   Se verificó que el sistema maneje correctamente un DOI con formato no válido, asegurando que la URL generada sea apropiada, incluso cuando el DOI es `None`.
+
+2. **Prueba de Error Interno del Servidor**:  
+   Realicé una prueba de integración para simular un error interno del servidor al intentar obtener un conjunto de datos. La prueba verificó que el sistema devuelva un código de estado 500 en caso de error, como es esperado en situaciones de fallo en el servidor.
+
+3. **Prueba de Construcción de URL para DOI**:  
+   Esta prueba unitario garantizó que el sistema genere correctamente la URL del DOI de un conjunto de datos cuando se proporciona un DOI válido, y verificó que la función `get_uvlhub_doi` construya la URL correctamente usando el dominio configurado.
+
+4. **Prueba de Cookie Faltante**:  
+   Verifiqué cómo el sistema maneja un caso en el que no se puede establecer una cookie al acceder a un conjunto de datos, asegurando que el sistema maneje correctamente la situación y se establezca la cookie de manera adecuada.
+
+### Workflows Implementados
+
+He implementado dos workflows para automatizar tareas en el repositorio:
+
+1. **Workflow de Formateo de Código (Linting)**:  
+   Cada vez que se hace un `push` al repositorio, este workflow asegura que el código se formatee de acuerdo con las reglas de estilo definidas mediante `lint`. Esto garantiza que el código del proyecto se mantenga limpio y consistente.
+
+2. **Workflow de Notificación por Correo en Pull Requests**:  
+   Este workflow envía un correo electrónico a todos los colaboradores del proyecto cada vez que se crea una `pull request`. El correo contiene información relevante sobre la `pull request`, como el autor, la descripción y el estado de la solicitud, asegurando que todos los miembros del equipo estén al tanto de los cambios.
+
+## Conclusión
+
+Durante este período, he trabajado en mejorar la interfaz de usuario y he ejecutado un conjunto completo de pruebas para asegurar la correcta funcionalidad de diferentes partes del sistema. Además, implementé workflows para mejorar la automatización de tareas y facilitar el proceso de colaboración en el proyecto. Mi enfoque ha sido garantizar una alta calidad en la interfaz y en la funcionalidad del sistema, a la vez que optimizo los procesos internos del equipo.
+
+# Raúl Toro Romero
+
+## WI Asignado
+
+Me he encargado del WI "Sign up validation". Es considerado un Low Work Item así que decidí expandirlo: no solo se realiza una validación de una contraseña segura, sino que además se valida el correo de los usuarios mandándoles a su correo el código de 6 dígitos (creado de forma segura) que deben introducir en la web, tanto para registrarse (valdiación) como para iniciar sesión (autentificación).
+
+## Pruebas Realizadas
+
+Dentro del módulo auth he realizado un total de **7 pruebas unitarias** y ** 1 prueba de Selenium** relacionadas tanto como la validación de las contraseñas como con la validación del código de autentificación. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas Unitarias
+
+1. **test_correct_redirection_to_email_validation()**:
+   Se comprueba que después de un login exitoso se redirige al endpoint correcto.
+
+2. **test_login_and_email_authentification_success()**
+   Se comprueba que tras un login exitoso y después de introducir el código de validación correcto, el usuario inicia sesión correctamente.
+
+3. **test_login_succes_but_email_authentification_unsuccessful()**
+   Se comprueba que tras un login exitoso y después de introducir el código de validación distinto al correcto, el usuario no inicia sesión.
+
+4. **test_signup_user_unsuccessful_password_without_uppercase_nor_lowercase()**:
+   Para el registro de un nuevo usuario, una contraseña sin mayúsculas ni minúculas es inválida.
+
+5. **test_signup_user_unsuccessful_password_without_numbers_nor_special_characters()**:
+   Para el registro de un nuevo usuario, una contraseña sin números ni caracteres especiales es inválida.
+
+6. **test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers()**:
+   Para el registro de un nuevo developer, una contraseña sin mayúsculas ni número es inválida.
+
+7. **test_signup_developer_unsuccessful_password_without_lowercase_nor_special_characters()**:
+   Para el registro de un nuevo developer, una contraseña sin minúsculas ni caracteres especiales es inválida.
+
+
+### Pruebas de Selenium
+
+1. **test_login_and_check_element()**:
+   Se comprueba que la interfaz responde correctamente a un inicio de sesión y autentificación exitosas.
+
+### Extras
+
+En todos los tests (tanto de selenium como unitarios) en los que se probaba un inicio de sesión exitoso solventé los fallos que daban después de que se añadiera mi work item al repositorio (aplicarle la validación del código del correo). Entre los módulos afectados se dieron por ejemplo los de communities, se pueden ver en los Issues en los que participé y mis Commits. 
+
+## Conclusión
+
+Diseñé un sistema de validación completo que aumenta en gran medida la seguridad de la plataforma, además de un testeo exhaustivo y proporcionado para verificar que todo funciona correctamente a la vez que otros compañeros añaden nuevas funcionalidades.
+
+
+# José Manuel Miret Martín
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI "Download_all_datasets", junto con el WI añadido por el profesorado "Fakenodo". Con respecto al primer WI, me he focalizado en crear un botón en la pantalla de inicio, con el cual, tras pulsarlo, se descarga en tu dispositivo una carpeta comprimita con todos los datasets que hay en el sistema. Por otro lado, el segundo WI (Fakenodo) me he focalizado en sustituir zenodo por un módulo parecido a este, por el cual cuando hagas una llamada, no se comunique con la API, sino que te devuelve el mismo sistema un JSON. De esta forma, cuando quieras crear un nuevo dataset, tanto con como sin DOI, se pueda subir correctamente al fakenodo y no haga falta hacer peticiones a la API mediante zenodo.
+
+## Pruebas Realizadas
+
+He realizado un total de **1 pruebas de Selenium**, **8 pruebas de Locust** y **15 pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas de Selenium
+
+1. **Prueba de Botón de Descarga**:  
+   He probado la presencia del botón "Download All" en la página de conjuntos de datos. Se verificó que el botón está presente y correctamente ubicado en la interfaz.
+
+
+### Pruebas de Locust
+
+1. **Prueba de Conexión**:  
+   Realiza una solicitud GET para verificar la conexión a la API, accediendo a la ruta "/fakenodo/api/test_connection".
+
+2. **Prueba para crear un nuevo Dataset**:  
+   Envía una solicitud POST para crear un nuevo dataset que incluya la información {"dataset_id": 1}, accediendo a la ruta "/fakenodo/api/fakenodos".
+
+3. **Prueba para subir un archivo ya existente**:  
+   Realiza una solicitud POST para subir un archivo asociado a un dataset que ya existe, por la cual envía los datos {"dataset_id": 1, "feature_model_id": 1}, accediendo a la ruta "/fakenodo/api/{fakenodo_id}/files".
+
+4. **Prueba para modificar el estado de un dataset**:  
+   Envía una solicitud PUT para cambiar el estado del dataset con ID 1 a "publicado", accediendo a la ruta "/fakenodo/api/{fakenodo_id}/publish".
+
+5. **Prueba para obtener un dataset**:  
+   Realiza una solicitud GET para obtener la información del dataset con ID 1, accediendo a la ruta "/fakenodo/api/{fakenodo_id}".
+
+6. **Prueba para obtener el DOI**:  
+   Envía una solicitud GET para obtener el identificador DOI del dataset con ID 1, accediendo a la ruta "/fakenodo/api/{fakenodo_id}/doi".
+
+7. **Prueba para obtener todos los datasets**:  
+   Envía una solicitud DELETE para eliminar el dataset con ID 1, accediendo a la ruta "/fakenodo/api/{fakenodo_id}".
+
+8. **Prueba para obtener todos los datasets**:  
+   Realiza una solicitud GET para obtener la lista de todos los datasets, accediendo a la ruta "/fakenodo/api/fakenodos".
+
+
+### Pruebas Unitarias
+
+1. **Prueba de la existencia del download all**:  
+   Verifica que el endpoint /dataset/download_all existe y es accesible mediante una solicitud de tipo GET.
+
+2. **Prueba de lo que devuelve la función download all**:  
+   Verifica que el endpoint /dataset/download_all devuelve un archivo ZIP válido, el cual debe de contener todos los datasets del sistema.
+
+3. **Intento de crear un Fakenodo con un dataset inválido**:  
+   Esta prueba verifica que el servicio create_new_fakenodo maneje adecuadamente el caso en que se intente crear un dataset con una información de entrada inválida, específicamente uno que no contiene metadatos. La prueba asegura que valida correctamente los datos de entrada antes de procesarlos.
+
+4. **Intento de obtener un Fakenodo inexistente**:  
+   Este test evalúa el manejo de errores del método get_fakenodo cuando el dataset solicitado no existe en la base de datos. Asegura que el servicio lanza una excepción con un mensaje claro, validando la robustez del método ante solicitudes inválidas.
+
+5. **Intento de obtener un DOI para un Fakenodo inexistente**:  
+   Esta prueba verifica que el método get_doi gestione correctamente el caso de un dataset que no existe, lanzando una excepción con un mensaje. Esto garantiza que el servicio maneja adecuadamente las referencias a objetos no encontrados.
+
+6. **Obtener todos los Fakenodos cuando no existen**:  
+   El test asegura que el método get_all_fakenodos funcione correctamente cuando no hay datasets en el sistema. Configura el servicio con un diccionario vacío y verifica que el método devuelve una lista vacía, validando su comportamiento en escenarios iniciales o sin datos.
+
+7. **Intento de subir un archivo a un Fakenodo inexistente**:  
+   Esta prueba evalúa el manejo de errores del método upload_file cuando se intenta subir un archivo a un dataset que no existe. Asegura que se lanza una excepción con un mensaje, indicando al cliente que la operación no puede completarse debido a que el dataset no se ha podido encontrar en el sistema.
+
+8. **Intento de publicar un Fakenodo inexistente**:  
+   El test verifica que el servicio gestione correctamente un intento de publicar un dataset que no existe. Valida que el método publish_fakenodo lanza una excepción con un mensaje indicando que no se ha podido encontrar ese dataset, confirmando que el servicio valida la existencia del recurso antes de modificarlo.
+
+9. **Intento de eliminar un Fakenodo inexistente**:  
+   Esta prueba asegura que el método delete_fakenodo maneje apropiadamente el caso de intentar eliminar un fakenodo que no existe, lanzando una excepción con un mensaje indicando que no se ha podido encontrar el dataset. Valida que el servicio detecte correctamente intentos de acceso inválido.
+
+10. **Crear un nuevo Fakenodo con datos válidos**:  
+   Este test evalúa que el método create_new_fakenodo funcione correctamente cuando se le proporciona un dataset válido. Verifica que se crea un fakenodo con datos correctos, incluyendo título, descripción, etiquetas y licencia, y asegura que el resultado contiene un id y un DOI inicial como None. Si incluye DOI se debe sustituir por el suyo correspondiente en vez de None.
+
+11. **Obtener todos los Fakenodos existentes**:  
+   La prueba valida que el método get_all_fakenodos devuelve todos los datasets almacenados en el servicio. Simula dos datasets en el sistema y asegura que el método retorna una lista que incluye ambos, confirmando que la función gestiona correctamente múltiples entradas.
+
+12. **Eliminar un Fakenodo existente**:  
+   Este test verifica que el método delete_fakenodo elimina correctamente un dataset del sistema. Configura un dataset con ID 1, llama al método para eliminarlo, y asegura que el recurso ya no está presente en el sistema, retornando además un mensaje de éxito.
+
+13. **Obtener un Fakenodo por su ID**:  
+   La prueba valida que el método get_fakenodo recupere correctamente la información de un dataset existente dado su ID. Configura un dataset simulado en el servicio y asegura que los datos y el estado devueltos son los esperados.
+
+14. **Generar un DOI para un Fakenodo sin DOI existente**:  
+   Este test verifica que el método get_doi genera un DOI para un dataset que no tiene uno asignado. Simula la generación de un DOI, lo asigna al dataset correspondiente y asegura que el valor retornado y el almacenado en los datos coinciden, validando el proceso de generación de identificadores.
+
+15. **Publicar un Fakenodo existente**:  
+   La prueba asegura que el método publish_fakenodo publica correctamente un dataset existente. Verifica que el estado del dataset cambia a "published", se asigna un DOI conceptual y se retorna un mensaje de éxito. Esto valida que la publicación actualiza correctamente el recurso.
+
+
+### Workflows Implementados
+
+He implementado dos workflows para automatizar tareas en el repositorio:
+
+1. **Workflow: Bug Report on Application Error**:  
+   Este workflow funciona de la siguiente forma: cada vez que se hace `push` a la rama main, ya sea mediante un commit directo al main o mediante una pull request, este workflow primero inicializa la aplicación, y tras ello intenta acceder. En el caso de que no pueda o la aplicación de algún fallo, se creará una issue automáticamente, la cual seguirá un formato predefinido (esta base la obtiene del archivo `AUTO-ISSUE.md`, localizado en el repositorio). Tras ello, la persona responsable de haber subido esos cambios a la rama main, si lo desea, puede eliminar esa issue o completarla para notificar el fallo.
+
+2. **Workflow: Release Automation**:  
+   
+   Este workflow crea una nueva tag, indicando la release actual del repositorio, por cada vez que se hacen cambios en la rama `main`, ya sea mediante un commit o mediante una pull request. La tag se actualiza en base al mensaje del commit: 
+   - Si se trata de un commit de tipo `feat`, se cambia el valor major de la tag (X.0.0); 
+   - Si se trata de un commit de tipo `fix`, se cambia el valor minor de la tag (0.X.0); 
+   - Si se trata de un commit de tipo `test` o `refactor`, se cambia el valor pach de la tag (0.0.X).
+
+## Conclusión
+
+Durante este periodo, he trabajado en crear un botón para descargar todos los datasets del sistema y en crear un nuevo módulo conocido como `Fakenodo`, el cual sustituye al módulo de zenodo como he explicado anteriormente. A su vez, he creado un conjunto de pruebas para asegurar la correcta funcionalidad de las diferentes partes del sistema que he modificado/implementado. Además, implementé workflows para crear issues de forma automática cada vez hay algún fallo del sistema y crear tags para una mejor organización del proyecto en base a los commits realizados. Mi enfoque principalemnte ha sido que funcione correctamente el nuevo módulo que he implementado, a la vez que organizo los procesos internos del equipo.
+
+# Ramón Vergara Garrido
+
+## WI Asignado
+
+Durante el período actual, me he encargado del WI de clase High, "Advance filtering". Mi enfoque ha estado en mejorar los filtros avanzados para la búsqueda y organización de datos en la plataforma, permitiendo a los usuarios aplicar múltiples criterios de filtrado simultáneamente.
+
+## Pruebas Realizadas
+
+He realizado un total de **7 pruebas unitarias** relacionadas con la funcionalidad del sistema. A continuación, se describen los detalles de las pruebas ejecutadas:
+
+### Pruebas Unitarias
+
+1. **Prueba de Filtro por Título**:  
+   Verifiqué que el sistema filtra correctamente los datasets por título, devolviendo solo aquellos que coinciden con el título especificado.
+
+2. **Prueba de Filtro por Tipo de Publicación**:  
+   Probé que el sistema filtra correctamente los datasets por tipo de publicación, devolviendo solo aquellos que coinciden con el tipo de publicación especificado.
+
+3. **Prueba de Filtro por Autor**:  
+   Verifiqué que el sistema filtra correctamente los datasets por autor, devolviendo solo aquellos que coinciden con el autor especificado.
+
+4. **Prueba de Filtro por Etiquetas**:  
+   Probé que el sistema filtra correctamente los datasets por etiquetas, devolviendo solo aquellos que contienen las etiquetas especificadas.
+
+5. **Prueba de Filtro por Rango de Fechas**:  
+   Verifiqué que el sistema filtra correctamente los datasets por rango de fechas, devolviendo solo aquellos que fueron creados dentro del rango de fechas especificado.
+
+6. **Prueba de Filtro por Tamaño**:  
+   Probé que el sistema filtra correctamente los datasets por tamaño, devolviendo solo aquellos que están dentro del rango de tamaño especificado.
+
+7. **Prueba de Ordenación por Fecha**:  
+   Verifiqué que el sistema ordena correctamente los datasets por fecha de creación, devolviendo los datasets en el orden especificado (más nuevo a más viejo o más viejo a más nuevo).
+
+## Conclusión
+
+Durante este período, me he centrado en mejorar los filtros avanzados y he llevado a cabo una serie de pruebas exhaustivas para asegurar la correcta funcionalidad de diversas partes del sistema. Además, he implementado workflows para optimizar la automatización de tareas y facilitar la colaboración en el proyecto. Mi objetivo ha sido asegurar una alta calidad en la funcionalidad del sistema, al mismo tiempo que optimizo los procesos internos del equipo.

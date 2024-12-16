@@ -54,17 +54,17 @@
                         <div class="row">
                             <div class="col-12">
 
-                                <div class="row">
-                                    <div class="col-8">
-                                        <i data-feather="file"></i> {{ file.name }}
-                                        <br>
-                                        <small class="text-muted">({{ file.get_formatted_size() }})</small>
-                                    </div>
-                                    <div class="col-2">
-                                        <div id="check_{{ file.id }}">
-                                        </div>
-                                    </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <i data-feather="file"></i> {{ file.name }}
+                                <br>
+                                <small class="text-muted">({{ file.get_formatted_size() }})</small>
+                            </div>
+                            <div class="col-2">
+                                <div id="check_{{ file.id }}">
                                 </div>
+                            </div>
+                        </div>
 
 
                             </div>
@@ -399,5 +399,36 @@
         });
     }
 </script>
+
+<script>
+    // Mostrar u ocultar el botón flotante
+    document.getElementById('toggleVisibilityBtn').addEventListener('click', function () {
+        const visibilityOptionBtn = document.getElementById('visibilityOptionBtn');
+        visibilityOptionBtn.style.display = visibilityOptionBtn.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Cambiar la visibilidad del dataset
+    function toggleVisibility() {
+        const visibilityOptionBtn = document.getElementById('visibilityOptionBtn');
+        const isPublic = visibilityOptionBtn.textContent.includes('Change to private');
+
+        // Lógica de cambio (AJAX o llamada a backend)
+        fetch(`/dataset/toggle_visibility/{{ dataset.id }}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ publico: !isPublic })
+        }).then(response => {
+            if (response.ok) {
+                // Cambia el texto del botón dependiendo del nuevo estado
+                visibilityOptionBtn.textContent = isPublic ? 'Change to public' : 'Change to private';
+                // Oculta el botón flotante
+                visibilityOptionBtn.style.display = 'none';
+            } else {
+                console.error('Error changing visibility');
+            }
+        }).catch(error => console.error('Fetch error:', error));
+    }
+</script>
+
 
 {% endblock %}

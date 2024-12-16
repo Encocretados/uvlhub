@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from flask_login import UserMixin
+from sqlalchemy import String
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
@@ -17,8 +18,17 @@ class User(db.Model, UserMixin):
     )
     is_developer = db.Column(db.Boolean, default=True)  # Este es el campo correcto
 
+    key_code = db.Column(String(6), nullable=True)
+
     data_sets = db.relationship("DataSet", backref="user", lazy=True)
     profile = db.relationship("UserProfile", backref="user", uselist=False)
+
+    communities = db.relationship(
+        "Community",
+        secondary="community_members",
+        back_populates="members",
+        cascade="all, delete",
+    )
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

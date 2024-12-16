@@ -1,13 +1,17 @@
 import os
-import pyotp
 from datetime import datetime, timedelta
 
-from flask import redirect, render_template, request, session, url_for, make_response
+import pyotp
+from flask import (make_response, redirect, render_template, request, session,
+                   url_for)
 from flask_login import current_user, login_user, logout_user
 
+from app import db
 from app.modules.auth import auth_bp
-from app.modules.auth.forms import DeveloperSingUpForm, LoginForm, SignupForm, EmailValidationForm
-from app.modules.auth.services import AuthenticationService, generate_access_token
+from app.modules.auth.forms import (DeveloperSingUpForm, EmailValidationForm,
+                                    LoginForm, SignupForm)
+from app.modules.auth.services import (AuthenticationService,
+                                       generate_access_token)
 from app.modules.profile.services import UserProfileService
 
 authentication_service = AuthenticationService()
@@ -44,8 +48,8 @@ def show_signup_form():
 
     form = SignupForm()
     if form.validate_on_submit():
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form["email"]
+        password = request.form["password"]
         print(f"Email: {email}")
         print(f"Password: {password}")
         if not authentication_service.is_email_available(email):
@@ -61,9 +65,9 @@ def show_signup_form():
             )
 
         # Log user
-        response = make_response(redirect(url_for('auth.email_validation')))
-        session['email'] = email
-        session['password'] = password
+        response = make_response(redirect(url_for("auth.email_validation")))
+        session["email"] = email
+        session["password"] = password
         return response
 
     return render_template("auth/signup_form.html", form=form)
@@ -76,18 +80,20 @@ def login():
 
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
-        email = request.form['email']
-        password = request.form['password']
-        session['email'] = email
-        session['password'] = password
+        email = request.form["email"]
+        password = request.form["password"]
+        session["email"] = email
+        session["password"] = password
         if authentication_service.correct_credentials(email, password):
-            user_no_login = authentication_service.get_user(form.email.data, form.password.data)
+            user_no_login = authentication_service.get_user(
+                form.email.data, form.password.data
+            )
             token = generate_access_token(user_no_login.id)
             if user_no_login.is_developer:
                 session["is_developer"] = True
             else:
                 session["is_developer"] = False
-            response = make_response(redirect(url_for('auth.email_validation')))
+            response = make_response(redirect(url_for("auth.email_validation")))
             expires = datetime.now() + timedelta(seconds=ACCESS_TOKEN_EXPIRES)
             response.set_cookie(
                 "access_token", token, httponly=True, expires=expires, secure=True
@@ -138,43 +144,52 @@ def show_developer_signup_form():
 def logout():
     logout_user()
     session.pop("is_developer", None)
-    session.pop('email', None)
-    session.pop('password', None)
-    response = make_response(redirect(url_for('public.index')))
+    session.pop("email", None)
+    session.pop("password", None)
+    response = make_response(redirect(url_for("public.index")))
     response.set_cookie("access_token", "", expires=0)
     return response
 
 
-@auth_bp.route('/email_validation', methods=['GET', 'POST'])
+@auth_bp.route("/email_validation", methods=["GET", "POST"])
 def email_validation():
     if current_user.is_authenticated:
-        return redirect(url_for('public.index'))
+        return redirect(url_for("public.index"))
 
-    email = session.get('email', None)
-    password = session.get('password', None)
+    email = session.get("email", None)
+    password = session.get("password", None)
     if not email or not password:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for("auth.login"))
 
     form = EmailValidationForm()
 
-    if request.method == 'POST':
-        key = int(form.key.data.strip())
-        if key == int(session.get('key')):
+    if request.method == "POST":
+        key = str(form.key.data.strip())
+
+        # Buscar el usuario en la base de datos
+        user = authentication_service.get_user(email, password)
+
+        if user and key == user.key_code:
             authentication_service.login(email, password)
-            response = make_response(redirect(url_for('public.index')))
-            session.pop('email', None)
-            session.pop('password', None)
+            response = make_response(redirect(url_for("public.index")))
+            session.pop("email", None)
+            session.pop("password", None)
             return response
 
         return render_template(
             "auth/email_validation_form.html",
+            email=email,
             form=form,
-            key=key,
-            error='The key does not match'
+            error="The key does not match",
         )
 
-    if request.method == 'GET':
-        random_key = pyotp.TOTP(str(os.getenv('SECRET_CODE_GENERATOR'))).now()
-        session['key'] = random_key
-        authentication_service.send_email(email, random_key)
-    return render_template('auth/email_validation_form.html', form=form, email=email)
+    if request.method == "GET":
+        random_key = pyotp.TOTP(str(os.getenv("SECRET_CODE_GENERATOR"))).now()
+        user = authentication_service.get_user(email, password)
+
+        if user:
+            user.key_code = random_key
+            db.session.commit()
+            authentication_service.send_email(email, random_key)
+
+    return render_template("auth/email_validation_form.html", form=form, email=email)

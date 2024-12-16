@@ -5,6 +5,7 @@ from typing import Optional
 from flask_login import current_user
 from sqlalchemy import desc, func
 
+from app.modules.community.models import Community
 from app.modules.dataset.models import (Author, DataSet, DOIMapping,
                                         DSDownloadRecord, DSMetaData,
                                         DSViewRecord)

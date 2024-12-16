@@ -1,11 +1,12 @@
-import pytest
 import time
 
+import pytest
+
 from app import db
-from app.modules.conftest import login, logout, validates_email
 from app.modules.auth.models import User
-from app.modules.profile.models import UserProfile
 from app.modules.auth.services import AuthenticationService
+from app.modules.conftest import login, logout, validates_email
+from app.modules.profile.models import UserProfile
 
 authentication_service = AuthenticationService()
 
@@ -18,7 +19,9 @@ def test_client(test_client):
     """
 
     with test_client.application.app_context():
-        user_test = User(email='uvlhub.reply@gmail.com', password='uvl12hub34', is_developer=False)
+        user_test = User(
+            email="uvlhub.reply@gmail.com", password="uvl12hub34", is_developer=False
+        )
         db.session.add(user_test)
         db.session.commit()
 
@@ -33,12 +36,14 @@ def test_edit_profile_page_get(test_client):
     """
     Tests access to the profile editing page via a GET request.
     """
-    login_response = login(test_client, 'uvlhub.reply@gmail.com', 'uvl12hub34')
+    login_response = login(test_client, "uvlhub.reply@gmail.com", "uvl12hub34")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     time.sleep(5)
     clave = authentication_service.get_validation_email_key()
-    validation_response = validates_email(test_client, 'uvlhub.reply@gmail.com', 'uvl12hub34', clave)
+    validation_response = validates_email(
+        test_client, "uvlhub.reply@gmail.com", "uvl12hub34", clave
+    )
     assert validation_response.status_code == 200, "Email key validation unsuccessful"
 
     response = test_client.get("/profile/edit")

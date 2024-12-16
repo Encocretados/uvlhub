@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from app import db
 from app.modules.auth.services import AuthenticationService
+from app.modules.community.models import Community
 from app.modules.dataset.models import DataSet
 from app.modules.profile import profile_bp
 from app.modules.profile.forms import UserProfileForm

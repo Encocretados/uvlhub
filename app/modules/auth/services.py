@@ -1,5 +1,12 @@
+import email
+import imaplib
 import os
+import re
+import smtplib
 from datetime import datetime, timedelta
+from email.header import decode_header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import jwt
 from flask import request
@@ -11,13 +18,6 @@ from app.modules.profile.models import UserProfile
 from app.modules.profile.repositories import UserProfileRepository
 from core.configuration.configuration import uploads_folder_name
 from core.services.BaseService import BaseService
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import imaplib
-import email
-from email.header import decode_header
-import re
 
 SECRET_KEY = os.getenv("SECRET_KEY", "secret")
 ACCESS_TOKEN_EXPIRES = int(os.getenv("ACCESS_TOKEN_EXPIRES", 3600))  # 1 hora
@@ -134,7 +134,7 @@ class AuthenticationService(BaseService):
     def send_email(self, target_email, random_key):
         sender_email = "uvlhub.reply@gmail.com"
         receiver_email = target_email
-        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
+        password = str(os.getenv("UVLHUB_EMAIL_PASSWORD"))
         subject = f"[UVLHUB] Your key is {random_key}!"
         body = f"""
                 <html>
@@ -176,17 +176,17 @@ class AuthenticationService(BaseService):
                 server.starttls()
                 server.login(sender_email, password)
                 server.sendmail(sender_email, receiver_email, message.as_string())
-                print("Email sent successfully to "+str(target_email)+"!")
+                print("Email sent successfully to " + str(target_email) + "!")
         except Exception as e:
             print(f"Error: {e}")
 
     def get_validation_email_info(self, verbose=False):
         username = "uvlhub.reply@gmail.com"
-        password = str(os.getenv('UVLHUB_EMAIL_PASSWORD'))
+        password = str(os.getenv("UVLHUB_EMAIL_PASSWORD"))
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
         mail.login(username, password)
         mail.select("inbox")
-        _, messages = mail.search(None, 'FROM', '"uvlhub.reply@gmail.com"')
+        _, messages = mail.search(None, "FROM", '"uvlhub.reply@gmail.com"')
         email_ids = messages[0].split()
         res = {}
 
@@ -201,15 +201,15 @@ class AuthenticationService(BaseService):
                     subject, encoding = decode_header(msg["Subject"])[0]
                     if isinstance(subject, bytes):
                         subject = subject.decode(encoding if encoding else "utf-8")
-                    res['Subject'] = subject
+                    res["Subject"] = subject
                     # Decode the sender
                     from_ = msg.get("From")
-                    res['From'] = from_
+                    res["From"] = from_
                     # Decode the key
-                    key = re.sub(r'[^0-9]', '', subject)
-                    res['Key'] = key
+                    key = re.sub(r"[^0-9]", "", subject)
+                    res["Key"] = key
 
-                    if (verbose):
+                    if verbose:
                         print(f"Subject: {subject}")
                         print(f"From: {from_}")
                         print(f"Key: {key}")
@@ -223,4 +223,4 @@ class AuthenticationService(BaseService):
 
     def get_validation_email_key(self):
         res = self.get_validation_email_info(False)
-        return res['Key']
+        return res["Key"]
