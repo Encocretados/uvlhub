@@ -1,6 +1,7 @@
-from app.modules.community.models import Community
 from app.modules.auth.models import User
+from app.modules.community.models import Community
 from core.seeders.BaseSeeder import BaseSeeder
+
 
 class CommunitySeeder(BaseSeeder):
 
