@@ -1,13 +1,16 @@
-from app.modules.auth.models import User  
-from app.modules.dataset.models import DSMetaData, DataSet
-from app.modules.dataset.repositories import DataSetRepository, DSDownloadRecordRepository, DSViewRecordRepository
-from app.modules.featuremodel.repositories import FeatureModelRepository  
-from app import db  
-from sqlalchemy import func  
+from sqlalchemy import func
+
+from app import db
+from app.modules.auth.models import User
+from app.modules.dataset.models import DataSet, DSMetaData
+from app.modules.dataset.repositories import (DataSetRepository,
+                                              DSDownloadRecordRepository,
+                                              DSViewRecordRepository)
+from app.modules.featuremodel.repositories import FeatureModelRepository
 
 
 class DashboardRepository:
-    
+
     def __init__(self):
         self.dataset_repository = DataSetRepository()
         self.feature_model_repository = FeatureModelRepository()
@@ -31,9 +34,9 @@ class DashboardRepository:
         Obtiene el número total de usuarios registrados.
         """
         return db.session.query(func.count(User.id)).scalar()
-    
+
     # get_total_authors en el service
-    
+
     def get_total_dataset_views(self) -> int:
         """
         Obtiene el número total de visualizaciones de datasets.
@@ -51,16 +54,18 @@ class DashboardRepository:
         """
         Devuelve un diccionario con el número de datasets agrupados por PublicationType.
         """
-        result = db.session.query(
-            DSMetaData.publication_type,
-            func.count(DataSet.id)
-        ).join(DataSet.ds_meta_data).group_by(DSMetaData.publication_type).all()
+        result = (
+            db.session.query(DSMetaData.publication_type, func.count(DataSet.id))
+            .join(DataSet.ds_meta_data)
+            .group_by(DSMetaData.publication_type)
+            .all()
+        )
 
-        return {row[0].value if row[0] else 'Unknown': row[1] for row in result}
-    
+        return {row[0].value if row[0] else "Unknown": row[1] for row in result}
+
     # get_total_feature_model_views en el service
     # get_total_feature_model_downloads en el service
-    
+
     def get_total_feature_model_downloads(self) -> int:
         """
         Obtiene el número total de descargas de modelos de características.
@@ -74,4 +79,3 @@ class DashboardRepository:
     #     """
     #     avg_rating = db.session.query(func.avg(DatasetRating.rating)).scalar()
     #     return round(avg_rating, 1) if avg_rating is not None else 0.0
-
