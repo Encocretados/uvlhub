@@ -1,9 +1,13 @@
 import pytest
+import time
 from flask import url_for
 
 from app import db
 from app.modules.auth.models import User
 from app.modules.community.models import Community
+from app.modules.auth.services import AuthenticationService
+
+authentication_service = AuthenticationService()
 
 
 # Fixture para configurar el cliente de prueba
@@ -14,7 +18,7 @@ def test_client(test_client):
     for module testing (por example, new users)
     """
     with test_client.application.app_context():
-        user_test = User(email="user@example.com", password="test1234")
+        user_test = User(email="uvlhub.reply@gmail.com", password="uvl12hub34")
         db.session.add(user_test)
         db.session.commit()
 
@@ -24,12 +28,32 @@ def test_client(test_client):
 # Test de borrado de una comunidad siendo el creador
 def test_delete_community_success(test_client):
 
-    test_client.post(
-        "/login", data={"email": "user@example.com", "password": "test1234"}
+    response = test_client.post(
+        "/login",
+        data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
+        follow_redirects=True,
     )
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Login was unsuccessful"
+
+    time.sleep(2)
+    clave = authentication_service.get_validation_email_key()
+    response = test_client.post(
+        "/email_validation",
+        data=dict(
+            email="uvlhub.reply@gmail.com",
+            password="uvl12hub34",
+            key=clave,
+        ),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for(
+        "public.index"
+    ), "Email authetification was unsuccessful"
 
     with test_client.application.app_context():
-        user = User.query.filter_by(email="user@example.com").first()
+        user = User.query.filter_by(email="uvlhub.reply@gmail.com").first()
 
     data = {
         "name": "Delete Community",
@@ -61,12 +85,32 @@ def test_delete_community_success(test_client):
 # Test de creación de comunidad
 def test_create_community_authenticated(test_client):
 
-    test_client.post(
-        "/login", data={"email": "user@example.com", "password": "test1234"}
+    response = test_client.post(
+        "/login",
+        data=dict(email="uvlhub.reply@gmail.com", password="uvl12hub34"),
+        follow_redirects=True,
     )
+    assert response.request.path == url_for(
+        "auth.email_validation"
+    ), "Login was unsuccessful"
+
+    time.sleep(2)
+    clave = authentication_service.get_validation_email_key()
+    response = test_client.post(
+        "/email_validation",
+        data=dict(
+            email="uvlhub.reply@gmail.com",
+            password="uvl12hub34",
+            key=clave,
+        ),
+        follow_redirects=True,
+    )
+    assert response.request.path == url_for(
+        "public.index"
+    ), "Email authetification was unsuccessful"
 
     with test_client.application.app_context():
-        user = User.query.filter_by(email="user@example.com").first()
+        user = User.query.filter_by(email="uvlhub.reply@gmail.com").first()
 
     data = {
         "name": "Test Community",
@@ -96,7 +140,7 @@ def test_create_community_authenticated(test_client):
 def test_create_community_unauthenticated(test_client):
 
     with test_client.application.app_context():
-        user = User.query.filter_by(email="user@example.com").first()
+        user = User.query.filter_by(email="uvlhub.reply@gmail.com").first()
 
     data = {
         "name": "Test Community",

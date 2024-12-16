@@ -9,13 +9,18 @@ from selenium.webdriver.common.keys import Keys
 from app.modules.auth.services import AuthenticationService
 from app.modules.community.models import Community
 from core.environment.host import get_host_for_selenium_testing
-from core.selenium.common import close_driver, initialize_driver
+from core.selenium.common import close_driver
+from selenium.webdriver.chrome.service import Service
 
 authentication_service = AuthenticationService()
 
 
 def test_create_community():
-    driver = webdriver.Chrome()
+
+    # driver = webdriver.Chrome()
+    service = Service('/usr/bin/chromedriver')
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         host = get_host_for_selenium_testing()
@@ -98,7 +103,10 @@ def test_edit_community():
         if not community:
             raise AssertionError("Test failed! Community not found.")
 
-    driver = webdriver.Chrome()
+    # driver = webdriver.Chrome()
+    service = Service('/usr/bin/chromedriver')
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         host = get_host_for_selenium_testing()
@@ -192,7 +200,10 @@ def test_delete_community():
         if not community:
             raise AssertionError("Test failed! Community not found.")
 
-    driver = webdriver.Chrome()
+    # driver = webdriver.Chrome()
+    service = Service('/usr/bin/chromedriver')
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         host = get_host_for_selenium_testing()
@@ -250,7 +261,7 @@ def test_delete_community():
         try:
             # Verificar que la comunidad ya no existe
             driver.find_element(
-                By.XPATH, f"//a[contains(text(), 'Updated Test Community')]"
+                By.XPATH, "//a[contains(text(), 'Updated Test Community')]"
             )
             raise AssertionError("Test failed! Community still exists after deletion.")
 
