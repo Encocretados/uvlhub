@@ -1,12 +1,16 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from app.modules.explore.services import ExploreService
+
 
 @pytest.fixture
 def explore_service():
     return ExploreService()
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_title(mock_advance_filter, explore_service):
     # Mock de datasets con títulos específicos
     mock_dataset_1 = MagicMock()
@@ -30,7 +34,9 @@ def test_advance_filter_by_title(mock_advance_filter, explore_service):
         "created_at": "2023-02-01",
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con el título
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if query == "Dataset about AI" else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1] if query == "Dataset about AI" else []
+    )
 
     # Parámetro de búsqueda por título
     query = "Dataset about AI"
@@ -44,7 +50,7 @@ def test_advance_filter_by_title(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -60,10 +66,11 @@ def test_advance_filter_by_title(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_publication_type(mock_advance_filter, explore_service):
     # Mock de datasets con tipos de publicación específicos
     mock_dataset_1 = MagicMock()
@@ -75,7 +82,7 @@ def test_advance_filter_by_publication_type(mock_advance_filter, explore_service
         "authors": [{"name": "Author 1"}],
         "tags": ["AI", "ML"],
         "created_at": "2023-01-01",
-        "publication_type": "research_paper"
+        "publication_type": "research_paper",
     }
     mock_dataset_2 = MagicMock()
     mock_dataset_2.to_dict.return_value = {
@@ -86,10 +93,12 @@ def test_advance_filter_by_publication_type(mock_advance_filter, explore_service
         "authors": [{"name": "Author 2"}],
         "tags": ["ML"],
         "created_at": "2023-02-01",
-        "publication_type": "article"
+        "publication_type": "article",
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con el tipo de publicación
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if publication_type == "research_paper" else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1] if publication_type == "research_paper" else []
+    )
 
     # Parámetro de búsqueda por tipo de publicación
     publication_type = "research_paper"
@@ -103,7 +112,7 @@ def test_advance_filter_by_publication_type(mock_advance_filter, explore_service
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -119,10 +128,11 @@ def test_advance_filter_by_publication_type(mock_advance_filter, explore_service
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_author(mock_advance_filter, explore_service):
     # Mock de datasets con autores específicos
     mock_dataset_1 = MagicMock()
@@ -146,7 +156,9 @@ def test_advance_filter_by_author(mock_advance_filter, explore_service):
         "created_at": "2023-02-01",
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con el autor
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if author_name == "Author 1" else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1] if author_name == "Author 1" else []
+    )
 
     # Parámetro de búsqueda por autor
     author_name = "Author 1"
@@ -160,7 +172,7 @@ def test_advance_filter_by_author(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=author_name
+        author_name=author_name,
     )
 
     # Verificación del resultado
@@ -176,10 +188,11 @@ def test_advance_filter_by_author(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name="Author 1"
+        author_name="Author 1",
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_tags(mock_advance_filter, explore_service):
     # Mock de datasets con etiquetas específicas
     mock_dataset_1 = MagicMock()
@@ -203,7 +216,9 @@ def test_advance_filter_by_tags(mock_advance_filter, explore_service):
         "created_at": "2023-02-01",
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con las etiquetas
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if "AI" in tags else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1] if "AI" in tags else []
+    )
 
     # Parámetro de búsqueda por etiquetas
     tags = ["AI"]
@@ -217,7 +232,7 @@ def test_advance_filter_by_tags(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -233,10 +248,11 @@ def test_advance_filter_by_tags(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_date_range(mock_advance_filter, explore_service):
     # Mock de datasets con fechas específicas
     mock_dataset_1 = MagicMock()
@@ -260,7 +276,11 @@ def test_advance_filter_by_date_range(mock_advance_filter, explore_service):
         "created_at": "2024-01-01",
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con el rango de fechas
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if after_date <= mock_dataset_1.to_dict()["created_at"] <= before_date else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1]
+        if after_date <= mock_dataset_1.to_dict()["created_at"] <= before_date
+        else []
+    )
 
     # Parámetro de búsqueda por rango de fechas
     after_date = "2023-01-01"
@@ -275,7 +295,7 @@ def test_advance_filter_by_date_range(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -291,10 +311,11 @@ def test_advance_filter_by_date_range(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_by_size(mock_advance_filter, explore_service):
     # Mock de datasets con tamaños específicos
     mock_dataset_1 = MagicMock()
@@ -306,7 +327,7 @@ def test_advance_filter_by_size(mock_advance_filter, explore_service):
         "authors": [{"name": "Author 1"}],
         "tags": ["AI", "ML"],
         "created_at": "2023-01-01",
-        "size": 500  # Tamaño en KB
+        "size": 500,  # Tamaño en KB
     }
     mock_dataset_2 = MagicMock()
     mock_dataset_2.to_dict.return_value = {
@@ -317,10 +338,14 @@ def test_advance_filter_by_size(mock_advance_filter, explore_service):
         "authors": [{"name": "Author 2"}],
         "tags": ["ML"],
         "created_at": "2023-02-01",
-        "size": 2000  # Tamaño en KB
+        "size": 2000,  # Tamaño en KB
     }
     # Ajusta el mock para que devuelva solo el dataset que coincide con el tamaño
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1] if min_size <= mock_dataset_1.to_dict()["size"] <= max_size else []
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1]
+        if min_size <= mock_dataset_1.to_dict()["size"] <= max_size
+        else []
+    )
 
     # Parámetro de búsqueda por tamaño
     min_size = 100
@@ -335,7 +360,7 @@ def test_advance_filter_by_size(mock_advance_filter, explore_service):
         min_size=min_size,
         max_size=max_size,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -351,10 +376,11 @@ def test_advance_filter_by_size(mock_advance_filter, explore_service):
         min_size=min_size,
         max_size=max_size,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
-@patch('app.modules.explore.services.ExploreService.advance_filter')
+
+@patch("app.modules.explore.services.ExploreService.advance_filter")
 def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
     # Mock de datasets con fechas específicas
     mock_dataset_1 = MagicMock()
@@ -378,7 +404,11 @@ def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
         "created_at": "2022-01-01",
     }
     # Ajusta el mock para que devuelva los datasets ordenados de más nuevo a más viejo por defecto
-    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: [mock_dataset_1, mock_dataset_2] if sorting == "newest" else [mock_dataset_2, mock_dataset_1]
+    mock_advance_filter.side_effect = lambda query, sorting, publication_type, tags, after_date, before_date, min_size, max_size, size_unit, author_name: (
+        [mock_dataset_1, mock_dataset_2]
+        if sorting == "newest"
+        else [mock_dataset_2, mock_dataset_1]
+    )
 
     # Parámetro de búsqueda por ordenación de más nuevo a más viejo
     sorting = "newest"
@@ -392,7 +422,7 @@ def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -409,7 +439,7 @@ def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Parámetro de búsqueda por ordenación de más viejo a más nuevo
@@ -424,7 +454,7 @@ def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
 
     # Verificación del resultado
@@ -441,5 +471,5 @@ def test_advance_filter_sorting_oldest(mock_advance_filter, explore_service):
         min_size=None,
         max_size=None,
         size_unit="KB",
-        author_name=None
+        author_name=None,
     )
