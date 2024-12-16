@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.modules.dashboard.repositories import DashboardRepository
 from app.modules.dashboard.services import DashboardService
 
@@ -18,7 +20,9 @@ def dashboard_service():
 
 def test_get_total_datasets(dashboard_repository):
     """Prueba que se obtenga correctamente el total de datasets."""
-    dashboard_repository.dataset_repository.count_synchronized_datasets = MagicMock(return_value=10)
+    dashboard_repository.dataset_repository.count_synchronized_datasets = MagicMock(
+        return_value=10
+    )
     total_datasets = dashboard_repository.get_total_datasets()
     assert total_datasets == 10
 
@@ -46,14 +50,18 @@ def test_get_total_dataset_downloads(dashboard_repository):
 
 def test_get_total_feature_models(dashboard_repository):
     """Prueba que se obtenga correctamente el total de modelos de características."""
-    dashboard_repository.feature_model_repository.count_feature_models = MagicMock(return_value=15)
+    dashboard_repository.feature_model_repository.count_feature_models = MagicMock(
+        return_value=15
+    )
     total_feature_models = dashboard_repository.get_total_feature_models()
     assert total_feature_models == 15
 
 
 def test_get_datasets_by_publication_type(dashboard_repository):
     """Prueba que los datasets se agrupen correctamente por PublicationType."""
-    dashboard_repository.get_datasets_by_publication_type = MagicMock(return_value={"ARTICLE": 5, "THESIS": 2})
+    dashboard_repository.get_datasets_by_publication_type = MagicMock(
+        return_value={"ARTICLE": 5, "THESIS": 2}
+    )
     publication_data = dashboard_repository.get_datasets_by_publication_type()
     assert publication_data == {"ARTICLE": 5, "THESIS": 2}
 

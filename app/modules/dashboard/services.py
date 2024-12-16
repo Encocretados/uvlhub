@@ -22,5 +22,5 @@ class DashboardService(BaseService):
             "total_downloads": self.repository.get_total_dataset_downloads(),
             "total_fm_views": self.feature_model_service.total_feature_model_views(),
             "total_fm_downloads": self.feature_model_service.total_feature_model_downloads(),
-            "publication_type_data": self.repository.get_datasets_by_publication_type()
+            "publication_type_data": self.repository.get_datasets_by_publication_type(),
         }
