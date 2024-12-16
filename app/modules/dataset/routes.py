@@ -14,12 +14,20 @@ from flask_login import current_user, login_required
 from app import db
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import DataSet, DSDownloadRecord
-from app.modules.dataset.services import (AuthorService, DataSetService,
-                                          DOIMappingService,
-                                          DSDownloadRecordService,
-                                          DSMetaDataService,
-                                          DSViewRecordService)
+from app.modules.dataset.models import (
+    DSDownloadRecord,
+    DataSet
+)
+from app.modules.dataset.services import (
+    AuthorService,
+    DSDownloadRecordService,
+    DSMetaDataService,
+    DSViewRecordService,
+    DataSetService,
+    DOIMappingService,
+    DatasetRatingService
+)
+
 from app.modules.fakenodo.services import FakenodoService
 from core.configuration.configuration import USE_FAKENODO
 
@@ -32,6 +40,7 @@ dsmetadata_service = DSMetaDataService()
 fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
+dataset_rating_service = DatasetRatingService()
 
 
 @dataset_bp.route("/dataset/upload", methods=["GET", "POST"])
@@ -132,9 +141,7 @@ def create_dataset():
         msg = "Everything works!"
         return jsonify({"message": msg}), 200
 
-    return render_template(
-        "dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO
-    )
+    return render_template("dataset/upload_dataset.html", form=form, use_fakenodo=USE_FAKENODO)
 
 
 @dataset_bp.route("/dataset/list", methods=["GET", "POST"])
@@ -365,71 +372,68 @@ def synchronize_datasets():
             )  # Si el datasetId es None o no está presente
             return jsonify({"message": "El datasetId es requerido."}), 400
 
-        print(
-            "datasetId recibido:", dataset_id
-        )  # Log para verificar que se recibe el datasetId correctamente
+        print("datasetId recibido:", dataset_id)  # Log para verificar que se recibe el datasetId correctamente
 
         # Llamar al servicio para sincronizar los datasets con el datasetId
         dataset_service.synchronize_unsynchronized_datasets(current_user.id, dataset_id)
 
-        return (
-            jsonify(
-                {"success": True, "message": "Datasets sincronizados correctamente."}
-            ),
-            200,
-        )
+        return jsonify({"success": True, "message": "Datasets sincronizados correctamente."}), 200
     except Exception as e:
         print("Error:", e)  # Log para mostrar el error específico
         return jsonify({"message": str(e)}), 400
 
 
-@dataset_bp.route("/dataset/download_all", methods=["GET"])
-def download_all_datasets():
-    datasets = dataset_service.get_all()
+@dataset_bp.route("/datasets/<int:dataset_id>/rate", methods=["POST"])
+@login_required
+def rate_dataset(dataset_id):
+    data = request.get_json()
+    rating_value = data.get("rating")
 
-    temp_dir = tempfile.mkdtemp()
-    zip_path = os.path.join(temp_dir, "all_datasets.zip")
+    if not rating_value:
+        return jsonify({"status": "error", "message": "Rating value is required"}), 400
 
-    with ZipFile(zip_path, "w") as zipf:
-        for dataset in datasets:
-            file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
-            if os.path.exists(file_path):
-                for subdir, dirs, files in os.walk(file_path):
-                    for file in files:
-                        full_path = os.path.join(subdir, file)
-                        relative_path = os.path.relpath(full_path, file_path)
-                        zipf.write(
-                            full_path,
-                            arcname=os.path.join(str(dataset.id), relative_path),
-                        )
+    try:
+        # Register or update the rating
+        dataset_rating_service.rate_dataset(current_user.id, dataset_id, rating_value)
 
-    user_cookie = request.cookies.get("download_cookie")
-    if not user_cookie:
-        user_cookie = str(uuid.uuid4())
+        # Get updated rating summary
+        summary = dataset_rating_service.get_dataset_rating_summary(dataset_id)
 
-    resp = make_response(
-        send_from_directory(
-            temp_dir,
-            "all_datasets.zip",
-            as_attachment=True,
-            mimetype="application/zip",
+        return (
+            jsonify(
+                {
+                    "status": "success",
+                    "message": "Rating submitted successfully",
+                    "average_rating": summary["average_rating"],
+                    "total_ratings": summary["total_ratings"],
+                }
+            ),
+            200,
         )
+
+    except ValueError as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error rating dataset: {e}")
+        return jsonify({"status": "error", "message": "An error occurred"}), 500
+
+
+@dataset_bp.route("/datasets/<int:dataset_id>/ratings", methods=["GET"])
+def get_dataset_ratings(dataset_id):
+    """Returns the average rating and total number of ratings for a dataset, along with the user's rating."""
+    result = dataset_rating_service.get_dataset_rating_summary(dataset_id)
+    user_rating = None
+    if current_user.is_authenticated:
+        user_rating = dataset_rating_service.get_user_rating(
+            current_user.id, dataset_id
+        )
+    return (
+        jsonify(
+            {
+                "average_rating": result["average_rating"],
+                "total_ratings": result["total_ratings"],
+                "user_rating": user_rating,
+            }
+        ),
+        200,
     )
-    resp.set_cookie("download_cookie", user_cookie)
-
-    for dataset in datasets:
-        existing_record = DSDownloadRecord.query.filter_by(
-            dataset_id=dataset.id, download_cookie=user_cookie
-        ).first()
-
-        if not existing_record:
-            DSDownloadRecordService().create(
-                user_id=None,
-                dataset_id=dataset.id,
-                download_date=datetime.now(timezone.utc),
-                download_cookie=user_cookie,
-            )
-
-    shutil.rmtree(temp_dir)
-
-    return resp
