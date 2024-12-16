@@ -6,13 +6,13 @@ from flask import (make_response, redirect, render_template, request, session,
                    url_for)
 from flask_login import current_user, login_user, logout_user
 
+from app import db
 from app.modules.auth import auth_bp
 from app.modules.auth.forms import (DeveloperSingUpForm, EmailValidationForm,
                                     LoginForm, SignupForm)
 from app.modules.auth.services import (AuthenticationService,
                                        generate_access_token)
 from app.modules.profile.services import UserProfileService
-from app import db
 
 authentication_service = AuthenticationService()
 user_profile_service = UserProfileService()

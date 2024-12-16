@@ -13,6 +13,7 @@ from core.selenium.common import close_driver, initialize_driver
 
 authentication_service = AuthenticationService()
 
+
 def test_create_community():
     driver = webdriver.Chrome()
 
