@@ -97,7 +97,7 @@ Se han discutido los WI a implementar en el proyecto. Se ha acordado los siguien
         - **Download all datasets** *(Asignada a Miret Martín, José Manuel)*: Se implementará un botón en la pantalla inicial que permitirá descargar todos los datasets del sistema. Esto incluye ajustes en el funcionamiento interno de la aplicación para comprimir automáticamente todos los datasets en un archivo ZIP, facilitando su descarga de manera eficiente y centralizada para los usuarios.
     - **LOW**:
         - **View user profile** *(Asignada a Ruiz Delgado, Victoria del Carmen)*: Mediante este WI los usuarios podrán visualizar su perfil dentro de la plataforma. Esta vista incluirá información básica como el nombre, el correo electrónico y otros datos relevantes asociados a la cuenta del usuario, proporcionando un acceso fácil y rápido a la información personal y mejorando la experiencia de uso en la plataforma.
-        - **Sign up Validation** *(Asignada a Toro Romero, Raúl)*: Se trata de implementar un sistema de validación de correo electrónico que requerirá que los usuarios verifiquen su dirección de correo tanto al registrarse como al iniciar sesión. Este sistema enviará un código de verificación al correo electrónico proporcionado, que los usuarios deberán ingresar en la plataforma para completar el proceso de registro o acceso.
+        - **Sign up Validation** *(Asignada a Toro Romero, Raúl)*: Se trata de implementar un sistema de validación de correo electrónico que requerirá que los usuarios verifiquen su dirección de correo tanto al registrarse como al iniciar sesión. Este sistema enviará un código de verificación al correo electrónico proporcionado, que los usuarios deberán ingresar en la plataforma para completar el proceso de registro o acceso. Más tarde este Work Item se expandió para validar y aumentar la seguridad de las contraseñas en el registro de nuevos usuarios. 
 
 
 - **Acuerdo 2024-01-06: Política de Issues**.
@@ -255,40 +255,37 @@ Dentro del módulo auth he realizado un total de **7 pruebas unitarias** y ** 1 
 
 ### Pruebas Unitarias
 
-1. **test_correct_redirection_to_email_validation()**:
+1. **Prueba de correcta redirección**:
    Se comprueba que después de un login exitoso se redirige al endpoint correcto.
 
-2. **test_login_and_email_authentification_success()**
+2. **Prueba de login y validación de correo exitosa**
    Se comprueba que tras un login exitoso y después de introducir el código de validación correcto, el usuario inicia sesión correctamente.
 
-3. **test_login_succes_but_email_authentification_unsuccessful()**
+3. **Prueba de respuesta a login exitoso con validación de correo incorrecta**
    Se comprueba que tras un login exitoso y después de introducir el código de validación distinto al correcto, el usuario no inicia sesión.
 
-4. **test_signup_user_unsuccessful_password_without_uppercase_nor_lowercase()**:
+4. **Prueba de contraseña de usuario sin mayúsculas ni minúsculas**:
    Para el registro de un nuevo usuario, una contraseña sin mayúsculas ni minúculas es inválida.
 
-5. **test_signup_user_unsuccessful_password_without_numbers_nor_special_characters()**:
+5. **Prueba de contraseña de usuario sin número ni caracteres especiales**:
    Para el registro de un nuevo usuario, una contraseña sin números ni caracteres especiales es inválida.
 
-6. **test_signup_developer_unsuccessful_password_without_uppercase_nor_numbers()**:
+6. **Prueba de contraseña de developer sin mayúsculas ni números**:
    Para el registro de un nuevo developer, una contraseña sin mayúsculas ni número es inválida.
 
-7. **test_signup_developer_unsuccessful_password_without_lowercase_nor_special_characters()**:
+7. **Prueba de contraseña de developer sin minúsculas ni caracteres especiales**:
    Para el registro de un nuevo developer, una contraseña sin minúsculas ni caracteres especiales es inválida.
 
 
 ### Pruebas de Selenium
 
-1. **test_login_and_check_element()**:
+1. **Prueba de interfaz de validación por correo**:
    Se comprueba que la interfaz responde correctamente a un inicio de sesión y autentificación exitosas.
 
-### Extras
-
-En todos los tests (tanto de selenium como unitarios) en los que se probaba un inicio de sesión exitoso solventé los fallos que daban después de que se añadiera mi work item al repositorio (aplicarle la validación del código del correo). Entre los módulos afectados se dieron por ejemplo los de communities, se pueden ver en los Issues en los que participé y mis Commits. 
 
 ## Conclusión
 
-Diseñé un sistema de validación completo que aumenta en gran medida la seguridad de la plataforma, además de un testeo exhaustivo y proporcionado para verificar que todo funciona correctamente a la vez que otros compañeros añaden nuevas funcionalidades.
+Diseñé un sistema de validación completo, llegando a expandirlo más allá de lo inicialmente acordado, que aumenta en gran medida la seguridad de la plataforma, además de un testeo exhaustivo y proporcionado al tamaño de mi Work Item.
 
 
 # José Manuel Miret Martín
