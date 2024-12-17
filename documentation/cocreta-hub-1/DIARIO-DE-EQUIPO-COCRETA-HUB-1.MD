@@ -265,16 +265,16 @@ Dentro del módulo auth he realizado un total de **7 pruebas unitarias** y ** 1 
    Se comprueba que tras un login exitoso y después de introducir el código de validación distinto al correcto, el usuario no inicia sesión.
 
 4. **Prueba de contraseña de usuario sin mayúsculas ni minúsculas**:
-   Para el registro de un nuevo usuario, una contraseña sin mayúsculas ni minúculas es inválida.
+   Para el registro de un nuevo usuario, una contraseña sin mayúsculas ni minúculas es inválida y se muestra el aviso correspondiente correctamente.
 
 5. **Prueba de contraseña de usuario sin número ni caracteres especiales**:
-   Para el registro de un nuevo usuario, una contraseña sin números ni caracteres especiales es inválida.
+   Para el registro de un nuevo usuario, una contraseña sin números ni caracteres especiales es inválida y se muestra el aviso correspondiente correctamente.
 
 6. **Prueba de contraseña de developer sin mayúsculas ni números**:
-   Para el registro de un nuevo developer, una contraseña sin mayúsculas ni número es inválida.
+   Para el registro de un nuevo developer, una contraseña sin mayúsculas ni número es inválida y se muestra el aviso correspondiente correctamente.
 
 7. **Prueba de contraseña de developer sin minúsculas ni caracteres especiales**:
-   Para el registro de un nuevo developer, una contraseña sin minúsculas ni caracteres especiales es inválida.
+   Para el registro de un nuevo developer, una contraseña sin minúsculas ni caracteres especiales es inválida y se muestra el aviso correspondiente correctamente.
 
 
 ### Pruebas de Selenium
