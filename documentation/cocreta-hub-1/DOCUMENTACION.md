@@ -42,15 +42,15 @@
 
 # Indicadores del Proyecto <!--{#indicadores-del-proyecto}-->
 
-| Miembro del equipo | Horas    | Commits   | LoC   | Test  | Issues    | Work Item     |
+| Miembro del equipo | Commits   | LoC   | Test  | Issues    | Work Item     |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Miret Martín, José Manuel|    | 82 | +459 -77 |   24    |     13      |  Download all datasets|
-| Vergara Garrido, Ramon  |  | 20 | +1526 -2034 | 7 | 5 | Advance filtering |
-| Nicolalde Bravo, Alejandro   |  | 26 | +2184 -1193 | 6 | 6 | Create Communities|
-| Aguilera Camino, Celia   |  | 42 | +1759 -1141 | 8 | 6 | Improve UI |
-| Ruiz Delgado, Victoria del Carmen  | 0 | 0 | N/A | 0 | 2 | View user profile|
-| Toro Romero, Raúl      |  | 34 | +891 -916 | 8 | 5 | Sign up Validation|
-| **TOTAL** |  | 204 | +6819 -5361 | 53 | 37 | 6 |
+| Miret Martín, José Manuel| 82 | +459 -77 |   24    |     13      |  Download all datasets|
+| Vergara Garrido, Ramon  | 20 | +1526 -2034 | 7 | 5 | Advance filtering |
+| Nicolalde Bravo, Alejandro | 26 | +2184 -1193 | 6 | 6 | Create Communities|
+| Aguilera Camino, Celia | 42 | +1759 -1141 | 8 | 6 | Improve UI |
+| Ruiz Delgado, Victoria del Carmen | 0 | N/A | 0 | 2 | View user profile|
+| Toro Romero, Raúl | 34 | +891 -916 | 8 | 5 | Sign up Validation|
+| **TOTAL** | 204 | +6819 -5361 | 53 | 37 | 6 |
 
  - **HIGH**:
  
