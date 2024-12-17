@@ -537,6 +537,36 @@ flask run --host=0.0.0.0 --reload --debug
 
 *Se presentará un ejercicio con una propuesta concreta de cambio en la que a partir de un cambio que se requiera, se expliquen paso por paso (incluyendo comandos y uso de herramientas) lo que hay que hacer para realizar dicho cambio. Debe ser un ejercicio ilustrativo de todo el proceso de evolución y gestión de la configuración del proyecto.*
 
+### Planificación
+
+La propuesta de cambio que queremos ilustrar es el de añadir una frase motivacional en el margen superior. Esta tarea puede ser solo añadir un texto plano para en un futuro en vez de un texto plano, mostrar mensajes elegidos por los administradores de UVLHUB, pero por ahora nos ceñiremos a una simple frase motivacional.
+
+Antes de escribir código, se le deberán crear dos Issues, una para la funcionalidad `Motivational Welcome` y otra para su testeo `Test Motivational Welcome`. Los cuales deberán de seguir las plantillas que tenemos disponibles para los Issues: añadiendo descripción, reportado por (el creador de la issue), responsable (el que se encargará de hacerlo), revisor, prioridad e información adicional, si es necesaria. Se deberán asignar los miembros que contribuyan a tales Issues y etiquetar según se vea apropiado.
+
+En el momento que las tareas pasen al desarrollo se deberán de mover dentro del proyecto del repositorio a la columna desde Todo a In Progress.
+
+### Desarrollo
+
+El primer paso sería crear una rama para esta nueva feature siguiendo el modelo de ramas que tenemos, por ejemplo `feature/motivational_welcome` .
+
+```git checkout -b feature/motivational_welcome```
+
+Después y trabajando desde esta rama, se deberá modificar el archivo de la página principal `base_template.html` . Este mensaje se deberá estilizar con css o bien con un estilo ya existente (no recomendado) o con uno personalizado siguiendo la identidad estética de la aplicación.
+
+Hecha la funcionalidad y pusheada a la cabeza de nuestra rama podemos mover la Issue a In Review, hacer Pull Request a nuestra rama grupal cocreta-hub-`número` y pedirle a nuestro revisor que nos la acepte, pero no a la rama principal ya que no está testeada. En el caso de tener su visto bueno, mover la tarea en el proyecto a Done.
+
+### Pruebas
+
+Implementada una versión operativa, se requerirá de garantizar su integridad en distintos tests. Una vez hechos, se moverá a In Reviww y se creará la Pull Request a la rama grupal. Cuando su revisor lo valide, se puedrá mover la Issue a Done y ahora sí, hacer un merge a `main` .
+
+### Despliegue
+
+Cuando los cambios lleguen a `main` se creará una nueva versión de la aplicación que será la siguiente versión desplegada.
+
+### Mantenimiento
+
+Un cambio tan simple no requiere de ningún mantenimiento específico, pero si en el futuro se requiriese cualquier cambio o hubiera alguna incidencia con respecto a él, se deberá  hacer siguiendo el proceso estandarizado que usamos aquí en Encocretados y las plantillas disponibles en el repositorio.
+
 ## Conclusiones y trabajo futuro <!--{#conclusiones-y-trabajo-futuro}-->
 
 El desarrollo e integración de los proyectos Cocreta-Hub1 y Cocreta-Hub2 permitió la construcción de un sistema robusto y funcional, destacando la importancia de la colaboración efectiva y el uso de buenas prácticas de desarrollo. A lo largo del proyecto, la constante comunicación entre los equipos y las reuniones periódicas fueron fundamentales para resolver conflictos, aclarar dudas y alinear objetivos, lo que redujo significativamente los errores y facilitó el cumplimiento de los plazos establecidos. La implementación de un flujo de trabajo riguroso, basado en validaciones estrictas y revisiones de pull requests, aseguró que el branch principal permaneciera estable , garantizando la calidad del producto final. Además, el uso de herramientas como Flake8 y la configuración de entornos de prueba facilitaron la detección y corrección de problemas, promoviendo un desarrollo más eficiente y estandarizado. Los métodos de instalación manual, mediante Docker y con Vagrant también contribuyeron al éxito del proyecto al ofrecer flexibilidad y permitir a los desarrolladores trabajar en entornos adaptados a sus necesidades sin comprometer la compatibilidad del sistema. En resumen, la combinación de buenas prácticas técnicas, una metodología estructurada y un enfoque colaborativo permitió alcanzar los objetivos planteados, entregando un producto final de alta calidad que cumplió con los requisitos establecidos.
