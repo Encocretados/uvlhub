@@ -42,16 +42,15 @@
 
 # Indicadores del Proyecto <!--{#indicadores-del-proyecto}-->
 
-| Miembro del equipo | Horas | Commits | LoC | Test | Issues | Work Item |
+| Miembro del equipo | Horas    | Commits   | LoC   | Test  | Issues    | Work Item     |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Miret Martín, José Manuel|  |  |  |  |  | Download all datasets|
-| Vergara Garrido, Ramon  |  |  |  |  |  | Advance filtering |
-| Nicolalde Bravo, Alejandro   |  |  |  |  |  | Create Communities|
-| Aguilera Camino, Celia   |  |  |  |  |  | Improve UI |
-| Ruiz Delgado, Victoria del Carmen  |  |  |  |  |  | View user profile|
-| Toro Romero, Raúl  	|  |  |  |  |  | Sign up Validation|
-
-| **TOTAL** |  |  |  |  |  |  |
+| Miret Martín, José Manuel|    | 82        |       |   24    |     13      |  Download all datasets|
+| Vergara Garrido, Ramon  |  | 20 |  | 7 | 5 | Advance filtering |
+| Nicolalde Bravo, Alejandro   |  | 26 |  | 6 | 6 | Create Communities|
+| Aguilera Camino, Celia   |  | 42 |  | 8 | 6 | Improve UI |
+| Ruiz Delgado, Victoria del Carmen  | 0 | 0 |  | 0 | 2 | View user profile|
+| Toro Romero, Raúl      |  | 34 |  | 8 | 5 | Sign up Validation|
+| **TOTAL** |  | 204 |  | 53 | 37 | 6 |
 
  - **HIGH**:
     	- **Create Communities** *(Asignada a Nicolalde Bravo, Alejandro)*: Permite a los usuarios gestionar comunidades dentro de la plataforma, incluyendo la creación de nuevas comunidades, la exploración de una lista de comunidades existentes y sus datasets públicos, así como la posibilidad de unirse o abandonar comunidades. Además, los miembros de una comunidad pueden acceder a una nueva metodología para visualizar datasets públicos exclusivos, mientras que los usuarios también tienen la opción de gestionar la visibilidad de sus datasets.
@@ -135,9 +134,160 @@ El subgrupo **Cocreta-Hub-2** ha trabajado en las siguientes funcionalidades:
  
 - **Rating dataset**: permite a los usuarios valorar datasets mediante un sistema de puntuación.
 
+---
+
 ## Descripción del sistema *(1500 palabras)* <!--{#descripción-del-sistema-(1500-palabras)}-->
 
-*Se explicará el sistema desarrollado desde un punto de vista funcional y arquitectónico. Se hará una descripción tanto funcional como técnica de sus componentes y su relación con el resto de subsistemas. Habrá una sección que enumere explícitamente cuáles son los cambios que se han desarrollado para el proyecto.*
+**UVLHUB** es una plataforma basada en una **aplicación web** construida con **Flask** que interactúa con múltiples componentes y servicios externos para su funcionamiento. A continuación vamos a desglosa las conexiones y flujos de datos entre los diferentes elementos del sistema:
+
+
+#### **Aplicación Web (núcleo del sistema)**  
+La **aplicación web** es el centro de toda la arquitectura y actúa como intermediario clave entre los usuarios y los datos. Está desarrollada utilizando **Flask**, un framework ligero y flexible de desarrollo web en Python, que facilita la creación de aplicaciones dinámicas y **APIs REST**. Flask permite gestionar solicitudes, procesar datos y devolver respuestas de manera eficiente.
+
+- Los **usuarios** acceden a esta aplicación mediante un **navegador web**, enviando solicitudes HTTP a través de Internet.  
+- La aplicación expone servicios y funcionalidades al cliente, asegurando una comunicación eficiente con otros sistemas o aplicaciones externas mediante **APIs REST**.  
+
+Flask estructura las solicitudes a través de rutas y controladores, maneja la lógica empresarial con servicios, y se vincula con la base de datos mediante repositorios y modelos para recuperar o gestionar datos. Adicionalmente, la aplicación emplea **plantillas** para crear interfaces amigables y **formularios** para gestionar la validación de los datos suministrados por los usuarios. De esta manera, la aplicación no solo conecta a los usuarios con los datos locales y externos, sino que también garantiza un flujo claro y organizado de información entre todos los componentes del sistema.
+
+
+#### **Almacenamiento Local**  
+El sistema incluye **almacenamiento local** para la gestión de datos críticos necesarios para el funcionamiento interno de la aplicación. Este componente tiene dos grandes funciones:  
+
+- **APP DATA**: La base de datos principal se implementa utilizando **MariaDB**, un sistema de gestión de bases de datos relacionales. Aquí se almacenan datos estructurados, como información de usuarios, configuraciones, y registros.  
+- **Modelos UVL**: Además de los datos relacionales, se almacenan modelos UVL, los cuales son fundamentales para las operaciones del sistema.  
+
+El almacenamiento local establece la comunicación bidireccional entre la aplicación web y estos datos. La aplicación puede **guardar** y **recuperar** información en tiempo real para atender las solicitudes de los usuarios.  
+
+
+#### **API REST para Ciencia Abierta**  
+La arquitectura incluye una integración con **Zenodo**, un repositorio de ciencia abierta que permite almacenar y compartir recursos científicos. A través de una **API REST**, la aplicación puede:  
+- Subir datos generados en la plataforma para su publicación en Zenodo.  
+- Descargar o consultar recursos científicos relevantes.  
+
+Esta integración facilita el **compartir modelos** o información dentro de la comunidad científica, promoviendo la reutilización de datos y la colaboración abierta.
+
+
+#### **API REST para AAFM (Flamapy)**  
+Otro componente clave de la arquitectura es la interacción con **flamapy**, una herramienta para la gestión y análisis de modelos de características en sistemas de software. Esta comunicación se realiza también a través de una **API REST**.  
+
+Las funcionalidades incluyen:  
+- Procesamiento y análisis automatizado de **modelos UVL**.  
+- Generación de métricas, validaciones y transformaciones de modelos en tiempo real.  
+
+La conexión con Flamapy permite a la aplicación ampliar sus capacidades y realizar operaciones complejas relacionadas con el manejo de **modelos de características**.  
+
+
+#### **Interacción con el Navegador Web**  
+Los **usuarios finales** acceden a la aplicación web mediante un **navegador web** (como Chrome, Firefox, etc.). Esta interacción es clave, ya que:  
+- La aplicación proporciona una interfaz de usuario (UI) amigable y accesible.  
+- Los usuarios envían solicitudes y reciben respuestas a través del navegador.  
+- Se implementa una comunicación fluida con la aplicación web mediante **HTTP** o **APIs REST**.
+
+
+### Los modelos del sistema
+
+A continuación, detallaremos cómo funciona la arquitectura modular del repositorio **UVLHUB**, en la que cada módulo se relaciona con otros elementos para ofrecer funciones particulares dentro de la red. La estructura se fundamenta en un sistema jerárquico y vínculos directos entre módulos, lo que facilita un funcionamiento adaptable y escalable. A continuación, se explica el rol de cada módulo en la arquitectura:
+
+
+#### **1. Módulo Principal: `modules`**
+En la parte superior de la arquitectura se encuentra el módulo **"modules"**, que actúa como la **estructura raíz** que organiza los diferentes componentes funcionales del sistema. Desde este módulo principal se derivan los submódulos clave, que se encargan de funcionalidades específicas, tales como autenticación, gestión de datos, conexiones con sistemas externos, y análisis.
+
+
+#### **2. Módulo `auth` (Autenticación)**
+El módulo **auth** (autenticación) es uno de los componentes centrales y proporciona servicios relacionados con la **gestión de usuarios** y la seguridad. Entre sus funciones destacan:  
+- Autenticación y autorización de usuarios.  
+- Comunicación con el módulo **profile** para recuperar información de usuarios autenticados.  
+- Conexión con el módulo **dataset** para garantizar el acceso a datos autorizados.  
+
+Este módulo es fundamental para asegurar que los recursos y operaciones sean accesibles únicamente por usuarios autorizados.
+
+
+#### **3. Módulo `profile` (Perfil de usuario)**  
+Este módulo está relacionado directamente con **auth** y permite gestionar la **información del perfil de usuario**, como datos personales y configuraciones. Es una extensión de **auth** y se utiliza para personalizar la experiencia del usuario dentro de la plataforma.
+
+
+#### **4. Módulo `dataset` (Gestión de datos)**  
+El módulo **dataset** es otro de los núcleos funcionales de la plataforma. Es responsable de administrar y procesar los **datasets** (conjuntos de datos) que se utilizan dentro del sistema. Sus principales conexiones incluyen:  
+- **Zenodo** (En un futuro pasará a ser `fakenodo`), lo que permite el intercambio de datos científicos mediante APIs.  
+- **Explore**, que facilita la exploración de los datasets disponibles.  
+- **Flamapy**, para realizar análisis sobre modelos y datos relacionados con características.  
+- **Feature model**, que conecta y procesa modelos de características con base en datasets gestionados.
+
+El módulo **dataset** actúa como intermediario entre distintas funcionalidades y servicios, facilitando la **gestión centralizada de datos**.
+
+
+#### **5. Módulo `explore` (Exploración de datos)**  
+El módulo **explore** está vinculado con **dataset** y facilita la **exploración y visualización** de los datos almacenados. Los usuarios pueden buscar, analizar y explorar datasets para obtener información relevante o seleccionar recursos de interés.
+
+
+#### **6. Módulo `feature model` (Modelo de características)**  
+El módulo **feature model** interactúa con **hubfile** y **dataset**, siendo responsable de gestionar y analizar **modelos de características**. Estos modelos representan configuraciones y variabilidades en sistemas software. Es fundamental para entender y procesar información compleja estructurada en estos modelos.
+
+
+#### **7. Módulo `hubfile`**  
+El módulo **hubfile** interactúa con **feature model** y **dataset**, sirviendo como un intermediario para la gestión de archivos y recursos específicos relacionados con el sistema. Este módulo facilita el flujo de información entre componentes y permite manejar configuraciones o archivos particulares.
+
+
+#### **8. Módulos `public`, `teams`, y `webhook`**  
+Estos módulos ofrecen funcionalidades adicionales:  
+- **Public**: Proporciona recursos públicos que no requieren autenticación.  
+- **Teams**: Facilita la colaboración entre múltiples usuarios o grupos dentro de la plataforma.  
+- **Webhook**: Permite integrar servicios externos y notificaciones mediante **webhooks**, automatizando tareas y mejorando la interoperabilidad.
+
+### Estructura del proyecto
+
+Ahora pasamos a explicar la **estructura de archivos y carpetas** de un repositorio, dividiendo los componentes en categorías específicas según su funcionalidad y propósito:
+
+
+#### **Repository Configuration (Configuración del Repositorio)**
+Esta sección incluye archivos y carpetas relacionados con la **configuración del repositorio** para su funcionamiento en plataformas como GitHub y para el control de versiones.  
+- **`.github`**: Carpeta que probablemente contiene flujos de trabajo (workflows) de GitHub Actions, plantillas de issues o pull requests.  
+- **`.gitignore`**: Archivo que define qué archivos o carpetas se excluyen del control de versiones.  
+- **`README.md`**: Archivo de documentación principal del proyecto que suele contener instrucciones sobre instalación, uso y contribución.
+
+
+#### **Application Files (Archivos de la Aplicación)**
+Esta sección incluye los archivos y carpetas centrales de la aplicación.  
+- **`requirements.txt`**: Archivo que especifica las dependencias necesarias para ejecutar el proyecto.  
+- **`scripts`**: Carpeta que posiblemente contiene scripts de utilidad, automatización o tareas de desarrollo.  
+- **`app`**: Carpeta principal de la aplicación, donde se encuentran los archivos de código.  
+- **`core`**: Carpeta que contiene la funcionalidad central o lógica principal del proyecto.  
+- **`migrations`**: Carpeta destinada a las migraciones de la base de datos, utilizadas en frameworks como Django o Flask.
+
+
+### **Working Environment (Entorno de Trabajo)**  
+Esta sección contiene archivos y carpetas relacionados con el entorno de desarrollo y despliegue.  
+
+- **`docker`**: Carpeta que posiblemente contiene configuraciones y archivos relacionados con Docker (como `Dockerfile` o `docker-compose.yml`).  
+- **`vagrant`**: Carpeta que incluye configuraciones para **Vagrant**, una herramienta de creación y gestión de máquinas virtuales.  
+- **`.env.*`**: Archivos de configuración para entornos específicos (por ejemplo, desarrollo, producción), usados para **variables de entorno**.  
+
+
+#### **Rosemary CLI**
+Esta sección parece estar relacionada con una herramienta CLI (Command-Line Interface) personalizada llamada **Rosemary**.  
+- **`rosemary`**: Carpeta o módulo específico de la herramienta.  
+- **`setup.py`**: Archivo utilizado para configurar la instalación del proyecto como un paquete Python, indicando dependencias y metadatos.
+
+
+#### **Configuration Files (Archivos de Configuración)**
+- **`.flake8`**: Archivo de configuración para la herramienta **Flake8**, que se utiliza para el análisis de estilo y calidad del código Python.
+
+
+### Peticiones HTTP
+
+Para finalizar con la descrición general del proyecto, vamos a explicar cómo en nuestro proyecto una petición HTTP fluye desde un cliente (navegador) hasta el servidor y cómo se procesan las peticiones en la aplicación:
+
+1. Las peticiones llegan desde **Internet**, donde la aplicación **UVLHub** es accesible públicamente.  
+2. El servidor **Flask**, gestionado con **Gunicorn**, recibe las solicitudes y las redirige a **routes.py** (Controlador), que determina qué ruta y lógica ejecutar según la URL y el método HTTP.  
+3. Las rutas (**routes.py**) delegan la lógica de negocio a **services.py**, que organiza las operaciones y procesos necesarios para responder a la solicitud.  
+4. **services.py** interactúa con **repositories.py** para realizar consultas a la base de datos, utilizando **models.py** como estructura que define las tablas y datos.  
+5. Los **formularios** (**forms.py**) se utilizan para validar y manejar los inputs proporcionados por los usuarios, como formularios de búsqueda o envío de datos.  
+6. Los datos procesados se pasan a las **plantillas** (**templates**), que generan una interfaz HTML dinámica y amigable para el usuario.  
+7. Finalmente, el servidor envía la respuesta al navegador del cliente, mostrando la información solicitada en forma de página web.
+
+Este flujo modular separa claramente las responsabilidades (controlador, lógica de negocio, acceso a datos y vistas), facilitando el desarrollo, mantenimiento y escalabilidad de la aplicación.
+
+---
 
 ## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
 
