@@ -44,7 +44,7 @@
 
 | Miembro del equipo | Horas    | Commits   | LoC   | Test  | Issues    | Work Item     |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Miret Martín, José Manuel|    | 82 | +459 -77 |   24    |     13      |  Download all datasets|
+| Miret Martín, José Manuel|    | 82 | +2910 -1291 |   24    |     13      |  Download all datasets|
 | Vergara Garrido, Ramon  |  | 20 | +1526 -2034 | 7 | 5 | Advance filtering |
 | Nicolalde Bravo, Alejandro   |  | 26 | +2184 -1193 | 6 | 6 | Create Communities|
 | Aguilera Camino, Celia   |  | 42 | +1759 -1141 | 8 | 6 | Improve UI |
