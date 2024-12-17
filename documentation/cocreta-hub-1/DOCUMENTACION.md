@@ -50,7 +50,7 @@
 | Aguilera Camino, Celia   |  | 42 | +1759 -1141 | 8 | 6 | Improve UI |
 | Ruiz Delgado, Victoria del Carmen  | 0 | 0 | N/A | 0 | 2 | View user profile|
 | Toro Romero, Raúl      |  | 34 | +891 -916 | 8 | 5 | Sign up Validation|
-| **TOTAL** |  | 204 | +6819 -5361 | 53 | 37 |  |
+| **TOTAL** |  | 204 | +9270 -6575 | 53 | 37 |  |
 
  - **HIGH**:
     	- **Create Communities** *(Asignada a Nicolalde Bravo, Alejandro)*: Permite a los usuarios gestionar comunidades dentro de la plataforma, incluyendo la creación de nuevas comunidades, la exploración de una lista de comunidades existentes y sus datasets públicos, así como la posibilidad de unirse o abandonar comunidades. Además, los miembros de una comunidad pueden acceder a una nueva metodología para visualizar datasets públicos exclusivos, mientras que los usuarios también tienen la opción de gestionar la visibilidad de sus datasets.
