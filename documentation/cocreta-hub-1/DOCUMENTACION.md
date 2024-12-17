@@ -16,13 +16,13 @@
 
 [Integración con otros equipos](#integración-con-otros-equipos)
 
-[Resumen Ejecutivo (800 palabras)](#resumen-ejecutivo-\(800-palabras\))
+[Resumen Ejecutivo](#resumen-ejecutivo-\(800-palabras\))
 
-[Descripción del sistema (1500 palabras)](#descripción-del-sistema-\(1500-palabras\))
+[Descripción del sistema](#descripción-del-sistema-\(1500-palabras\))
 
-[Visión global del proceso de desarrollo (1500 palabras)](#visión-global-del-proceso-de-desarrollo-\(1500-palabras\))
+[Visión global del proceso de desarrollo](#visión-global-del-proceso-de-desarrollo-\(1500-palabras\))
 
-[Entorno de desarrollo (800 palabras)](#entorno-de-desarrollo-\(800-palabras\))
+[Entorno de desarrollo](#entorno-de-desarrollo-\(800-palabras\))
 
 [Ejercicio de propuesta de cambio](#ejercicio-de-propuesta-de-cambio)
 
@@ -103,7 +103,7 @@ Gracias a este flujo de trabajo bien definido, se logró minimizar la introducci
 En conclusión, la integración entre **Cocreta-Hub1** y **Cocreta-Hub2** fue exitosa gracias a un enfoque meticuloso que combinó buenas prácticas técnicas con una comunicación efectiva. Este modelo de trabajo fomentó un desarrollo colaborativo y garantizó que el branch principal permaneciera estable y libre de errores.
 
 
-# Resumen Ejecutivo *(800 palabras)* <!--{#resumen-ejecutivo-(800-palabras)}-->
+# Resumen Ejecutivo <!--{#resumen-ejecutivo-(800-palabras)}-->
 
 El proyecto ha sido desarrollado como parte del curso universitario EGC por el grupo **Cocreta-Hub**, compuesto por los subgrupos **Cocreta-Hub-1** y **Cocreta-Hub-2**. El objetivo principal de este proyecto ha sido la mejora del sistema **UVLHub**, añadiendo nuevas características y asegurando la implementación de prácticas de integración continua (CI) y despliegue continuo (CD). Se ha puesto un enfoque especial en la gestión del código y su evolución para garantizar una mejora continua en el proyecto.
 
@@ -141,7 +141,7 @@ El subgrupo **Cocreta-Hub-2** ha trabajado en las siguientes funcionalidades:
 
 ---
 
-## Descripción del sistema *(1500 palabras)* <!--{#descripción-del-sistema-(1500-palabras)}-->
+## Descripción del sistema <!--{#descripción-del-sistema}-->
 
 **UVLHUB** es una plataforma basada en una **aplicación web** construida con **Flask** que interactúa con múltiples componentes y servicios externos para su funcionamiento. A continuación vamos a desglosa las conexiones y flujos de datos entre los diferentes elementos del sistema:
 
@@ -294,7 +294,7 @@ Este flujo modular separa claramente las responsabilidades (controlador, lógica
 
 ---
 
-## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
+## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo}-->
 
 ### Planificación y diseño
 
