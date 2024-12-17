@@ -2,7 +2,8 @@
 
 # **DOCUMENTO DEL PROYECTO**
 
-# ![Texto alternativo](documentation/cocreta-hub2/img/uvlhub.png)
+# ![Texto alternativo](img/uvlhub.png)
+
 
 
 **Grupo 3**  
@@ -32,7 +33,7 @@
 | Barrancos Márquez, María | 35 | 10 | 570 | 7 | 3 | **Dashboard**: Un usuario tiene la posibilidad de visualizar métricas clave de la aplicación, facilitando el acceso a información consolidada como número de datasets, usuarios, descargas y otros datos relevantes. **Rate dataset:** Un usuario tiene la posibilidad de valorar un dataset. La valoración total del mismo será la media de todas ellas. |
 | Luna Navarro, Paula | 42 | 29 | 2156 | 10 | 4 | **Register developer:** Un usuario tiene la posibilidad de registrarse como un desarrollador, diferenciándolo de un usuario normal **Staging Area:** Los datasets antes de subirse a fakenodo se quedan en un area de stage, y el usuario puede decidir cuando publicarlos  |
 | Martín Muñoz, Álvaro | 44 | 26 | 2864 | 12 | 12 | **AI integration:** Se debe implementar la funcionalidad para integrar una inteligencia artificial que haga de asistente de ayuda en el sistema. **Generate Api Token:** Se debe implementar la funcionalidad para generar un access token al iniciar sesión. El access token será utilizado para autenticar y autorizar las solicitudes realizadas por el usuario dentro del sistema.  |
-| Noya Cano, Lucía | 40 | 16 | 379 | 7 | 8 | **Register developer:** Un usuario tiene la posibilidad de registrarse como un desarrollador, diferenciándolo de un usuario normal **Staging Area:** Los datasets antes de subirse a fakenodo se quedan en un area de stage, y el usuario puede decidir cuando publicarlos  |
+| Noya Cano, Lucía | 40 | 17 | 803 | 7 | 8 | **Register developer:** Un usuario tiene la posibilidad de registrarse como un desarrollador, diferenciándolo de un usuario normal **Staging Area:** Los datasets antes de subirse a fakenodo se quedan en un area de stage, y el usuario puede decidir cuando publicarlos  |
 | Picón Garrote, Alexander | 44 | 24 | 1937 | 10 | 6 | **AI integration:** Se debe implementar la funcionalidad para integrar una inteligencia artificial que haga de asistente de ayuda en el sistema. **Generate Api Token:** Se debe implementar la funcionalidad para generar un access token al iniciar sesión. El access token será utilizado para autenticar y autorizar las solicitudes realizadas por el usuario dentro del sistema.  |
 | Vázquez Conejo, Álvaro | 37 | 7 | 635 | 7 | 5 | **Dashboard**: Un usuario tiene la posibilidad de visualizar métricas clave de la aplicación, facilitando el acceso a información consolidada como número de datasets, usuarios, descargas y otros datos relevantes.**Rate dataset**: Un usuario tiene la posibilidad de valorar un dataset. La valoración total del mismo será la media de todas ellas. |
 | **TOTAL** | **242** | **112** | **8274** | **53** | **38** | Aclaración: Los Work Items desarrollados se han realizado de manera colaborativa por pares |
