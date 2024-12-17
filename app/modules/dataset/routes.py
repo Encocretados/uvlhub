@@ -439,6 +439,7 @@ def get_dataset_ratings(dataset_id):
         200,
     )
 
+
 @dataset_bp.route("/dataset/download_all", methods=["GET"])
 def download_all_datasets():
     datasets = dataset_service.get_all()
@@ -454,7 +455,10 @@ def download_all_datasets():
                     for file in files:
                         full_path = os.path.join(subdir, file)
                         relative_path = os.path.relpath(full_path, file_path)
-                        zipf.write(full_path, arcname=os.path.join(str(dataset.id), relative_path))
+                        zipf.write(
+                            full_path,
+                            arcname=os.path.join(str(dataset.id), relative_path),
+                        )
 
     user_cookie = request.cookies.get("download_cookie")
     if not user_cookie:
@@ -472,8 +476,7 @@ def download_all_datasets():
 
     for dataset in datasets:
         existing_record = DSDownloadRecord.query.filter_by(
-            dataset_id=dataset.id,
-            download_cookie=user_cookie
+            dataset_id=dataset.id, download_cookie=user_cookie
         ).first()
 
         if not existing_record:
