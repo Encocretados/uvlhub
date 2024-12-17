@@ -16,13 +16,13 @@
 
 [Integración con otros equipos](#integración-con-otros-equipos)
 
-[Resumen Ejecutivo (800 palabras)](#resumen-ejecutivo-\(800-palabras\))
+[Resumen Ejecutivo](#resumen-ejecutivo-\(800-palabras\))
 
-[Descripción del sistema (1500 palabras)](#descripción-del-sistema-\(1500-palabras\))
+[Descripción del sistema](#descripción-del-sistema-\(1500-palabras\))
 
-[Visión global del proceso de desarrollo (1500 palabras)](#visión-global-del-proceso-de-desarrollo-\(1500-palabras\))
+[Visión global del proceso de desarrollo](#visión-global-del-proceso-de-desarrollo-\(1500-palabras\))
 
-[Entorno de desarrollo (800 palabras)](#entorno-de-desarrollo-\(800-palabras\))
+[Entorno de desarrollo](#entorno-de-desarrollo-\(800-palabras\))
 
 [Ejercicio de propuesta de cambio](#ejercicio-de-propuesta-de-cambio)
 
@@ -42,25 +42,30 @@
 
 # Indicadores del Proyecto <!--{#indicadores-del-proyecto}-->
 
-| Miembro del equipo | Horas    | Commits   | LoC   | Test  | Issues    | Work Item     |
-| ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Miret Martín, José Manuel|    | 82 | +2910 -1291 |   24    |     13      |  Download all datasets, Fakenodo|
-| Vergara Garrido, Ramon  |  | 20 | +1526 -2034 | 7 | 5 | Advance filtering |
-| Nicolalde Bravo, Alejandro   |  | 26 | +2184 -1193 | 6 | 6 | Create Communities|
-| Aguilera Camino, Celia   |  | 42 | +1759 -1141 | 8 | 6 | Improve UI |
-| Ruiz Delgado, Victoria del Carmen  | 0 | 0 | N/A | 0 | 2 | View user profile|
-| Toro Romero, Raúl      |  | 34 | +891 -916 | 8 | 5 | Sign up Validation|
-| **TOTAL** |  | 204 | +9270 -6575 | 53 | 37 |  |
+| Miembro del equipo | Commits   | LoC   | Test  | Issues    | Work Item     |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| Miret Martín, José Manuel| 82 | +459 -77 |   24    |     13      |  Download all datasets|
+| Vergara Garrido, Ramon  | 20 | +1526 -2034 | 7 | 5 | Advance filtering |
+| Nicolalde Bravo, Alejandro | 26 | +2184 -1193 | 6 | 6 | Create Communities|
+| Aguilera Camino, Celia | 42 | +1759 -1141 | 8 | 6 | Improve UI |
+| Ruiz Delgado, Victoria del Carmen | 0 | N/A | 0 | 2 | View user profile|
+| Toro Romero, Raúl | 34 | +891 -916 | 8 | 5 | Sign up Validation|
+| **TOTAL** | 204 | +6819 -5361 | 53 | 37 | 6 |
 
  - **HIGH**:
-    	- **Create Communities** *(Asignada a Nicolalde Bravo, Alejandro)*: Permite a los usuarios gestionar comunidades dentro de la plataforma, incluyendo la creación de nuevas comunidades, la exploración de una lista de comunidades existentes y sus datasets públicos, así como la posibilidad de unirse o abandonar comunidades. Además, los miembros de una comunidad pueden acceder a una nueva metodología para visualizar datasets públicos exclusivos, mientras que los usuarios también tienen la opción de gestionar la visibilidad de sus datasets.
-    	- **Advance filtering** *(Asignada a Vergara Garrido, Ramon)*: Es un filtros avanzados que mejora la búsqueda y organización de datos en la plataforma, permitiendo a los usuarios aplicar múltiples criterios de filtrado simultáneamente, como rango de fechas, atributos específicos de datasets o palabras clave. Esto permite obtener resultados más precisos y relevantes de manera rápida, con actualizaciones instantáneas en la interfaz.
-	- **MEDIUM**:
-    	- **Improve UI** *(Asignada a Aguilera Camino, Celia)*: Se trata de modificar la interfaz de usuario para mejorar la experiencia y usabilidad en la visualización de datasets. Estas mejoras incluyen ajustes visuales, espaciado, tipografía y otros elementos gráficos que el integrante del equipo de desarrollo responsable de este WI ha considerado necesarios.
-    	- **Download all datasets** *(Asignada a Miret Martín, José Manuel)*: Se implementará un botón en la pantalla inicial que permitirá descargar todos los datasets del sistema. Esto incluye ajustes en el funcionamiento interno de la aplicación para comprimir automáticamente todos los datasets en un archivo ZIP, facilitando su descarga de manera eficiente y centralizada para los usuarios.
-	- **LOW**:
-    	- **View user profile** *(Asignada a Ruiz Delgado, Victoria del Carmen)*: Mediante este WI los usuarios podrán visualizar su perfil dentro de la plataforma. Esta vista incluirá información básica como el nombre, el correo electrónico y otros datos relevantes asociados a la cuenta del usuario, proporcionando un acceso fácil y rápido a la información personal y mejorando la experiencia de uso en la plataforma.
-    	- **Sign up Validation** *(Asignada a Toro Romero, Raúl)*: Se trata de implementar un sistema de validación de correo electrónico que requerirá que los usuarios verifiquen su dirección de correo tanto al registrarse como al iniciar sesión. Este sistema enviará un código de verificación al correo electrónico proporcionado, que los usuarios deberán ingresar en la plataforma para completar el proceso de registro o acceso.
+ 
+	-  **Create Communities** *(Asignada a Nicolalde Bravo, Alejandro)*: Permite a los usuarios gestionar comunidades dentro de la plataforma, incluyendo la creación de nuevas comunidades, la exploración de una lista de comunidades existentes y sus datasets públicos, así como la posibilidad de unirse o abandonar comunidades. Además, los miembros de una comunidad pueden acceder a una nueva metodología para visualizar datasets públicos exclusivos, mientras que los usuarios también tienen la opción de gestionar la visibilidad de sus datasets.
+ 
+ 	- **Advance filtering** *(Asignada a Vergara Garrido, Ramon)*: Es un filtros avanzados que mejora la búsqueda y organización de datos en la plataforma, permitiendo a los usuarios aplicar múltiples criterios de filtrado simultáneamente, como rango de fechas, atributos específicos de datasets o palabras clave. Esto permite obtener resultados más precisos y relevantes de manera rápida, con actualizaciones instantáneas en la interfaz.
+- **MEDIUM**:
+
+  	- **Improve UI** *(Asignada a Aguilera Camino, Celia)*: Se trata de modificar la interfaz de usuario para mejorar la experiencia y usabilidad en la visualización de datasets. Estas mejoras incluyen ajustes visuales, espaciado, tipografía y otros elementos gráficos que el integrante del equipo de desarrollo responsable de este WI ha considerado necesarios.
+
+	- **Download all datasets** *(Asignada a Miret Martín, José Manuel)*: Se implementará un botón en la pantalla inicial que permitirá descargar todos los datasets del sistema. Esto incluye ajustes en el funcionamiento interno de la aplicación para comprimir automáticamente todos los datasets en un archivo ZIP, facilitando su descarga de manera eficiente y centralizada para los usuarios.
+- **LOW**:
+
+  	- **View user profile** *(Asignada a Ruiz Delgado, Victoria del Carmen)*: Mediante este WI los usuarios podrán visualizar su perfil dentro de la plataforma. Esta vista incluirá información básica como el nombre, el correo electrónico y otros datos relevantes asociados a la cuenta del usuario, proporcionando un acceso fácil y rápido a la información personal y mejorando la experiencia de uso en la plataforma.
+  	- **Sign up Validation** *(Asignada a Toro Romero, Raúl)*: Inicialmente se trataba de implementar un sistema de validación de correo electrónico que requerirá que los usuarios verifiquen su dirección de correo tanto al registrarse como al iniciar sesión. Más tarde se expandió para también validar las contraseñas en el registro de nuevos usuarios para aumentar su seguridad.
 
 
 # Integración con otros equipos <!--{#integración-con-otros-equipos}-->
@@ -98,7 +103,7 @@ Gracias a este flujo de trabajo bien definido, se logró minimizar la introducci
 En conclusión, la integración entre **Cocreta-Hub1** y **Cocreta-Hub2** fue exitosa gracias a un enfoque meticuloso que combinó buenas prácticas técnicas con una comunicación efectiva. Este modelo de trabajo fomentó un desarrollo colaborativo y garantizó que el branch principal permaneciera estable y libre de errores.
 
 
-# Resumen Ejecutivo *(800 palabras)* <!--{#resumen-ejecutivo-(800-palabras)}-->
+# Resumen Ejecutivo <!--{#resumen-ejecutivo-(800-palabras)}-->
 
 El proyecto ha sido desarrollado como parte del curso universitario EGC por el grupo **Cocreta-Hub**, compuesto por los subgrupos **Cocreta-Hub-1** y **Cocreta-Hub-2**. El objetivo principal de este proyecto ha sido la mejora del sistema **UVLHub**, añadiendo nuevas características y asegurando la implementación de prácticas de integración continua (CI) y despliegue continuo (CD). Se ha puesto un enfoque especial en la gestión del código y su evolución para garantizar una mejora continua en el proyecto.
 
@@ -136,7 +141,7 @@ El subgrupo **Cocreta-Hub-2** ha trabajado en las siguientes funcionalidades:
 
 ---
 
-## Descripción del sistema *(1500 palabras)* <!--{#descripción-del-sistema-(1500-palabras)}-->
+## Descripción del sistema <!--{#descripción-del-sistema}-->
 
 **UVLHUB** es una plataforma basada en una **aplicación web** construida con **Flask** que interactúa con múltiples componentes y servicios externos para su funcionamiento. A continuación vamos a desglosa las conexiones y flujos de datos entre los diferentes elementos del sistema:
 
@@ -289,7 +294,7 @@ Este flujo modular separa claramente las responsabilidades (controlador, lógica
 
 ---
 
-## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
+## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo}-->
 
 ### Planificación y diseño
 
@@ -531,6 +536,36 @@ flask run --host=0.0.0.0 --reload --debug
 ## Ejercicio de propuesta de cambio <!--{#ejercicio-de-propuesta-de-cambio}-->
 
 *Se presentará un ejercicio con una propuesta concreta de cambio en la que a partir de un cambio que se requiera, se expliquen paso por paso (incluyendo comandos y uso de herramientas) lo que hay que hacer para realizar dicho cambio. Debe ser un ejercicio ilustrativo de todo el proceso de evolución y gestión de la configuración del proyecto.*
+
+### Planificación
+
+La propuesta de cambio que queremos ilustrar es el de añadir una frase motivacional en el margen superior. Esta tarea puede ser solo añadir un texto plano para en un futuro en vez de un texto plano, mostrar mensajes elegidos por los administradores de UVLHUB, pero por ahora nos ceñiremos a una simple frase motivacional.
+
+Antes de escribir código, se le deberán crear dos Issues, una para la funcionalidad `Motivational Welcome` y otra para su testeo `Test Motivational Welcome`. Los cuales deberán de seguir las plantillas que tenemos disponibles para los Issues: añadiendo descripción, reportado por (el creador de la issue), responsable (el que se encargará de hacerlo), revisor, prioridad e información adicional, si es necesaria. Se deberán asignar los miembros que contribuyan a tales Issues y etiquetar según se vea apropiado.
+
+En el momento que las tareas pasen al desarrollo se deberán de mover dentro del proyecto del repositorio a la columna desde Todo a In Progress.
+
+### Desarrollo
+
+El primer paso sería crear una rama para esta nueva feature siguiendo el modelo de ramas que tenemos, por ejemplo `feature/motivational_welcome` .
+
+```git checkout -b feature/motivational_welcome```
+
+Después y trabajando desde esta rama, se deberá modificar el archivo de la página principal `base_template.html` . Este mensaje se deberá estilizar con css o bien con un estilo ya existente (no recomendado) o con uno personalizado siguiendo la identidad estética de la aplicación.
+
+Hecha la funcionalidad y pusheada a la cabeza de nuestra rama podemos mover la Issue a In Review, hacer Pull Request a nuestra rama grupal cocreta-hub-`número` y pedirle a nuestro revisor que nos la acepte, pero no a la rama principal ya que no está testeada. En el caso de tener su visto bueno, mover la tarea en el proyecto a Done.
+
+### Pruebas
+
+Implementada una versión operativa, se requerirá de garantizar su integridad en distintos tests. Una vez hechos, se moverá a In Reviww y se creará la Pull Request a la rama grupal. Cuando su revisor lo valide, se puedrá mover la Issue a Done y ahora sí, hacer un merge a `main` .
+
+### Despliegue
+
+Cuando los cambios lleguen a `main` se creará una nueva versión de la aplicación que será la siguiente versión desplegada.
+
+### Mantenimiento
+
+Un cambio tan simple no requiere de ningún mantenimiento específico, pero si en el futuro se requiriese cualquier cambio o hubiera alguna incidencia con respecto a él, se deberá  hacer siguiendo el proceso estandarizado que usamos aquí en Encocretados y las plantillas disponibles en el repositorio.
 
 ## Conclusiones y trabajo futuro <!--{#conclusiones-y-trabajo-futuro}-->
 

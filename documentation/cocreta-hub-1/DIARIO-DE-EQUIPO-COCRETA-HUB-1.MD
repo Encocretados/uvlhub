@@ -251,7 +251,7 @@ Me he encargado del WI "Sign up validation". Es considerado un Low Work Item as�
 
 ## Pruebas Realizadas
 
-Dentro del módulo auth he realizado un total de **7 pruebas unitarias** y ** 1 prueba de Selenium** relacionadas tanto como la validación de las contraseñas como con la validación del código de autentificación. A continuación, se describen los detalles de las pruebas ejecutadas:
+Dentro del módulo auth he realizado un total de **7 pruebas unitarias** y **1 prueba de Selenium** relacionadas tanto como la validación de las contraseñas como con la validación del código de autentificación. A continuación, se describen los detalles de las pruebas ejecutadas:
 
 ### Pruebas Unitarias
 
