@@ -188,6 +188,7 @@ chico sundermann">
             <div class="navbar-collapse collapse">
                 <ul class="navbar-nav navbar-align">
                     <li class="nav-item dropdown">
+                        <span id="motivational-phrase" class="navbar-text d-none d-sm-inline-block">"Empowering your research journey!"</span>
 
                         {% if current_user.is_anonymous %}
                             <a class="nav-link  d-none d-sm-inline-block" href="{{ url_for('auth.login') }}">Login</a>
